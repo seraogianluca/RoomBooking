@@ -1,4 +1,4 @@
-package it.unipi.project;
+package build;
 
 /**
  * Hello world!
