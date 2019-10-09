@@ -12,7 +12,7 @@ The application allows the users to:
 
 We described the dataflow of the application through this simple flowchart:
 
-![](https://github.com/seraogianluca/RoomBooking/blob/master/schemas/DataFlowChart.png | width=100)
+![dataflow](https://github.com/seraogianluca/RoomBooking/blob/master/schemas/DataFlowChart.png | width=100)
 
 We decided to implement this application with two classes, one that implements the interface used by the user, and one that implements the operation on the database.
 
