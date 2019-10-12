@@ -1,0 +1,32 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - RoomBookingDB",
+            "request": "launch",
+            "mainClass": "it.unipi.RoomBookingDatabase.RoomBookingDB",
+            "projectName": "RoomBooking"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - RoomBookingDB",
+            "request": "launch",
+            "mainClass": "it.unipi.RoomBookingDB.RoomBookingDB",
+            "projectName": "RoomBooking"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - RoomBookingDB",
+            "request": "launch",
+            "mainClass": "RoomBookingDB",
+            "projectName": "RoomBooking"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - RoomBooking",
+            "request": "launch",
+            "mainClass": "RoomBooking",
+            "projectName": "RoomBooking"
+        }
+    ]
+}

@@ -16,3 +16,5 @@ We described the dataflow of the application through this simple flowchart:
 
 We decided to implement this application with two classes, one that implements the interface used by the user, and one that implements the operation on the database.
 
+# Report
+The required report is written in REPORT.md
