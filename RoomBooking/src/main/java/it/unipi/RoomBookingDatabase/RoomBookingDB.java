@@ -12,7 +12,7 @@ public class RoomBookingDB {
      
   
     public int getPersonId(String name, String lastName){
-        String connStr ="jdbc:mysql://localhost:3306/roombooking?user=root&password=";
+        String connStr ="jdbc:mysql://localhost:3306/roombooking?user=root&password=gianluca&useSSL=false";
         Connection conn=null;
     
         ResultSet rs;
