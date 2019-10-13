@@ -1,5 +1,8 @@
 package it.unipi.RoomBookingInterface;
 
+import it.unipi.RoomBookingDatabase.RoomBookingDB;
+
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -15,27 +18,24 @@ public final class RoomBooking {
     		"                                                               __/ |                    \n" + 
     		"                                                              |___/                     \n";
     /* User information */
-    static int personID = 2;
+    static int personID = 0;
     static String name = null;
     static String lastname = null; 
     
-    /* Methods */
-    static void ident(Scanner input) {
+    /* User identification method */
+    static void ident(Scanner input, RoomBookingDB database) {
     	boolean isValid = false;
-    	
     	System.out.println(version);
     	
     	while(!isValid) {
     		
     		System.out.print("\nInsert your Name > ");
         	name = input.nextLine();
-        	
         	System.out.print("\nInsert your Lastname > ");
         	lastname = input.nextLine();
+			personID = database.getPersonID(name, lastname);
         	
-        	//personID = RoomBookingDBManager.getPersonID(name, lastname);
-        	
-        	if(personID == -1) {
+        	if(personID == -1 || personID == 0) {
         		System.out.println("\nUser not valid.");
         	} else {
         		isValid = true;
@@ -45,7 +45,8 @@ public final class RoomBooking {
     	System.out.println("\n_________________________________________\n");
         System.out.println("\nHi " + name + " " + lastname + ",");
     }
-    
+	
+	/* User command handler */
     static String getCommand(Scanner input) {
     	String command;
         boolean isValid = false;
@@ -55,7 +56,7 @@ public final class RoomBooking {
                 "\n2 - Delete a booking." +
                 "\n3 - Update a booking." +
                 "\n4 - Close."
-            );
+        );
         
         while(!isValid) {
         	System.out.print("\nChoose an action > ");
@@ -66,10 +67,8 @@ public final class RoomBooking {
 				!command.equals("3") &&
 				!command.equals("2") &&
 				!command.equals("1")
-        	) {
-        		
+        	) {	
         		System.out.println("\nPlease insert a valid command.");
-        		
         	} else {
         		isValid = true; 
         		return command;
@@ -79,6 +78,7 @@ public final class RoomBooking {
         return null;
     }
 
+	/* Set requested schedule */
 	static String setSchedule(Scanner input) {
 		String requestedSchedule = null;
     	boolean isValid = false;
@@ -99,9 +99,7 @@ public final class RoomBooking {
         		!requestedSchedule.equals("m") &&
         		!requestedSchedule.equals("f")
         	) {
-        		
         		System.out.println("\nPlease insert a valid command.");
-        		
         	} else {
         		isValid = true;
         	}
@@ -110,135 +108,137 @@ public final class RoomBooking {
 		return requestedSchedule;
 	}
 
-    static void showRooms(/*ResultSet rs */boolean booked) {
+	/* Show rooms in table format */
+    static void showRooms(ArrayList<ArrayList<String>> table, boolean booked) {
 		if(booked) {
 			System.out.println("\nList of your booked rooms:\n");
 			System.out.printf("%-15s %-15s", "Room", "Schedule");
 			System.out.println("\n=========================================");
-			/*
-			 * while(rs.next()) {
-			 * System.out.printf("%-15s %-15s", 
-			 * 					 rs.getString("Room"),
-			 * 					 rs.getString("Schedule").toUpperCase(Local.ENGLISH)
-			 * );
-			 * }
-			*/
+			int numRows = table.get(0).size();
+			
+			while(numRows > 0) {
+				System.out.printf("%-15s %-15s",
+					table.get(0).get(numRows),
+					table.get(1).get(numRows).toUpperCase(Locale.ENGLISH));
+				numRows--;
+			}
+
 		} else {
 			System.out.println("\nList of the avaiable rooms:\n");
 			System.out.printf("%-15s %-25s %-10s %-10s", "Room", "Building", "Floor", "Capacity");
 			System.out.println("\n==============================================================");
-			/*
-			 * while(rs.next()) {
-			 * System.out.printf("%-15s %-25s %-10d %-10d", 
-			 * 					 rs.getString("Room"),
-			 * 					 rs.getString("Building"),
-			 * 					 rs.getInt("Floor"),
-			 * 					 rs.getInt("Capacity")
-			 * );
-			 * }
-			*/
+			int numRows = table.get(0).size();
+
+			while(numRows > 0) {
+				System.out.printf("%-15s %-25s %-10d %-10d",
+					table.get(0).get(numRows),
+					table.get(1).get(numRows),
+					table.get(2).get(numRows),
+					table.get(3).get(numRows));
+				numRows--;
+			}
 		}
     }
 
-    static void bookARoom(Scanner input) {
+	/* Booking request */
+    static void bookARoom(Scanner input, RoomBookingDB database) {
 		String requestedSchedule = null;
 		String requestedRoom = null;
+		ArrayList<ArrayList<String>> availableRooms;
     	boolean isValid = false;
     	
-    	requestedSchedule = setSchedule(input);
-        //ResultSet rs = RoomBookingDBManager.getAvailableRooms(resquestedSchedule);
-		showRooms(/* rs*/false);
-		
-		System.out.print("\nChoose a room by name > ");
+		requestedSchedule = setSchedule(input);
+		availableRooms = database.getAvailableRooms(requestedSchedule);
+		showRooms(availableRooms, false);
 
 		while(!isValid) {
+			System.out.print("\nChoose a room by name > ");
 			requestedRoom = input.nextLine();
 			requestedRoom = requestedRoom.toLowerCase(Locale.ENGLISH);
-			/*
-			while(rs.next()) {
-				if(rs.getString("Name").equal(requestedRoom)) {
+			int numRows = availableRooms.get(0).size();
+
+			while(numRows > 0) {
+				if(availableRooms.get(0).get(numRows).equals(requestedRoom)) {
 					isValid = true;
 					break;
 				}
-			}
+				numRows--;
+			}	
 
 			if(!isValid) {
 				System.out.println("\nPlease insert a valid room.");
 			} else {
-				RoomBookingDBManager.setBooking(personID, requestedSchedule, requestedRoom);
+				database.setBooking(personID, requestedSchedule, requestedRoom);
 				System.out.println("\nRoom succesfully booked.");
 			}
-			*/
-
-			System.out.println("\nRoom succesfully booked.");
-			isValid = true;
 		}
+
     }
 	
-	static void deleteBooking(Scanner input) {
+	/* Delete a booking */
+	static void deleteBooking(Scanner input, RoomBookingDB database) {
 		String requestedRoom = null;
+		ArrayList<ArrayList<String>> bookedRooms;
 		boolean isValid = false;
 
-		//ResultSet rs = RoomBookingDBManager.getBookedRooms(PersonID);
-		showRooms(/* rs*/true);
-		System.out.print("\nChoose the room you booked > ");
+		bookedRooms = database.getBookedRooms(personID);
+		showRooms(bookedRooms, true);
 
 		while(!isValid) {
+			System.out.print("\nChoose the room you booked > ");
 			requestedRoom = input.nextLine();
 			requestedRoom = requestedRoom.toLowerCase(Locale.ENGLISH);
-			/*
-			while(rs.next()) {
-				if(rs.getString("Room").equal(requestedRoom)) {
+			int numRows = bookedRooms.get(0).size();
+
+			while(numRows > 0) {
+				if(bookedRooms.get(0).get(numRows).equals(requestedRoom)) {
 					isValid = true;
 					break;
 				}
+				numRows--;
 			}
 
 			if(!isValid) {
 				System.out.println("\nPlease insert a valid room.");
 			} else {
-				RoomBookingDBManager.deleteBooking(personID, requestedRoom);
+				database.deleteBooking(personID, requestedRoom); /* to fix */
 				System.out.println("\nBooking succesfully delete.");
 			}
-			*/
-
-			System.out.println("\nRoom succesfully deleted.");
-			isValid = true;
 		}
+
 	}
 
-	static void updateBooking(Scanner input) {
+	/* Update a booking */
+	static void updateBooking(Scanner input, RoomBookingDB database) {
 		String requestedSchedule = null;
 		String requestedRoom = null;
-    	boolean isValid = false;
-		
-		//ResultSet rs = RoomBookingDBManager.getBookedRooms(PersonID);
-		showRooms(/* rs*/true);
-		
-		System.out.print("\nChoose the room to update > ");
+		ArrayList<ArrayList<String>> bookedRooms;
+		boolean isValid = false;
+
+		bookedRooms = database.getBookedRooms(personID);
+		showRooms(bookedRooms, true);
 
 		while(!isValid) {
+			System.out.print("\nChoose the room you booked > ");
 			requestedRoom = input.nextLine();
 			requestedRoom = requestedRoom.toLowerCase(Locale.ENGLISH);
-			/*
-			while(rs.next()) {
-				if(rs.getString("Room").equal(requestedRoom)) {
+			int numRows = bookedRooms.get(0).size();
+
+			while(numRows > 0) {
+				if(bookedRooms.get(0).get(numRows).equals(requestedRoom)) {
 					isValid = true;
 					break;
 				}
+				numRows--;
 			}
 
 			if(!isValid) {
 				System.out.println("\nPlease insert a valid room.");
 			} else {
 				requestedSchedule = setSchedule(input);
-				RoomBookingDBManager.updateBooking(personID, requestedRoom, requestedSchedule);
+				database.updateBooking(personID, requestedRoom, requestedSchedule); /* to fix */
 				System.out.println("\nSchedule succesfully updated.");
 			}
-			*/
-
-			System.out.println("\nSchedule succesfully updated.");
-			isValid = true;
 		}
 
 	}
@@ -248,8 +248,11 @@ public final class RoomBooking {
     	Scanner input = new Scanner(System.in);
     	boolean terminate = false;
     	String command = null;
-    	
-    	ident(input);
+		
+		String databaseConnectionString = "jdbc:mysql://localhost:3306/roombooking?user=root&password=giovanni&useSSL=false&serverTimezone=UTC";
+		RoomBookingDB roomBookingDatabase = new RoomBookingDB(databaseConnectionString);
+		
+    	ident(input, roomBookingDatabase);
     	
     	while(!terminate) {
     		command = getCommand(input);
@@ -262,15 +265,13 @@ public final class RoomBooking {
     		
     		switch(Integer.parseInt(command)) {
             	case 1:
-            		bookARoom(input);
+            		bookARoom(input, roomBookingDatabase);
             		break;
             	case 2:
-            		System.out.println("Puppa 2");
-            		deleteBooking(input);
+            		deleteBooking(input, roomBookingDatabase);
             		break;
             	case 3:
-            		System.out.println("Puppa 3");
-            		updateBooking(input);
+            		updateBooking(input, roomBookingDatabase);
             		break;
             	case 4:
             		terminate = true;
