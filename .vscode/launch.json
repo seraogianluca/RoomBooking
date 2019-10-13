@@ -4,6 +4,12 @@
             "type": "java",
             "name": "CodeLens (Launch) - RoomBooking",
             "request": "launch",
+            "mainClass": "it.unipi.RoomBookingInterface.RoomBooking"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - RoomBooking",
+            "request": "launch",
             "mainClass": "it.unipi.RoomBookingInterface.RoomBooking",
             "projectName": "RoomBooking"
         },
