@@ -18,27 +18,30 @@ public final class RoomBooking {
     		"                                                               __/ |                    \n" + 
     		"                                                              |___/                     \n";
     /* User information */
-    static int personID = 0;
+    static int userId = 0;
     static String name = null;
     static String lastname = null; 
     
     /* User identification method */
     static void ident(Scanner input, RoomBookingDB database) {
+		String[] user = new String[3];
+		String email = null;
     	boolean isValid = false;
     	System.out.println(version);
     	
     	while(!isValid) {
     		
-    		System.out.print("\nInsert your Name > ");
-        	name = input.nextLine();
-        	System.out.print("\nInsert your Lastname > ");
-        	lastname = input.nextLine();
-			personID = database.getPersonID(name, lastname);
+    		System.out.print("\nInsert your Email > ");
+        	email = input.nextLine();
+			user = database.getPersonID(email);
         	
-        	if(personID == -1 || personID == 0) {
+        	if(user == null) {
         		System.out.println("\nUser not valid.");
         	} else {
-        		isValid = true;
+				userId = Integer.parseInt(user[0]);
+				name = user[1];
+				lastname = user[2];
+				isValid = true;
         	}
     	}
     	
@@ -47,7 +50,7 @@ public final class RoomBooking {
     }
 	
 	/* User command handler */
-    static String getCommand(Scanner input) {
+   static String getCommand(Scanner input) {
     	String command;
         boolean isValid = false;
         
@@ -168,7 +171,7 @@ public final class RoomBooking {
 			if(!isValid) {
 				System.out.println("\nPlease insert a valid room.");
 			} else {
-				database.setBooking(personID, requestedSchedule, requestedRoom);
+				database.setBooking(userId, requestedSchedule, requestedRoom);
 				System.out.println("\nRoom succesfully booked.");
 			}
 		}
@@ -181,7 +184,7 @@ public final class RoomBooking {
 		ArrayList<ArrayList<String>> bookedRooms;
 		boolean isValid = false;
 
-		bookedRooms = database.getBookedRooms(personID);
+		bookedRooms = database.getBookedRooms(userId);
 		showRooms(bookedRooms, true);
 
 		while(!isValid) {
@@ -201,7 +204,7 @@ public final class RoomBooking {
 			if(!isValid) {
 				System.out.println("\nPlease insert a valid room.");
 			} else {
-				database.deleteBooking(personID, requestedRoom); /* to fix */
+				//database.deleteBooking(userId, requestedRoom); /* to fix */
 				System.out.println("\nBooking succesfully delete.");
 			}
 		}
@@ -215,7 +218,7 @@ public final class RoomBooking {
 		ArrayList<ArrayList<String>> bookedRooms;
 		boolean isValid = false;
 
-		bookedRooms = database.getBookedRooms(personID);
+		bookedRooms = database.getBookedRooms(userId);
 		showRooms(bookedRooms, true);
 
 		while(!isValid) {
@@ -236,7 +239,7 @@ public final class RoomBooking {
 				System.out.println("\nPlease insert a valid room.");
 			} else {
 				requestedSchedule = setSchedule(input);
-				database.updateBooking(personID, requestedRoom, requestedSchedule); /* to fix */
+				database.updateBooking(userId, requestedRoom, requestedSchedule); /* to fix */
 				System.out.println("\nSchedule succesfully updated.");
 			}
 		}

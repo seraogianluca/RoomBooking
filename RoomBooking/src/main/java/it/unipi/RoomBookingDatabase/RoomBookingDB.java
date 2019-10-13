@@ -42,24 +42,25 @@ public class RoomBookingDB {
     }
 
     /* Get the personal id */
-    public int getPersonID(String name, String lastname) {
+    public String[] getPersonID(String email) {
         ResultSet result;
-        int personId = 0;
+        String[] person = new String[3];
 
         try {
             openConnection();
             /* Need to change the table attributes name and revert it */
-            String query = "SELECT id_person FROM person WHERE namePerson = ? AND lastname = ? LIMIT 1";
+            String query = "SELECT id_person, firstname, lastname FROM person WHERE email = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, lastname);
-            preparedStatement.setString(2, name);
+            preparedStatement.setString(1, email);
             result = preparedStatement.executeQuery();
 
             while (result.next()) {
-                personId = result.getInt("id_person");
+                person[0] = String.valueOf(result.getInt("id_person"));
+                person[1] = result.getString("firstname");
+                person[2] = result.getString("lastname");
             }
 
-            return personId;  
+            return person;  
         } catch (SQLException sql) {
             System.err.println("SQLException: " + sql.getMessage());
             sql.printStackTrace();
@@ -67,7 +68,7 @@ public class RoomBookingDB {
             closeConnection();
         }
 
-        return -1;
+        return null;
     }
 
     /* Get available rooms for the schedule of interest */
@@ -180,7 +181,7 @@ public class RoomBookingDB {
             String query = "DELETE FROM booking WHERE id_person = ? AND id_room = ? AND id_schedule = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, personId);
-            preparedStatement.setInt(2, room);
+            preparedStatement.setString(2, room);
             preparedStatement.setString(3, schedule);
             preparedStatement.executeQuery();
         } catch (SQLException sql) {
@@ -200,7 +201,7 @@ public class RoomBookingDB {
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, schedule);
             preparedStatement.setInt(2, personId);
-            preparedStatement.setInt(3, room);
+            preparedStatement.setString(3, room);
             preparedStatement.executeQuery();
         } catch (SQLException sql) {
             System.err.println("SQLException: " + sql.getMessage());
@@ -209,13 +210,5 @@ public class RoomBookingDB {
             closeConnection();
         }
     }
-
-    /*public static void main(String[] args) {
-        System.out.println("yo");
-        RoomBookingDB test = new RoomBookingDB();
-        int k = test.getPersonId("Avvenuti", "Marco");
-        test.getAvailableRooms("");
-        System.out.println(k);
-    }*/
 
 }
