@@ -6,6 +6,13 @@
             "request": "launch",
             "mainClass": "it.unipi.RoomBookingInterface.RoomBooking",
             "projectName": "RoomBooking"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)",
+            "request": "launch",
+            "mainClass": "it.unipi.RoomBookingInterface.RoomBooking",
+            "projectName": "RoomBooking"
         }
     ]
 }
