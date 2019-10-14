@@ -41,3 +41,7 @@ In the following images is possible to see how the user iteracts with the interf
 
 - Update booking test
 ! [update] (https://github.com/seraogianluca/RoomBooking/tree/maven/schemas/updateSample.png)
+
+
+The application was developed by:
+@MarshaGomez, @matildao-pane, @ragnar1002, @seraogianluca
