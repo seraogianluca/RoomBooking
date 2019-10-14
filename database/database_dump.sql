@@ -68,7 +68,7 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES (3,21,'m'),(1,22,'a'),(2,23,'a'),(2,24,'m'),(1,25,'a'),(2,26,'m');
+INSERT INTO `booking` VALUES (3,21,'m'),(1,22,'a'),(2,23,'a'),(2,24,'m'),(1,25,'m'),(2,26,'m');
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,7 +122,7 @@ CREATE TABLE `person` (
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
-INSERT INTO `person` VALUES (1,'giuseppe','anastasi','demo@hotmail.com','T'),(2,'marco','avvenuti','demo1@hotmail.com','T'),(3,'giuseppe','barillaro','demo2@hotmail.com','T'),(4,'federico','baronti','demo3@hotmail.com','T'),(5,'giovanni','basso','demo4@hotmail.com','T');
+INSERT INTO `person` VALUES (1,'demo','demo','demo@hotmail.com','T'),(2,'demo1','demo1','demo1@hotmail.com','T'),(3,'demo2','demo2','demo2@hotmail.com','T'),(4,'demo3','demo3','demo3@hotmail.com','T'),(5,'demo4','demo4','demo4@hotmail.com','T');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,4 +163,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-10-13 23:36:43
+-- Dump completed on 2019-10-14 17:20:15
