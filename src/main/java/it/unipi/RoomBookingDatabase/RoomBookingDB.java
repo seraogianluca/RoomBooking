@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public class RoomBookingDB {
     /* Database connection util */
-    String connectionStr = null;
-    Connection connection = null;
+    private String connectionStr = null;
+    private Connection connection = null;
 
     public RoomBookingDB(String connectionString) {
         connectionStr = connectionString;
