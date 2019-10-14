@@ -14,7 +14,7 @@ These actions are described in the following use cases diagram:
 
 The sequence of the actions is described by the following FlowChart:
 
-![flowchart](https://github.com/seraogianluca/RoomBooking/schemas/flowchartUPDATED (2).png) 
+![flowchart](https://github.com/seraogianluca/RoomBooking/schemas/flowchartUPDATED(2).png) 
 
 
 The application is supported by a MySql database in which are stored the information about allowed users, buildings, rooms and the booking information. A detailed implementation of the database is showed in the following entity-relation diagram:
