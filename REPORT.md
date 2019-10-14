@@ -31,16 +31,21 @@ The application was tested with a simulation of the user beavior and cheking if 
 In the following images is possible to see how the user iteracts with the interface during the tests.
 
 - Startup screen
+
 ![startup](/schemas/startupSample.png)
+
 ![startup2](/schemas/startup2Sample.png)
 
 - Booking test
+
 ![booking](/schemas/bookingSample.png)
 
 - Delete booking test
+
 ![delete](/schemas/deleteSample.png)
 
 - Update booking test
+
 ![update](/schemas/updateSample.png)
 
 
