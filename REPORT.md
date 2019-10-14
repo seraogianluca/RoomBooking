@@ -11,6 +11,12 @@ These actions are described in the following use cases diagram:
 
 ! [usecases] (https://github.com/seraogianluca/RoomBooking/tree/maven/schemas/UseCasesSchema.png)
 
+<!--- 
+//The sequence of the actions is described by the following FlowChart
+//! [flowchart] (https://github.com/seraogianluca/RoomBooking/tree/maven/schemas/flowchartUPDATED (2).png)
+--> 
+
+
 The application is supported by a MySql database in which are stored the information about allowed users, buildings, rooms and the booking information. A detailed implementation of the database is showed in the following entity-relation diagram:
 
 ! [erDiagram] (https://github.com/seraogianluca/RoomBooking/tree/maven/schemas/ERSchema(1).png)
@@ -18,3 +24,24 @@ The application is supported by a MySql database in which are stored the informa
 The application is developed in java using two classes. A class that provide the front-end, in which is implemented the interaction with the user (i.e. menus that let the user to choose what to do by a prompt), and a class that provide the database interface between the java application and the mysql database using jdbc with a localhost connection. A detailed implemention is described by the following class diagram:
 
 ! [classDiagram] (https://github.com/seraogianluca/RoomBooking/tree/maven/schemas/classDiagram.png)
+
+
+<!--- 
+# Test cases
+The app was tested with a simulation of the user beavior and cheking if the results were consistent with the DataBase.
+in the following images is possible to see how the user iteracts with the interface during the tests.
+<!--- 
+Startup screen
+! [startup] (https://github.com/seraogianluca/RoomBooking/tree/maven/schemas/startupSample.png)
+! [startup2] (https://github.com/seraogianluca/RoomBooking/tree/maven/schemas/startup2Sample.png)
+<!--- 
+Booking test
+! [booking] (https://github.com/seraogianluca/RoomBooking/tree/maven/schemas/bookingSample.png)
+<!--- 
+Delete booking test
+! [delete] (https://github.com/seraogianluca/RoomBooking/tree/maven/schemas/deleteSample.png)
+<!--- 
+Update booking test
+! [update] (https://github.com/seraogianluca/RoomBooking/tree/maven/schemas/updateSample.png)
+<!--- 
+--> 
