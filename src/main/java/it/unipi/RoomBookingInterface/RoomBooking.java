@@ -263,7 +263,7 @@ public final class RoomBooking {
 		boolean terminate = false;
 		String command = null;
 
-		String databaseConnectionString = "jdbc:mysql://localhost:3306/roombooking?user=root&password=giovanni&useSSL=false&serverTimezone=UTC";
+		String databaseConnectionString = /* Connection string */;
 		RoomBookingDB roomBookingDatabase = new RoomBookingDB(databaseConnectionString);
 
 		ident(input, roomBookingDatabase);
