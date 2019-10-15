@@ -50,7 +50,12 @@ In the following images is possible to see how the user iteracts with the interf
 
 
 The application was developed by:
+
 Marsha Gòmez
+
 Matilde Mazzini
+
 Lorenzo Barigliano
+
 Gianluca Serao
+
