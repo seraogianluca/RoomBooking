@@ -14,12 +14,13 @@ These actions are described in the following use cases diagram:
 
 The sequence of the actions is described by the following FlowChart:
 
-![flowchart](/schemas/flowchartUPDATED.png) 
-
+![flowchart](/schemas/flowchartUPDATED%20(2).png) 
 
 The application is supported by a MySql database in which are stored the information about allowed users, buildings, rooms and the booking information. A detailed implementation of the database is showed in the following entity-relation diagram:
 
-![erDiagram](/schemas/ERSchema.png)
+
+![ERSchema](/schemas/ERSchema%20(1).png)
+
 
 The application is developed in java using two classes. A class that provide the front-end, in which is implemented the interaction with the user (i.e. menus that let the user to choose what to do by a prompt), and a class that provide the database interface between the java application and the mysql database using jdbc with a localhost connection. A detailed implemention is described by the following class diagram:
 
