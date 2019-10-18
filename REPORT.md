@@ -9,7 +9,7 @@ Note: For briefly we decided to let the user to book a room only for the day aft
 
 These actions are described in the following use cases diagram:
 
-![usecases](/schemas/UseCasesSchema2.png)
+![usecases](/schemas/UseCaseSchema2.png)
 
 
 The sequence of the actions is described by the following FlowChart:
