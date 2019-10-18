@@ -1,14 +1,16 @@
 package it.unipi.RoomBookingInterface;
 
-import it.unipi.RoomBookingDatabase.RoomBookingDB;
-
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
+import org.omg.IOP.RMICustomMaxStreamFormat;
+
+import it.unipi.RoomBookingDatabase.RoomBookingDB;
+
 public final class RoomBooking {
 	/* Version banner */
-	static String version = " _____                         ____              _    _                       __   ___  \n"
+	private static String version = " _____                         ____              _    _                       __   ___  \n"
 			+ "|  __ \\                       |  _ \\            | |  (_)                     /_ | / _ \\ \n"
 			+ "| |__) |___   ___  _ __ ___   | |_) | ___   ___ | | ___ _ __   __ _  __   __  | || | | |\n"
 			+ "|  _  // _ \\ / _ \\| '_ ` _ \\  |  _ < / _ \\ / _ \\| |/ / | '_ \\ / _` | \\ \\ / /  | || | | |\n"
@@ -16,13 +18,18 @@ public final class RoomBooking {
 			+ "|_|  \\_\\___/ \\___/|_| |_| |_| |____/ \\___/ \\___/|_|\\_\\_|_| |_|\\__, |   \\_(_)  |_(_)___/ \n"
 			+ "                                                               __/ |                    \n"
 			+ "                                                              |___/                     \n";
+	
+	/* Utilities */		
+	private static RoomBookingDB roomBookingDatabase;
+	private static Scanner input;
+
 	/* User information */
-	static int userId = 0;
-	static String name = null;
-	static String lastname = null;
+	private static int userId = 0;
+	private static String name = null;
+	private static String lastname = null;
 
 	/* User identification method */
-	static void ident(Scanner input, RoomBookingDB database) {
+	private static void ident() {
 		String[] user = new String[3];
 		String email = null;
 		boolean isValid = false;
@@ -32,7 +39,7 @@ public final class RoomBooking {
 
 			System.out.print("\nInsert your Email > ");
 			email = input.nextLine();
-			user = database.getPersonID(email);
+			user = roomBookingDatabase.getPersonID(email);
 
 			if (user == null) {
 				System.out.println("\nUser not valid.");
@@ -49,7 +56,7 @@ public final class RoomBooking {
 	}
 
 	/* User command handler */
-	static String getCommand(Scanner input) {
+	private static String getCommand() {
 		String command;
 		boolean isValid = false;
 
@@ -72,7 +79,7 @@ public final class RoomBooking {
 	}
 
 	/* Set requested schedule */
-	static String setSchedule(Scanner input) {
+	private static String setSchedule() {
 		String requestedSchedule = null;
 		boolean isValid = false;
 
@@ -94,7 +101,7 @@ public final class RoomBooking {
 	}
 
 	/* Show rooms in table format */
-	static void showRooms(ArrayList<ArrayList<String>> table, boolean booked) {
+	private static void showRooms(ArrayList<ArrayList<String>> table, boolean booked) {
 		if (booked) {
 			System.out.println("\nList of your booked rooms:\n");
 			System.out.printf("%-5s %-15s %-15s\n", "ID", "Room", "Schedule");
@@ -123,14 +130,14 @@ public final class RoomBooking {
 	}
 
 	/* Booking request */
-	static void bookARoom(Scanner input, RoomBookingDB database) {
+	private static void bookARoom() {
 		String requestedSchedule = null;
 		String requestedRoom = null;
 		ArrayList<ArrayList<String>> availableRooms;
 		boolean isValid = false;
 
-		requestedSchedule = setSchedule(input);
-		availableRooms = database.getAvailableRooms(requestedSchedule);
+		requestedSchedule = setSchedule();
+		availableRooms = roomBookingDatabase.getAvailableRooms(requestedSchedule);
 		showRooms(availableRooms, false);
 
 		while (!isValid) {
@@ -149,7 +156,7 @@ public final class RoomBooking {
 			if (!isValid) {
 				System.out.println("\nPlease insert a valid room.");
 			} else {
-				database.setBooking(userId, requestedSchedule, Integer.parseInt(requestedRoom));
+				roomBookingDatabase.setBooking(userId, requestedSchedule, Integer.parseInt(requestedRoom));
 				System.out.println("\nRoom succesfully booked.");
 			}
 		}
@@ -157,19 +164,19 @@ public final class RoomBooking {
 	}
 
 	/* Delete a booking */
-	static void deleteBooking(Scanner input, RoomBookingDB database) {
+	private static void deleteBooking() {
 		String requestedRoom = null;
 		String requestedSchedule = null;
 		ArrayList<ArrayList<String>> bookedRooms;
 		boolean isValid = false;
 
-		bookedRooms = database.getBookedRooms(userId);
+		bookedRooms = roomBookingDatabase.getBookedRooms(userId);
 		showRooms(bookedRooms, true);
 
 		while (!isValid) {
 			System.out.print("\nChoose the room you booked by ID > ");
 			requestedRoom = input.nextLine();
-			requestedSchedule = setSchedule(input);
+			requestedSchedule = setSchedule();
 			int numRows = bookedRooms.get(0).size() - 1;
 
 			while (numRows >= 0) {
@@ -184,7 +191,7 @@ public final class RoomBooking {
 			if (!isValid) {
 				System.out.println("\nPlease insert a valid room.");
 			} else {
-				database.deleteBooking(userId, Integer.parseInt(requestedRoom), requestedSchedule);
+				roomBookingDatabase.deleteBooking(userId, Integer.parseInt(requestedRoom), requestedSchedule);
 				System.out.println("\nBooking succesfully delete.");
 			}
 		}
@@ -192,7 +199,7 @@ public final class RoomBooking {
 	}
 
 	/* Update a booking */
-	static void updateBooking(Scanner input, RoomBookingDB database) {
+	private static void updateBooking() {
 		String oldSchedule = null;
 		String oldRoom = null;
 		String requestedSchedule = null;
@@ -201,14 +208,14 @@ public final class RoomBooking {
 		ArrayList<ArrayList<String>> bookedRooms;
 		boolean isValid = false;
 
-		bookedRooms = database.getBookedRooms(userId);
+		bookedRooms = roomBookingDatabase.getBookedRooms(userId);
 		showRooms(bookedRooms, true);
 
 		while (!isValid) {
 			System.out.print("\nChoose the room you want to change by ID > ");
 			oldRoom = input.nextLine();
 			System.out.print("\nChoose the schedule you want to change: ");
-			oldSchedule = setSchedule(input);
+			oldSchedule = setSchedule();
 			int numRows = bookedRooms.get(0).size() - 1;
 
 			while (numRows >= 0) {
@@ -227,8 +234,8 @@ public final class RoomBooking {
 			} else {
 				isValid = false;
 				System.out.print("\nChoose the new schedule: ");
-				requestedSchedule = setSchedule(input);
-				availableRooms = database.getAvailableRooms(requestedSchedule);
+				requestedSchedule = setSchedule();
+				availableRooms = roomBookingDatabase.getAvailableRooms(requestedSchedule);
 				showRooms(availableRooms, false);
 
 				while (!isValid) {
@@ -247,7 +254,7 @@ public final class RoomBooking {
 					if (!isValid) {
 						System.out.println("\nPlease insert a valid room.");
 					} else {
-						database.updateBooking(userId, Integer.parseInt(requestedRoom), requestedSchedule, Integer.parseInt(oldRoom), oldSchedule);
+						roomBookingDatabase.updateBooking(userId, Integer.parseInt(requestedRoom), requestedSchedule, Integer.parseInt(oldRoom), oldSchedule);
 						System.out.println("\nSchedule succesfully updated.");
 					}
 				}
@@ -259,17 +266,17 @@ public final class RoomBooking {
 
 	/* Main */
 	public static void main(String[] args) {
-		Scanner input = new Scanner(System.in);
+		input = new Scanner(System.in);
 		boolean terminate = false;
 		String command = null;
 
-		String databaseConnectionString = /* Connection string */;
-		RoomBookingDB roomBookingDatabase = new RoomBookingDB(databaseConnectionString);
+		String databaseConnectionString = "jdbc:mysql://localhost:3306/roombooking?user=root&password=giovanni&serverTimezone=UTC";
+		roomBookingDatabase = new RoomBookingDB(databaseConnectionString);
 
-		ident(input, roomBookingDatabase);
+		ident();
 
 		while (!terminate) {
-			command = getCommand(input);
+			command = getCommand();
 
 			if (command == null) {
 				/* Possibile eccezione */
@@ -279,13 +286,13 @@ public final class RoomBooking {
 
 			switch (Integer.parseInt(command)) {
 			case 1:
-				bookARoom(input, roomBookingDatabase);
+				bookARoom();
 				break;
 			case 2:
-				deleteBooking(input, roomBookingDatabase);
+				deleteBooking();
 				break;
 			case 3:
-				updateBooking(input, roomBookingDatabase);
+				updateBooking();
 				break;
 			case 4:
 				terminate = true;
