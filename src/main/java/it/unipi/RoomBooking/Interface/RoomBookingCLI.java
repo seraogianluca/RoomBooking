@@ -1,14 +1,11 @@
-package it.unipi.RoomBookingInterface;
+package it.unipi.RoomBooking.Interface;
 
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
+import it.unipi.RoomBooking.Database.ManagerDB;
 
-import org.omg.IOP.RMICustomMaxStreamFormat;
-
-import it.unipi.RoomBookingDatabase.RoomBookingDB;
-
-public final class RoomBooking {
+public final class RoomBookingCLI {
 	/* Version banner */
 	private static String version = " _____                         ____              _    _                       __   ___  \n"
 			+ "|  __ \\                       |  _ \\            | |  (_)                     /_ | / _ \\ \n"
