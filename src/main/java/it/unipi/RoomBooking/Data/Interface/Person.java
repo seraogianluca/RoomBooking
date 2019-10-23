@@ -1,5 +1,5 @@
 package it.unipi.RoomBooking.Data.Interface;
 
 public interface Person {
-    String toString();
+    public String toString();
 }
