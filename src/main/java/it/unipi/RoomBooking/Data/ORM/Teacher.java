@@ -1,6 +1,6 @@
 package it.unipi.RoomBooking.Data.ORM;
 
-import it.unipi.RoomBooking.Data.ORM.LaboratoryBooking;
+import it.unipi.RoomBooking.Data.ORM.ClassroomBooking;
 import java.util.ArrayList;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,26 +13,26 @@ import javax.persistence.Table;
 import it.unipi.RoomBooking.Data.Interface.Person;
 
 @Entity
-@Table(name="student")
-public class Student implements Person {
+@Table(name="teacher")
+public class Teacher implements Person{
     @Id
-    @Column(name = "STUDENT_ID")
+    @Column(name="TEACHER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "STUDENT_NAME")
+    @Column(name="TEACHER_NAME")
     private String name;
 
-    @Column(name = "STUDENT_LASTNAME")
+    @Column(name = "TEACHER_LASTNAME")
     private String lastname;
 
-    @Column(name = "STUDENT_EMAIL")
+    @Column(name = "TEACHER_EMAIL")
     private String email;
 
-    @OneToMany(mappedBy = "laboratory_booking")
-    private ArrayList<LaboratoryBooking> laboratoryBooking;
+    @OneToMany(mappedBy = "classroom_booking") 
+    private ArrayList<ClassroomBooking> classroomBooking;
 
-    // Setter
+    //Setter
     public void setEmail(String email){
         this.email = email;
     }
@@ -40,12 +40,12 @@ public class Student implements Person {
     public void setLastname(String lastname){
         this.lastname = lastname;
     }
-    
+
     public void setName(String name){
         this.name = name;
     }
 
-    // Getter
+    //Getter
     public long getId(){
         return this.id;
     }
@@ -63,11 +63,11 @@ public class Student implements Person {
     }
 
     public String toString(){
-        return "Student Information: "+
+        return "Teacher Information: "+
                 "\nID: " + id + 
                 "\nName: " + name + 
                 "\nLast Name: " + lastname + 
                 "\nEmail: " + email;
     }
-}
 
+}

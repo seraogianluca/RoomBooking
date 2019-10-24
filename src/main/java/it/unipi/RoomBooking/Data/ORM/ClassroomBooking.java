@@ -3,41 +3,35 @@ package it.unipi.RoomBooking.Data.ORM;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import it.unipi.RoomBooking.Data.Interface.Booking;
 
 @Entity
-@Table(name = "laboratory_booking")
-public class LaboratoryBooking implements Booking {
+@Table(name = "classroom_booking")
+public class ClassroomBooking implements Booking {
     @Id
-    @Column(name = "LABORATORY_ID")
-    private long laboratoryId;
+    @Column(name = "CLASSROOM_ID")
+    private long classroomId;
 
     @Id
-    @Column(name = "STUDENT_ID")
-    private long studentId;
+    @Column(name = "TEACHER_ID")
+    private long teacherId;
 
     @Id
     @Column(name = "SCHEDULE")
     private String schedule;
-
-    @ManyToOne
-    
-    private Student student;
-
 
     public void setSchedule(String schedule) {
         this.schedule = schedule;
     }
 
     public long getId() {
-        return this.laboratoryId;
+        return this.classroomId;
     }
 
     public long getPersonId() {
-        return this.studentId;
+        return this.teacherId;
     }
 
     public String getSchedule() {
@@ -45,6 +39,6 @@ public class LaboratoryBooking implements Booking {
     }
 
     public String toString() {
-        return "Laboratory id: " + laboratoryId + "Student id: " + studentId + "Schedule: " + schedule;
+        return "Laboratory id: " + classroomId + "Teacher id: " + teacherId + "Schedule: " + schedule;
     }
 }
