@@ -1,10 +1,15 @@
 package it.unipi.RoomBooking.Data.ORM;
 
+import java.util.ArrayList;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -23,6 +28,13 @@ public class Laboratory {
 
     @Column(name = "LABORATORY_AVAILABLE")
     private Boolean available;
+
+    @ManyToMany(mappedBy = "LABORATORY_ID")
+    private ArrayList<LaboratoryBooking> laboratoryBookings;
+
+    @ManyToOne
+    @JoinColumn(name = "BUILDING_ID")
+    private Building building;
 
     // Setter
     public void setName(String name){

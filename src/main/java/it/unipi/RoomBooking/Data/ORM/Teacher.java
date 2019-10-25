@@ -29,8 +29,8 @@ public class Teacher implements Person{
     @Column(name = "TEACHER_EMAIL")
     private String email;
 
-    @OneToMany(mappedBy = "classroom_booking") 
-    private ArrayList<ClassroomBooking> classroomBooking;
+    @OneToMany(mappedBy = "CLASSROOM_BOOKING") 
+    private ArrayList<ClassroomBooking> classroomBookings;
 
     //Setter
     public void setEmail(String email){

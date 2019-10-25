@@ -1,10 +1,13 @@
 package it.unipi.RoomBooking.Data.ORM;
 
+import java.util.ArrayList;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -20,6 +23,12 @@ public class Building {
 
     @Column(name = "BUILDING_ADDRESS")
     private String address;
+
+    @OneToMany(mappedBy = "BUILDING_ID")
+    private ArrayList<Laboratory> laboratories;
+    
+    @OneToMany(mappedBy = "BUILDING_ID")
+    private ArrayList<Classroom> classrooms;
 
     // Setter
     public void setName(String name) {

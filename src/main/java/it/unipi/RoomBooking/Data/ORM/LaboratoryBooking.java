@@ -1,8 +1,12 @@
 package it.unipi.RoomBooking.Data.ORM;
 
+import java.util.ArrayList;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -12,20 +16,21 @@ import it.unipi.RoomBooking.Data.Interface.Booking;
 @Table(name = "laboratory_booking")
 public class LaboratoryBooking implements Booking {
     @Id
-    @Column(name = "LABORATORY_ID")
-    private long laboratoryId;
+    @Column(name = "BOOKING_ID")
+    private long bookingId;
 
-    @Id
-    @Column(name = "STUDENT_ID")
-    private long studentId;
-
-    @Id
     @Column(name = "SCHEDULE")
     private String schedule;
 
     @ManyToOne
-    
+    @JoinColumn(name = "STUDENT_ID")
     private Student student;
+
+    @ManyToMany
+    @JoinColumn(name = "LABORATORY_ID")
+    private ArrayList<Laboratory> laboratories;
+
+
 
 
     public void setSchedule(String schedule) {
@@ -33,11 +38,11 @@ public class LaboratoryBooking implements Booking {
     }
 
     public long getId() {
-        return this.laboratoryId;
+        return this.bookingId;
     }
 
     public long getPersonId() {
-        return this.studentId;
+        return this.student.getId();
     }
 
     public String getSchedule() {
@@ -45,6 +50,6 @@ public class LaboratoryBooking implements Booking {
     }
 
     public String toString() {
-        return "Laboratory id: " + laboratoryId + "Student id: " + studentId + "Schedule: " + schedule;
+        return "Booking id: " + bookingId + "Student id: " + student.getId() + "Schedule: " + schedule;
     }
 }

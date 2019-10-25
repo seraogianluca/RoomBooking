@@ -1,4 +1,4 @@
-package it.unipi.RoomBooking.Interface;
+/*package it.unipi.RoomBooking.Interface;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -6,7 +6,6 @@ import java.util.Scanner;
 import it.unipi.RoomBooking.Database.ManagerDB;
 
 public final class RoomBookingCLI {
-	/* Version banner */
 	private static String version = " _____                         ____              _    _                       __   ___  \n"
 			+ "|  __ \\                       |  _ \\            | |  (_)                     /_ | / _ \\ \n"
 			+ "| |__) |___   ___  _ __ ___   | |_) | ___   ___ | | ___ _ __   __ _  __   __  | || | | |\n"
@@ -15,17 +14,14 @@ public final class RoomBookingCLI {
 			+ "|_|  \\_\\___/ \\___/|_| |_| |_| |____/ \\___/ \\___/|_|\\_\\_|_| |_|\\__, |   \\_(_)  |_(_)___/ \n"
 			+ "                                                               __/ |                    \n"
 			+ "                                                              |___/                     \n";
-	
-	/* Utilities */		
+		
 	private static RoomBookingDB roomBookingDatabase;
 	private static Scanner input;
 
-	/* User information */
 	private static int userId = 0;
 	private static String name = null;
 	private static String lastname = null;
 
-	/* User identification method */
 	private static void ident() {
 		String[] user = new String[3];
 		String email = null;
@@ -52,7 +48,6 @@ public final class RoomBookingCLI {
 		System.out.println("\nHi " + name + " " + lastname + ",");
 	}
 
-	/* User command handler */
 	private static String getCommand() {
 		String command;
 		boolean isValid = false;
@@ -75,7 +70,6 @@ public final class RoomBookingCLI {
 		return null;
 	}
 
-	/* Set requested schedule */
 	private static String setSchedule() {
 		String requestedSchedule = null;
 		boolean isValid = false;
@@ -97,7 +91,6 @@ public final class RoomBookingCLI {
 		return requestedSchedule;
 	}
 
-	/* Show rooms in table format */
 	private static void showRooms(ArrayList<ArrayList<String>> table, boolean booked) {
 		if (booked) {
 			System.out.println("\nList of your booked rooms:\n");
@@ -126,7 +119,6 @@ public final class RoomBookingCLI {
 		}
 	}
 
-	/* Booking request */
 	private static void bookARoom() {
 		String requestedSchedule = null;
 		String requestedRoom = null;
@@ -160,7 +152,6 @@ public final class RoomBookingCLI {
 
 	}
 
-	/* Delete a booking */
 	private static void deleteBooking() {
 		String requestedRoom = null;
 		String requestedSchedule = null;
@@ -195,7 +186,6 @@ public final class RoomBookingCLI {
 
 	}
 
-	/* Update a booking */
 	private static void updateBooking() {
 		String oldSchedule = null;
 		String oldRoom = null;
@@ -261,7 +251,6 @@ public final class RoomBookingCLI {
 
 	}
 
-	/* Main */
 	public static void main(String[] args) {
 		input = new Scanner(System.in);
 		boolean terminate = false;
@@ -276,7 +265,6 @@ public final class RoomBookingCLI {
 			command = getCommand();
 
 			if (command == null) {
-				/* Possibile eccezione */
 				input.close();
 				terminate = true;
 			}
@@ -301,3 +289,5 @@ public final class RoomBookingCLI {
 		input.close();
 	}
 }
+
+*/
