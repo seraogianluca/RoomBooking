@@ -1,13 +1,16 @@
 package it.unipi.RoomBooking.Data.ORM;
 
-import java.util.ArrayList;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -29,10 +32,15 @@ public class Laboratory {
     @Column(name = "LABORATORY_AVAILABLE")
     private Boolean available;
 
-    @ManyToMany(mappedBy = "LABORATORY_ID")
-    private ArrayList<LaboratoryBooking> laboratoryBookings;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "laboratory_booking",
+        joinColumns = {@JoinColumn(name = "LABORATORY_ID")},
+        inverseJoinColumns = {@JoinColumn(name = "STUDENT_ID")}
+    )
+    private Set<Student> students;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BUILDING_ID")
     private Building building;
 

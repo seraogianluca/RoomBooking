@@ -18,7 +18,7 @@ public class HibernateManager {
         entityManager.close();
         factory.close();
     }
-
+    
     public static void main(String[] args) {
     	
         // code to run the program

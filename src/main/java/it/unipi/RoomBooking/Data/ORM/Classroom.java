@@ -1,9 +1,11 @@
 package it.unipi.RoomBooking.Data.ORM;
 
-import java.util.ArrayList;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,12 +31,12 @@ public class Classroom {
     @Column(name = "CLASSROOM_AVAILABLE")
     private Boolean available;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BUILDING_ID")
     private Building building;
 
-    @OneToMany(mappedBy = "CLASSROOM_ID")
-    private ArrayList<ClassroomBooking> classroomBookings;
+    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL)
+    private Set<ClassroomBooking> classroomBookings;
 
     // Setter
     public void setName(String name){

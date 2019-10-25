@@ -1,7 +1,9 @@
 package it.unipi.RoomBooking.Data.ORM;
 
 import it.unipi.RoomBooking.Data.ORM.ClassroomBooking;
-import java.util.ArrayList;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,8 +31,8 @@ public class Teacher implements Person{
     @Column(name = "TEACHER_EMAIL")
     private String email;
 
-    @OneToMany(mappedBy = "CLASSROOM_BOOKING") 
-    private ArrayList<ClassroomBooking> classroomBookings;
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    private Set<ClassroomBooking> classroomBookings;
 
     //Setter
     public void setEmail(String email){

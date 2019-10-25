@@ -2,6 +2,7 @@ package it.unipi.RoomBooking.Data.ORM;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -19,11 +20,11 @@ public class ClassroomBooking implements Booking {
     @Column(name = "SCHEDULE")
     private String schedule;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEACHER_ID")
     private Teacher teacher;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CLASSROOM_ID")
     private Classroom classroom;
 
