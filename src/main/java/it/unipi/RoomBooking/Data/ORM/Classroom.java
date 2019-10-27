@@ -14,9 +14,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import it.unipi.RoomBooking.Data.Interface.Room;
+
 @Entity
 @Table(name="classroom")
-public class Classroom {
+public class Classroom implements Room {
     @Id
     @Column(name = "CLASSROOM_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,11 +33,11 @@ public class Classroom {
     @Column(name = "CLASSROOM_AVAILABLE")
     private Boolean available;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "BUILDING_ID")
     private Building building;
 
-    @OneToMany(mappedBy = "classroom", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "classroom",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<ClassroomBooking> classroomBookings;
 
     // Setter
@@ -51,6 +53,10 @@ public class Classroom {
         this.available = available;
     }
 
+    public void setRoomId(long roomId){
+        this.id=roomId;
+    }
+    
     // Getter
     public long getId(){
         return this.id;
@@ -69,10 +75,12 @@ public class Classroom {
     }
 
     public String toString(){
-        return "Classroom Information: "+
+        return "Classroom Information: " +
                 "\nID: " + id + 
                 "\nName: " + name +
                 "\nCapacity: " + capacity +
-                "\nAvailable: " + available;
+                "\nAvailable: " + available +
+                "\n" + building.toString() +
+                "\n" + classroomBookings.toString();
     }
 }

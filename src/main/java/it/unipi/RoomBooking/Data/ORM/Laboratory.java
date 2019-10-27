@@ -2,7 +2,6 @@ package it.unipi.RoomBooking.Data.ORM;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,7 +15,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="laboratory")
+@Table(name = "laboratory")
 public class Laboratory {
     @Id
     @Column(name = "LABORATORY_ID")
@@ -32,12 +31,9 @@ public class Laboratory {
     @Column(name = "LABORATORY_AVAILABLE")
     private Boolean available;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "laboratory_booking",
-        joinColumns = {@JoinColumn(name = "LABORATORY_ID")},
-        inverseJoinColumns = {@JoinColumn(name = "STUDENT_ID")}
-    )
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "laboratory_booking", joinColumns = {
+            @JoinColumn(name = "LABORATORY_ID") }, inverseJoinColumns = { @JoinColumn(name = "STUDENT_ID") })
     private Set<Student> students;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,40 +41,53 @@ public class Laboratory {
     private Building building;
 
     // Setter
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setCapacity(int capacity){
+    public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
 
-    public void setAvailable(Boolean available){
+    public void setAvailable(Boolean available) {
         this.available = available;
     }
 
     // Getter
-    public long getId(){
+    public long getId() {
         return this.id;
     }
 
-    public String getName(){
+    public String getName() {
         return this.name;
     }
 
-    public int getCapacity(){
+    public int getCapacity() {
         return this.capacity;
     }
 
-    public Boolean getAvailable(){
+    public Boolean getAvailable() {
         return this.available;
     }
 
-    public String toString(){
-        return "Laboratory Information: "+
-                "\nID: " + id + 
-                "\nName: " + name +
-                "\nCapacity: " + capacity +
-                "\nAvailable: " + available;
+    // General Voids
+    /*public Set<Student> getBooking() {
+        return this.students;
+    }
+
+    public void removeBooking(Laboratory laboratory) {
+        laboratories.remove(laboratory);
+        laboratory.students.remove(this);
+    }
+
+    public void remove() {
+        for (Laboratory laboratory : new Set<Laboratory> laboratories) {
+            removeBooking(laboratory);
+        }
+    }*/
+
+    public String toString() {
+        return "Laboratory Information: " + "\nID: " + id + "\nName: " + name + "\nCapacity: " + capacity
+                + "\nAvailable: " + available;
     }
 }

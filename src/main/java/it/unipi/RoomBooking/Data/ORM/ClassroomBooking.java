@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import it.unipi.RoomBooking.Data.Interface.Booking;
+import it.unipi.RoomBooking.Data.Interface.Person;
+import it.unipi.RoomBooking.Data.Interface.Room;
 
 @Entity
 @Table(name = "classroom_booking")
@@ -17,19 +19,31 @@ public class ClassroomBooking implements Booking {
     @Column(name = "BOOKING_ID")
     private long bookingId;
 
-    @Column(name = "SCHEDULE")
+    @Column(name = "BOOKING_SCHEDULE")
     private String schedule;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "TEACHER_ID")
     private Teacher teacher;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "CLASSROOM_ID")
     private Classroom classroom;
 
     public void setSchedule(String schedule) {
         this.schedule = schedule;
+    }
+
+    public void setRoom(Room c){ 
+        this.classroom = (Classroom)c;
+    }
+
+    public void setBookingId(long id) {
+        this.bookingId = id;
+    }
+
+    public void setPerson(Person person) {
+        this.teacher = (Teacher)person;
     }
 
     public long getId() {
@@ -49,6 +63,9 @@ public class ClassroomBooking implements Booking {
     }
 
     public String toString() {
-        return "Laboratory id: " + bookingId + "Teacher id: " + teacher.getId() + "Schedule: " + schedule;
+        return "\nBooking Information: " + 
+                "\nBooking Id: " + bookingId + 
+                "\nSchedule: " + schedule + 
+                "\n" + teacher.toString()  + "\n";       
     }
 }

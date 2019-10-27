@@ -2,7 +2,6 @@ package it.unipi.RoomBooking.Data.ORM;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,10 +24,10 @@ public class Building {
     @Column(name = "BUILDING_ADDRESS")
     private String address;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "building")
+    @OneToMany(mappedBy = "building")
     private Set<Laboratory> laboratories;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "building")
+    @OneToMany(mappedBy = "building")
     private Set<Classroom> classrooms;
 
     // Setter
@@ -54,8 +53,7 @@ public class Building {
     }
 
     public String toString() {
-        return "Building Information: " + 
-        "\nID: " + id + 
+        return "Building Information: " +  
         "\nName: " + name + 
         "\nAddress: " + address;
     }

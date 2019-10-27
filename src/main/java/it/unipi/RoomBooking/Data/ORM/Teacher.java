@@ -1,9 +1,10 @@
 package it.unipi.RoomBooking.Data.ORM;
 
 import it.unipi.RoomBooking.Data.ORM.ClassroomBooking;
+
+import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,7 +32,7 @@ public class Teacher implements Person{
     @Column(name = "TEACHER_EMAIL")
     private String email;
 
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "teacher")
     private Set<ClassroomBooking> classroomBookings;
 
     //Setter
@@ -64,9 +65,20 @@ public class Teacher implements Person{
         return this.email;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (!(obj instanceof Teacher))
+                return false;
+            Teacher other = (Teacher)obj;
+            return Objects.equals(id, other.getId());
+    }
+
     public String toString(){
-        return "Teacher Information: "+
-                "\nID: " + id + 
+        return "Teacher Information: " +
                 "\nName: " + name + 
                 "\nLast Name: " + lastname + 
                 "\nEmail: " + email;
