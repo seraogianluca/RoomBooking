@@ -37,7 +37,7 @@ public class Classroom implements Room {
     @JoinColumn(name = "BUILDING_ID")
     private Building building;
 
-    @OneToMany(mappedBy = "classroom",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ClassroomBooking> classroomBookings;
 
     // Setter

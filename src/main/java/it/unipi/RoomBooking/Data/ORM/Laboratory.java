@@ -51,6 +51,10 @@ public class Laboratory implements Room {
         this.laboratoryCapacity = capacity;
     }
 
+    public void setStudent(Student student) {
+        this.students.add(student);
+    }
+
     public void setAvailable(Boolean available) {
         this.laboratoryAvailable = available;
     }
@@ -72,21 +76,15 @@ public class Laboratory implements Room {
         return this.laboratoryAvailable;
     }
 
-    // General Voids
-    /*public Set<Student> getBooking() {
+    public Set<Student> getBookings() {
         return this.students;
     }
 
-    public void removeBooking(Laboratory laboratory) {
-        laboratories.remove(laboratory);
-        laboratory.students.remove(this);
+    public void removeBooking(Student student) {
+        this.students.remove(student);
+        student.getLaboratories().remove(this);
     }
 
-    public void remove() {
-        for (Laboratory laboratory : new Set<Laboratory> laboratories) {
-            removeBooking(laboratory);
-        }
-    }*/
 
     public String toString() {
         return "Laboratory Information: " + 

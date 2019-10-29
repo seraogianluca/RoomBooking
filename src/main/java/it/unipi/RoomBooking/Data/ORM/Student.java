@@ -63,6 +63,10 @@ public class Student implements Person {
         return this.studentEmail;
     }
 
+    public Set<Laboratory> getLaboratories() {
+        return this.laboratories;
+    }
+
     public String toString() {
         return "Student Information: " + 
                 "\nName: " + studentName + 
