@@ -2,7 +2,6 @@ package it.unipi.RoomBooking.Data.ORM;
 
 import it.unipi.RoomBooking.Data.ORM.ClassroomBooking;
 
-import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -17,71 +16,58 @@ import it.unipi.RoomBooking.Data.Interface.Person;
 
 @Entity
 @Table(name="teacher")
-public class Teacher implements Person{
+public class Teacher implements Person {
     @Id
     @Column(name="TEACHER_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long teacherId;
 
     @Column(name="TEACHER_NAME")
-    private String name;
+    private String teacherName;
 
     @Column(name = "TEACHER_LASTNAME")
-    private String lastname;
+    private String teacherLastname;
 
     @Column(name = "TEACHER_EMAIL")
-    private String email;
+    private String teacherEmail;
 
     @OneToMany(mappedBy = "teacher")
     private Set<ClassroomBooking> classroomBookings;
 
     //Setter
+    public void setName(String name){
+        this.teacherName = name;
+    }
+
     public void setEmail(String email){
-        this.email = email;
+        this.teacherEmail = email;
     }
 
     public void setLastname(String lastname){
-        this.lastname = lastname;
-    }
-
-    public void setName(String name){
-        this.name = name;
+        this.teacherLastname = lastname;
     }
 
     //Getter
     public long getId(){
-        return this.id;
+        return this.teacherId;
     }
 
     public String getName(){
-        return this.name;
+        return this.teacherName;
     }
 
     public String getLastname(){
-        return this.lastname;
+        return this.teacherLastname;
     }
     
     public String getEmail(){
-        return this.email;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (!(obj instanceof Teacher))
-                return false;
-            Teacher other = (Teacher)obj;
-            return Objects.equals(id, other.getId());
+        return this.teacherEmail;
     }
 
     public String toString(){
         return "Teacher Information: " +
-                "\nName: " + name + 
-                "\nLast Name: " + lastname + 
-                "\nEmail: " + email;
+                "\nName: " + teacherName + 
+                "\nLastname: " + teacherLastname;
     }
 
 }

@@ -22,65 +22,60 @@ public class Classroom implements Room {
     @Id
     @Column(name = "CLASSROOM_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long classroomId;
 
     @Column(name = "CLASSROOM_NAME")
-    private String name;
+    private String classroomName;
 
     @Column(name = "CLASSROOM_CAPACITY")
-    private int capacity;
+    private int classroomCapacity;
 
     @Column(name = "CLASSROOM_AVAILABLE")
-    private Boolean available;
+    private Boolean classroomAvailable;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "BUILDING_ID")
     private Building building;
 
-    @OneToMany(mappedBy = "classroom",fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "classroom",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<ClassroomBooking> classroomBookings;
 
     // Setter
     public void setName(String name){
-        this.name = name;
+        this.classroomName = name;
     }
 
     public void setCapacity(int capacity){
-        this.capacity = capacity;
+        this.classroomCapacity = capacity;
     }
 
-    public void setAvailable(Boolean available){
-        this.available = available;
-    }
-
-    public void setRoomId(long roomId){
-        this.id=roomId;
+    public void setAvailable(Boolean available) {
+        this.classroomAvailable = available;
     }
     
     // Getter
     public long getId(){
-        return this.id;
+        return this.classroomId;
     }
 
     public String getName(){
-        return this.name;
+        return this.classroomName;
     }
 
     public int getCapacity(){
-        return this.capacity;
+        return this.classroomCapacity;
     }
 
     public boolean getAvailable() {
-        return this.available;
+        return this.classroomAvailable;
     }
 
     public String toString(){
         return "Classroom Information: " +
-                "\nID: " + id + 
-                "\nName: " + name +
-                "\nCapacity: " + capacity +
-                "\nAvailable: " + available +
-                "\n" + building.toString() +
-                "\n" + classroomBookings.toString();
+                "\nID: " + classroomId + 
+                "\nName: " + classroomName +
+                "\nCapacity: " + classroomCapacity +
+                "\nAvailable: " + classroomAvailable +
+                "\n" + building.toString();
     }
 }

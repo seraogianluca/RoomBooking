@@ -19,52 +19,53 @@ public class Student implements Person {
     @Id
     @Column(name = "STUDENT_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long studentId;
 
     @Column(name = "STUDENT_NAME")
-    private String name;
+    private String studentName;
 
     @Column(name = "STUDENT_LASTNAME")
-    private String lastname;
+    private String studentLastname;
 
     @Column(name = "STUDENT_EMAIL")
-    private String email;
+    private String studentEmail;
 
     @ManyToMany(mappedBy = "students")
     private Set<Laboratory> laboratories;
 
     // Setter
-    public void setEmail(String email) {
-        this.email = email;
+    public void setName(String name) {
+        this.studentName= name;
     }
 
     public void setLastname(String lastname) {
-        this.lastname = lastname;
+        this.studentLastname = lastname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmail(String email) {
+        this.studentEmail = email;
     }
 
     // Getter
     public long getId() {
-        return this.id;
+        return this.studentId;
     }
 
     public String getName() {
-        return this.name;
+        return this.studentName;
     }
 
     public String getLastname() {
-        return this.lastname;
+        return this.studentLastname;
     }
 
     public String getEmail() {
-        return this.email;
+        return this.studentEmail;
     }
 
     public String toString() {
-        return "Student Information: " + "\nID: " + id + "\nName: " + name + "\nLast Name: " + lastname + "\nEmail: "
-                + email;
+        return "Student Information: " + 
+                "\nName: " + studentName + 
+                "\nLastname: " + studentLastname;
     }
 }

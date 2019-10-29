@@ -10,51 +10,53 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import it.unipi.RoomBooking.Data.Interface.BuildingInterface;
+
 @Entity
 @Table(name = "building")
-public class Building {
+public class Building implements BuildingInterface {
     @Id
     @Column(name = "BUILDING_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long buildingId;
 
     @Column(name = "BUILDING_NAME")
-    private String name;
+    private String buildingName;
 
     @Column(name = "BUILDING_ADDRESS")
-    private String address;
+    private String buildingAddress;
 
     @OneToMany(mappedBy = "building")
-    private Set<Laboratory> laboratories;
+    private Set<Laboratory> buildingLaboratories;
     
     @OneToMany(mappedBy = "building")
-    private Set<Classroom> classrooms;
+    private Set<Classroom> buildingClassrooms;
 
     // Setter
     public void setName(String name) {
-        this.name = name;
+        this.buildingName = name;
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        this.buildingAddress = address;
     }
 
     // Getter
     public long getId() {
-        return this.id;
+        return this.buildingId;
     }
 
     public String getName() {
-        return this.name;
+        return this.buildingName;
     }
 
     public String getAddress() {
-        return this.address;
+        return this.buildingAddress;
     }
 
     public String toString() {
         return "Building Information: " +  
-        "\nName: " + name + 
-        "\nAddress: " + address;
+        "\nName: " + buildingName + 
+        "\nAddress: " + buildingAddress;
     }
 }

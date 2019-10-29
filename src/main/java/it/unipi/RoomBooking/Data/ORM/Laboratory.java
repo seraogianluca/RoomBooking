@@ -14,22 +14,24 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import it.unipi.RoomBooking.Data.Interface.Room;
+
 @Entity
 @Table(name = "laboratory")
-public class Laboratory {
+public class Laboratory implements Room {
     @Id
     @Column(name = "LABORATORY_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private long laboratoryId;
 
     @Column(name = "LABORATORY_NAME")
-    private String name;
+    private String laboratoryName;
 
     @Column(name = "LABORATORY_CAPACITY")
-    private int capacity;
+    private int laboratoryCapacity;
 
     @Column(name = "LABORATORY_AVAILABLE")
-    private Boolean available;
+    private boolean laboratoryAvailable;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "laboratory_booking", joinColumns = {
@@ -42,32 +44,32 @@ public class Laboratory {
 
     // Setter
     public void setName(String name) {
-        this.name = name;
+        this.laboratoryName = name;
     }
 
     public void setCapacity(int capacity) {
-        this.capacity = capacity;
+        this.laboratoryCapacity = capacity;
     }
 
     public void setAvailable(Boolean available) {
-        this.available = available;
+        this.laboratoryAvailable = available;
     }
 
     // Getter
     public long getId() {
-        return this.id;
+        return this.laboratoryId;
     }
 
     public String getName() {
-        return this.name;
+        return this.laboratoryName;
     }
 
     public int getCapacity() {
-        return this.capacity;
+        return this.laboratoryCapacity;
     }
 
-    public Boolean getAvailable() {
-        return this.available;
+    public boolean getAvailable() {
+        return this.laboratoryAvailable;
     }
 
     // General Voids
@@ -87,7 +89,8 @@ public class Laboratory {
     }*/
 
     public String toString() {
-        return "Laboratory Information: " + "\nID: " + id + "\nName: " + name + "\nCapacity: " + capacity
-                + "\nAvailable: " + available;
+        return "Laboratory Information: " + 
+        "\nID: " + laboratoryId + 
+        "\nName: " + laboratoryName;
     }
 }

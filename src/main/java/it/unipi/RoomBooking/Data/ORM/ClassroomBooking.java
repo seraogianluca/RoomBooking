@@ -3,6 +3,8 @@ package it.unipi.RoomBooking.Data.ORM;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,37 +19,38 @@ import it.unipi.RoomBooking.Data.Interface.Room;
 public class ClassroomBooking implements Booking {
     @Id
     @Column(name = "BOOKING_ID")
-    private long bookingId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long classroomBookingId;
 
     @Column(name = "BOOKING_SCHEDULE")
-    private String schedule;
+    private String classroomBookingSchedule;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEACHER_ID")
     private Teacher teacher;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "CLASSROOM_ID")
     private Classroom classroom;
 
     public void setSchedule(String schedule) {
-        this.schedule = schedule;
-    }
-
-    public void setRoom(Room c){ 
-        this.classroom = (Classroom)c;
-    }
-
-    public void setBookingId(long id) {
-        this.bookingId = id;
+        this.classroomBookingSchedule = schedule;
     }
 
     public void setPerson(Person person) {
         this.teacher = (Teacher)person;
     }
 
+    public void setRoom(Room c){ 
+        this.classroom = (Classroom)c;
+    }
+
     public long getId() {
-        return this.bookingId;
+        return this.classroomBookingId;
+    }
+
+    public String getSchedule() {
+        return this.classroomBookingSchedule;
     }
 
     public long getPersonId() {
@@ -58,14 +61,10 @@ public class ClassroomBooking implements Booking {
         return this.classroom.getId();
     }
 
-    public String getSchedule() {
-        return this.schedule;
-    }
-
     public String toString() {
         return "\nBooking Information: " + 
-                "\nBooking Id: " + bookingId + 
-                "\nSchedule: " + schedule + 
+                "\nBooking Id: " + classroomBookingId + 
+                "\nScheduled: " + classroomBookingSchedule + 
                 "\n" + teacher.toString()  + "\n";       
     }
 }
