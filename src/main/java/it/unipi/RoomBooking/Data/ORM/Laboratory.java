@@ -1,7 +1,9 @@
 package it.unipi.RoomBooking.Data.ORM;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,12 +35,12 @@ public class Laboratory implements Room {
     @Column(name = "LABORATORY_AVAILABLE")
     private boolean laboratoryAvailable;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "laboratory_booking", joinColumns = {
             @JoinColumn(name = "LABORATORY_ID") }, inverseJoinColumns = { @JoinColumn(name = "STUDENT_ID") })
-    private Set<Student> students;
+    private Collection<Student> students = new ArrayList<Student>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "BUILDING_ID")
     private Building building;
 
@@ -76,7 +78,7 @@ public class Laboratory implements Room {
         return this.laboratoryAvailable;
     }
 
-    public Set<Student> getBookings() {
+    public Collection<Student> getBookings() {
         return this.students;
     }
 
@@ -85,10 +87,15 @@ public class Laboratory implements Room {
         student.getLaboratories().remove(this);
     }
 
+    public int getBookingNumber() {
+        return students.size();
+    }
+
 
     public String toString() {
         return "Laboratory Information: " + 
         "\nID: " + laboratoryId + 
-        "\nName: " + laboratoryName;
+        "\nName: " + laboratoryName +
+        "\n" + building.toString();
     }
 }

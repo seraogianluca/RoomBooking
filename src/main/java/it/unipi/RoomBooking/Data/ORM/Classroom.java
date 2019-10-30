@@ -1,6 +1,7 @@
 package it.unipi.RoomBooking.Data.ORM;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -37,8 +38,8 @@ public class Classroom implements Room {
     @JoinColumn(name = "BUILDING_ID")
     private Building building;
 
-    @OneToMany(mappedBy = "classroom", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<ClassroomBooking> classroomBookings;
+    @OneToMany(mappedBy = "classroom", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Collection<ClassroomBooking> classroomBookings = new ArrayList<ClassroomBooking>();
 
     // Setter
     public void setName(String name){
@@ -51,6 +52,10 @@ public class Classroom implements Room {
 
     public void setAvailable(Boolean available) {
         this.classroomAvailable = available;
+    }
+
+    public void setBooking(ClassroomBooking booking) {
+        this.classroomBookings.add(booking);
     }
     
     // Getter
@@ -68,6 +73,10 @@ public class Classroom implements Room {
 
     public boolean getAvailable() {
         return this.classroomAvailable;
+    }
+
+    public Collection<ClassroomBooking> getBooking() {
+        return this.classroomBookings;
     }
 
     public String toString(){

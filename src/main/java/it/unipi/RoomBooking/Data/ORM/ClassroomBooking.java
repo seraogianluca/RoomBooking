@@ -25,7 +25,7 @@ public class ClassroomBooking implements Booking {
     @Column(name = "BOOKING_SCHEDULE")
     private String classroomBookingSchedule;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "TEACHER_ID")
     private Teacher teacher;
 
@@ -59,6 +59,10 @@ public class ClassroomBooking implements Booking {
 
     public long getRoomId() {
         return this.classroom.getId();
+    }
+
+    public Room getRoom() {
+        return this.classroom;
     }
 
     public String toString() {

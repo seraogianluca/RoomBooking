@@ -2,10 +2,12 @@ package it.unipi.RoomBooking.Data.ORM;
 
 import it.unipi.RoomBooking.Data.ORM.ClassroomBooking;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,8 +33,8 @@ public class Teacher implements Person {
     @Column(name = "TEACHER_EMAIL")
     private String teacherEmail;
 
-    @OneToMany(mappedBy = "teacher")
-    private Set<ClassroomBooking> classroomBookings;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "teacher")
+    private Collection<ClassroomBooking> classroomBookings = new ArrayList<ClassroomBooking>();
 
     //Setter
     public void setName(String name){
@@ -45,6 +47,10 @@ public class Teacher implements Person {
 
     public void setLastname(String lastname){
         this.teacherLastname = lastname;
+    }
+
+    public void setBooking(ClassroomBooking booking) {
+        this.classroomBookings.add(booking);
     }
 
     //Getter
@@ -62,6 +68,10 @@ public class Teacher implements Person {
     
     public String getEmail(){
         return this.teacherEmail;
+    }
+
+    public Collection<ClassroomBooking> getBooked() {
+        return this.classroomBookings;
     }
 
     public String toString(){

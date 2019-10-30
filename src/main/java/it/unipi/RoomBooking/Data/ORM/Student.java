@@ -1,9 +1,11 @@
 package it.unipi.RoomBooking.Data.ORM;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -30,8 +32,8 @@ public class Student implements Person {
     @Column(name = "STUDENT_EMAIL")
     private String studentEmail;
 
-    @ManyToMany(mappedBy = "students")
-    private Set<Laboratory> laboratories;
+    @ManyToMany(mappedBy = "students", fetch = FetchType.EAGER)
+    private Collection<Laboratory> laboratories = new ArrayList<Laboratory>();
 
     // Setter
     public void setName(String name) {
@@ -63,8 +65,16 @@ public class Student implements Person {
         return this.studentEmail;
     }
 
-    public Set<Laboratory> getLaboratories() {
+    public Collection<Laboratory> getBooked() {
         return this.laboratories;
+    }
+
+    public Collection<Laboratory> getLaboratories() {
+        return this.laboratories;
+    }
+
+    public void setLaboratories(Laboratory laboratory) {
+        this.laboratories.add(laboratory);
     }
 
     public String toString() {
