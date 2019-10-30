@@ -69,7 +69,6 @@ public class HibernateManager implements ManagerDB {
                 criteriaQuery.select(root);
                 List<Classroom> classrooms = entityManager.createQuery(criteriaQuery).getResultList();
 
-
                 Collection<Classroom> available = new ArrayList<Classroom>();
 
                 for (Classroom iteration : classrooms) {
@@ -86,12 +85,12 @@ public class HibernateManager implements ManagerDB {
 
                 return available;
             } else {
-                entityManager.getTransaction().begin();
                 CriteriaQuery<Laboratory> criteriaQuery = criteriaBuilder.createQuery(Laboratory.class);
                 Root<Laboratory> root = criteriaQuery.from(Laboratory.class);
                 criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("laboratoryAvailable"), true));
                 List<Laboratory> available = entityManager.createQuery(criteriaQuery).getResultList();
 
+                entityManager.getTransaction().begin();
                 Student student = entityManager.find(Student.class, person.getId());
                 for(Laboratory iteration : student.getBooked()) {
                     if(available.contains(iteration)) {
@@ -100,7 +99,6 @@ public class HibernateManager implements ManagerDB {
                 }
 
                 entityManager.getTransaction().commit();
-
                 return available;
             }
         } catch (Exception ex) {
@@ -114,9 +112,8 @@ public class HibernateManager implements ManagerDB {
     public Collection<? extends Room> getBooked(Person person) {
         try {
             entityManager = factory.createEntityManager();
-
-            if (person instanceof Teacher) {
-                entityManager.getTransaction().begin();
+            entityManager.getTransaction().begin();
+            if (person instanceof Teacher) {   
                 Teacher teacher = entityManager.find(Teacher.class, person.getId());
                 Collection<ClassroomBooking> booking = teacher.getBooked();
                 Collection<Classroom> booked = new ArrayList<Classroom>();
@@ -126,14 +123,11 @@ public class HibernateManager implements ManagerDB {
                 }
 
                 entityManager.getTransaction().commit();
-
                 return booked;
             } else {
-                entityManager.getTransaction().begin();
                 Student student = entityManager.find(Student.class, person.getId());
                 Collection<Laboratory> booked = student.getBooked();
                 entityManager.getTransaction().commit();
-
                 return booked;
             }
         } catch (Exception ex) {
@@ -148,10 +142,8 @@ public class HibernateManager implements ManagerDB {
     public void setBooking(Person person, Room room, String schedule) {
         try {
             entityManager = factory.createEntityManager();
-
+            entityManager.getTransaction().begin();
             if (person instanceof Teacher) {
-                entityManager.getTransaction().begin();
-
                 ClassroomBooking classroombooking = new ClassroomBooking();
 
                 classroombooking.setRoom(room);
@@ -171,7 +163,6 @@ public class HibernateManager implements ManagerDB {
 
                 entityManager.getTransaction().commit();
             } else {
-                entityManager.getTransaction().begin();
                 // The method setStudent is not defined in the interface so need to convert to
                 // laboratory before using
                 Laboratory laboratory = (Laboratory) room;
@@ -196,27 +187,4 @@ public class HibernateManager implements ManagerDB {
         }
     }
 
-    // DELETE
-    public void deleteBooking(Person person, Room room) {
-        System.out.println("Delete Booking");
-        try {
-            entityManager = factory.createEntityManager();
-            entityManager.getTransaction().begin();
-            if (person instanceof Teacher) {
-                ClassroomBooking book = entityManager.getReference(ClassroomBooking.class, room.getId());
-                entityManager.remove(book);
-                entityManager.getTransaction().commit();
-            } else {
-                Laboratory book = entityManager.getReference(Laboratory.class, room.getId());
-                entityManager.remove(book);
-                entityManager.getTransaction().commit();
-                System.out.println("Booking deleted correctly!");
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("A problem occurred in removing a booking!");
-        } finally {
-            entityManager.close();
-        }
-    }
 }

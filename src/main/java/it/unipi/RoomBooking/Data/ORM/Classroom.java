@@ -79,6 +79,10 @@ public class Classroom implements Room {
         return this.classroomBookings;
     }
 
+    public void deleteBooking(ClassroomBooking booking) {
+        this.classroomBookings.remove(booking);
+    }
+
     public String toString(){
         return "Classroom Information: " +
                 "\nID: " + classroomId + 
