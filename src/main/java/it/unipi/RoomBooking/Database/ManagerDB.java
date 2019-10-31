@@ -14,7 +14,7 @@ public interface ManagerDB {
     public Person authenticate(String email, boolean isTeacher);
     public Collection<? extends Room> getAvailable(Person person, String schedule);
     public Collection<? extends Room> getBooked(Person person);
-    public void setBooking(Person person, Room r, String schedule);
+    public void setBooking(Person person, Room room, String schedule);
     //public void deleteBooking(long id, long roomId, String schedule);
-    //public void updateBooking(long id, Room newRoom, String newSchedule);
+    public void updateBooking(Person person, Room oldRoom, Room newRoom, long bookingId, String schedule);
 }

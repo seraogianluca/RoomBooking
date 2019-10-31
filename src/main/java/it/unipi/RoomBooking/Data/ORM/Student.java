@@ -77,6 +77,10 @@ public class Student implements Person {
         this.laboratories.add(laboratory);
     }
 
+    public void deleteBooking(Laboratory laboratory) {
+        this.laboratories.remove(laboratory);
+    }
+
     public String toString() {
         return "Student Information: " + 
                 "\nName: " + studentName + 

@@ -1,12 +1,12 @@
 package it.unipi.RoomBooking;
 
 import org.junit.Test;
-
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
 import it.unipi.RoomBooking.Data.Interface.Room;
+import it.unipi.RoomBooking.Data.ORM.Classroom;
 import it.unipi.RoomBooking.Data.ORM.Student;
 import it.unipi.RoomBooking.Data.ORM.Teacher;
 import it.unipi.RoomBooking.Database.HibernateManager;
@@ -85,6 +85,33 @@ public class RoomBookingTest {
         }
     }
 
+    @Test
+    public void testUpdateBookingLaboratory() {
+        try {
+            manager.start();
+            System.out.println("Update laboratory booking.");
+            Collection<Room> booked_lab = new ArrayList<Room>();
+            Student student = new Student();
+            student = (Student) manager.authenticate("demo@studenti.unipi.it", false);
+            System.out.println(student.toString());
+            booked_lab.addAll(manager.getBooked(student));
+            for (Room c : booked_lab) {
+                System.out.println(c.toString());
+            }
+            Collection<Room> laboratory = new ArrayList<Room>();
+            laboratory.addAll(manager.getAvailable(student, null));
+            for (Room l : laboratory) {
+                System.out.println(l.toString());
+            }
+            manager.updateBooking(student, booked_lab.iterator().next(), laboratory.iterator().next(), 0, null);
+            assertTrue(true);
+        } catch (Exception ex) {
+            assertTrue(false);
+        } finally {
+            manager.exit();
+        }
+    }
+
     public void testDeleteBookingClassroom() {
         try {
             manager.start();
@@ -127,12 +154,12 @@ public class RoomBookingTest {
             Teacher teacher = new Teacher();
             teacher = (Teacher) manager.authenticate("demo@unipi.it", true);
             System.out.println(teacher.toString());
-            classroom.addAll(manager.getAvailable(teacher, "a"));
+            classroom.addAll(manager.getAvailable(teacher, "m"));
             for (Room c : classroom) {
                 System.out.println(c.toString());
             }
             System.out.println("Book a classroom.");
-            manager.setBooking(teacher, classroom.iterator().next(), "a");
+            manager.setBooking(teacher, classroom.iterator().next(), "m");
             assertTrue(true);
         } catch (Exception e) {
             assertTrue(false);
@@ -161,5 +188,46 @@ public class RoomBookingTest {
             manager.exit();
         }
     }
+
+    @Test
+    public void testUpdateBookingClassroom() {
+        try {
+            manager.start();
+            System.out.println("Update booking classroom.");
+            Collection<Room> booked = new ArrayList<Room>();
+            Teacher teacher = new Teacher();
+            teacher = (Teacher) manager.authenticate("demo@unipi.it", true);
+            System.out.println(teacher.toString());
+            System.out.println("get booked:");
+            booked.addAll(manager.getBooked(teacher));
+            for (Room b : booked) {
+                System.out.println(b.toString());
+            }
+            System.out.println("get available:");
+            Collection<Room> classroom = new ArrayList<Room>();
+            classroom.addAll(manager.getAvailable(teacher, "m"));
+            for (Room c : classroom) {
+                System.out.println(c.toString());
+            }
+
+            System.out.println("update booking:");
+            Classroom oldClassroom = (Classroom)booked.iterator().next();
+            long bookingId = oldClassroom.getBookingId(teacher.getId(), "m");
+            manager.updateBooking(teacher, oldClassroom,  classroom.iterator().next(), bookingId , "m");
+
+            System.out.println("get booked:");
+            booked.clear();
+            booked.addAll(manager.getBooked(teacher));
+            for (Room b : booked) {
+                System.out.println(b.toString());
+            }
+            assertTrue(true);
+        } catch (Exception e) {
+            assertTrue(false);
+        } finally {
+            manager.exit();
+        }
+    }   
+    
 
 }

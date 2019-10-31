@@ -1,8 +1,11 @@
-/*package it.unipi.RoomBooking.Interface;
+/*
+package it.unipi.RoomBooking.Interface;
 
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
+
+import it.unipi.RoomBooking.Data.Interface.Person;
 import it.unipi.RoomBooking.Database.ManagerDB;
 
 public final class RoomBookingCLI {
@@ -15,12 +18,9 @@ public final class RoomBookingCLI {
 			+ "                                                               __/ |                    \n"
 			+ "                                                              |___/                     \n";
 		
-	private static RoomBookingDB roomBookingDatabase;
+	private static ManagerDB database;
 	private static Scanner input;
-
-	private static int userId = 0;
-	private static String name = null;
-	private static String lastname = null;
+	private static Person user;
 
 	private static void ident() {
 		String[] user = new String[3];

@@ -34,7 +34,7 @@ public class Classroom implements Room {
     @Column(name = "CLASSROOM_AVAILABLE")
     private Boolean classroomAvailable;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "BUILDING_ID")
     private Building building;
 
@@ -59,15 +59,15 @@ public class Classroom implements Room {
     }
     
     // Getter
-    public long getId(){
+    public long getId() {
         return this.classroomId;
     }
 
-    public String getName(){
+    public String getName() {
         return this.classroomName;
     }
 
-    public int getCapacity(){
+    public int getCapacity() {
         return this.classroomCapacity;
     }
 
@@ -79,16 +79,37 @@ public class Classroom implements Room {
         return this.classroomBookings;
     }
 
+    public long getBookingId(long teacherId, String schedule) {
+        for(ClassroomBooking iteration : this.classroomBookings) {
+            if(iteration.getPersonId() == teacherId && iteration.getSchedule().equals(schedule)) {
+                return iteration.getId();
+            }
+        }
+
+        return 0;
+    }
+
+    public ClassroomBooking getBookingById(long id) {
+        for(ClassroomBooking iteration : this.classroomBookings){
+            if(iteration.getId() == id){
+                return iteration;
+            }
+        }
+
+        return null;
+    }
+
     public void deleteBooking(ClassroomBooking booking) {
         this.classroomBookings.remove(booking);
     }
 
-    public String toString(){
+    public String toString() {
         return "Classroom Information: " +
                 "\nID: " + classroomId + 
                 "\nName: " + classroomName +
                 "\nCapacity: " + classroomCapacity +
                 "\nAvailable: " + classroomAvailable +
-                "\n" + building.toString();
+                "\n" + building.toString() + 
+                "\n" + classroomBookings.toString();
     }
 }
