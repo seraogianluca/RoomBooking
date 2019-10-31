@@ -35,7 +35,6 @@ public class Student implements Person {
     @ManyToMany(mappedBy = "students", fetch = FetchType.EAGER)
     private Collection<Laboratory> laboratories = new ArrayList<Laboratory>();
 
-    // Setter
     public void setName(String name) {
         this.studentName= name;
     }
@@ -48,7 +47,6 @@ public class Student implements Person {
         this.studentEmail = email;
     }
 
-    // Getter
     public long getId() {
         return this.studentId;
     }
@@ -63,10 +61,6 @@ public class Student implements Person {
 
     public String getEmail() {
         return this.studentEmail;
-    }
-
-    public Collection<Laboratory> getBooked() {
-        return this.laboratories;
     }
 
     public Collection<Laboratory> getLaboratories() {

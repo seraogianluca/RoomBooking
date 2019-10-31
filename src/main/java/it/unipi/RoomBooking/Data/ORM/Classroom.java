@@ -41,7 +41,6 @@ public class Classroom implements Room {
     @OneToMany(mappedBy = "classroom", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Collection<ClassroomBooking> classroomBookings = new ArrayList<ClassroomBooking>();
 
-    // Setter
     public void setName(String name){
         this.classroomName = name;
     }
@@ -54,11 +53,14 @@ public class Classroom implements Room {
         this.classroomAvailable = available;
     }
 
+    public void setBuilding(Building building) {
+        this.building = building;
+    }
+
     public void setBooking(ClassroomBooking booking) {
         this.classroomBookings.add(booking);
     }
-    
-    // Getter
+
     public long getId() {
         return this.classroomId;
     }
@@ -85,8 +87,7 @@ public class Classroom implements Room {
                 return iteration.getId();
             }
         }
-
-        return 0;
+        return -1;
     }
 
     public ClassroomBooking getBookingById(long id) {
@@ -95,7 +96,6 @@ public class Classroom implements Room {
                 return iteration;
             }
         }
-
         return null;
     }
 

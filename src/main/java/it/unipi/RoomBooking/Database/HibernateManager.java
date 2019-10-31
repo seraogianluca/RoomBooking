@@ -90,12 +90,11 @@ public class HibernateManager implements ManagerDB {
 
                 entityManager.getTransaction().begin();
                 Student student = entityManager.find(Student.class, person.getId());
-                for (Laboratory iteration : student.getBooked()) {
+                for (Laboratory iteration : student.getLaboratories()) {
                     if (available.contains(iteration)) {
                         available.remove(iteration);
                     }
                 }
-
                 entityManager.getTransaction().commit();
                 return available;
             }
@@ -124,7 +123,7 @@ public class HibernateManager implements ManagerDB {
                 return booked;
             } else {
                 Student student = entityManager.find(Student.class, person.getId());
-                Collection<Laboratory> booked = student.getBooked();
+                Collection<Laboratory> booked = student.getLaboratories();
                 entityManager.getTransaction().commit();
                 return booked;
             }
@@ -185,14 +184,41 @@ public class HibernateManager implements ManagerDB {
         }
     }
 
-    public void deleteBooking() {
+    public void deleteBooking(Person person, Room room, long bookingId) {
         try {
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+            if (person instanceof Teacher) { 
+                Classroom classroom = entityManager.find(Classroom.class, room.getId());
+                ClassroomBooking classroomBooking = entityManager.find(ClassroomBooking.class, bookingId);
+                classroom.deleteBooking(classroomBooking);
 
-        } catch (Exception e) {
+                if (classroom.getBooking().size() < 2 && !classroom.getAvailable()) {
+                    classroom.setAvailable(true);
+                }
+                
+                entityManager.remove(classroomBooking);
+                entityManager.merge(classroom);
+                entityManager.getTransaction().commit();
+            } else {
+                Laboratory laboratory = entityManager.find(Laboratory.class, room.getId());
+                Student student = entityManager.find(Student.class, person.getId());
+                laboratory.deleteBooking(student);
+                student.deleteBooking(laboratory);
+
+                if (laboratory.getBookingNumber() == laboratory.getCapacity()) {
+                    laboratory.setAvailable(true);
+                }
+
+                entityManager.merge(laboratory);
+                entityManager.merge(student);
+                entityManager.getTransaction().commit();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         } finally {
-
+            entityManager.close();
         }
-
     }
 
     public void updateBooking(Person person, Room oldRoom, Room newRoom, long bookingId, String newSchedule) {
@@ -237,6 +263,14 @@ public class HibernateManager implements ManagerDB {
                 Laboratory newLaboratory = entityManager.find(Laboratory.class, newRoom.getId());
                 newLaboratory.setStudent(student);
                 student.setLaboratories(newLaboratory);
+
+                if (oldLaboratory.getBookingNumber() == oldLaboratory.getCapacity()) {
+                    oldLaboratory.setAvailable(true);
+                }
+
+                if (newLaboratory.getBookingNumber() == newLaboratory.getCapacity()) {
+                    newLaboratory.setAvailable(false);
+                }
 
                 entityManager.merge(oldLaboratory);
                 entityManager.merge(student);

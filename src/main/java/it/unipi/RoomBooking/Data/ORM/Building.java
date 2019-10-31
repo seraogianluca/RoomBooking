@@ -1,6 +1,7 @@
 package it.unipi.RoomBooking.Data.ORM;
 
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,12 +28,11 @@ public class Building implements BuildingInterface {
     private String buildingAddress;
 
     @OneToMany(mappedBy = "building")
-    private Set<Laboratory> buildingLaboratories;
+    private Collection<Laboratory> buildingLaboratories = new ArrayList<Laboratory>();
     
     @OneToMany(mappedBy = "building")
-    private Set<Classroom> buildingClassrooms;
+    private Collection<Classroom> buildingClassrooms = new ArrayList<Classroom>();
 
-    // Setter
     public void setName(String name) {
         this.buildingName = name;
     }
@@ -41,7 +41,6 @@ public class Building implements BuildingInterface {
         this.buildingAddress = address;
     }
 
-    // Getter
     public long getId() {
         return this.buildingId;
     }
@@ -52,6 +51,14 @@ public class Building implements BuildingInterface {
 
     public String getAddress() {
         return this.buildingAddress;
+    }
+
+    public void addLaboratory(Laboratory laboratory) {
+        this.buildingLaboratories.add(laboratory);
+    }
+
+    public void addClassroom(Classroom classroom) {
+        this.buildingClassrooms.add(classroom);
     }
 
     public String toString() {

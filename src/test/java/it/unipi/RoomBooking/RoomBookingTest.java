@@ -4,13 +4,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-
-import it.unipi.RoomBooking.Data.Interface.Room;
-import it.unipi.RoomBooking.Data.ORM.Classroom;
-import it.unipi.RoomBooking.Data.ORM.Student;
-import it.unipi.RoomBooking.Data.ORM.Teacher;
-import it.unipi.RoomBooking.Database.HibernateManager;
 import java.util.Collection;
+
+import it.unipi.RoomBooking.Data.Interface.*;
+import it.unipi.RoomBooking.Data.ORM.*;
+import it.unipi.RoomBooking.Database.*;
+
 
 /**
  * Unit test for RoomBooking App.
@@ -19,11 +18,6 @@ import java.util.Collection;
 public class RoomBookingTest {
 
     public HibernateManager manager = new HibernateManager();
-
-    @Test
-    public void testApp() {
-        assertTrue(true);
-    }
 
     @Test
     public void testAutenticationStudent() {
@@ -112,15 +106,17 @@ public class RoomBookingTest {
         }
     }
 
-    public void testDeleteBookingClassroom() {
+    @Test
+    public void testDeleteBookingLaboratory() {
         try {
             manager.start();
             Student student = new Student();
-            student = (Student) manager.authenticate("demo@student.unipi.it", false);
+            student = (Student) manager.authenticate("demo@studenti.unipi.it", false);
             Collection<Room> laboratory = new ArrayList<Room>();
-            laboratory.addAll(manager.getAvailable(student, null));
-            // System.out.println("laboratory" + laboratory.get(0));
-            // manager.deleteBooking(student, laboratory.get(0));
+            laboratory.addAll(manager.getBooked(student));
+            Laboratory lab = (Laboratory)laboratory.iterator().next();
+            System.out.println("laboratory" + lab.toString());
+            manager.deleteBooking(student, lab, 0);
             assertTrue(true);
         } catch (Exception e) {
             assertTrue(false);
@@ -227,7 +223,25 @@ public class RoomBookingTest {
         } finally {
             manager.exit();
         }
-    }   
+    }  
     
+    @Test
+    public void testDeleteBookingClassroom() {
+        try {
+            manager.start();
+            Teacher teacher = new Teacher();
+            teacher = (Teacher) manager.authenticate("demo@unipi.it", true);
+            Collection<Room> classroom = new ArrayList<Room>();
+            classroom.addAll(manager.getAvailable(teacher, null));
+            Classroom classroomToUnbook = (Classroom)classroom.iterator().next();
+            System.out.println("classroom" + classroomToUnbook.toString());
+            manager.deleteBooking(teacher, classroomToUnbook, classroomToUnbook.getBookingId(teacher.getId(), "m"));
+            assertTrue(true);
+        } catch (Exception e) {
+            assertTrue(false);
+        } finally {
+            manager.exit();
+        }
+    }
 
 }

@@ -36,7 +36,6 @@ public class Teacher implements Person {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "teacher")
     private Collection<ClassroomBooking> classroomBookings = new ArrayList<ClassroomBooking>();
 
-    //Setter
     public void setName(String name){
         this.teacherName = name;
     }
@@ -53,7 +52,6 @@ public class Teacher implements Person {
         this.classroomBookings.add(booking);
     }
 
-    //Getter
     public long getId(){
         return this.teacherId;
     }

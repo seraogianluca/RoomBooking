@@ -44,7 +44,6 @@ public class Laboratory implements Room {
     @JoinColumn(name = "BUILDING_ID")
     private Building building;
 
-    // Setter
     public void setName(String name) {
         this.laboratoryName = name;
     }
@@ -61,7 +60,10 @@ public class Laboratory implements Room {
         this.laboratoryAvailable = available;
     }
 
-    // Getter
+    public void setBuilding(Building building) {
+        this.building = building;
+    }
+
     public long getId() {
         return this.laboratoryId;
     }
