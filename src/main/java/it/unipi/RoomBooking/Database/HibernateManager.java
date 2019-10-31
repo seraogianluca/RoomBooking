@@ -19,7 +19,6 @@ public class HibernateManager implements ManagerDB {
     private EntityManagerFactory factory;
     private EntityManager entityManager;
 
-    /* Database methods */
     public void start() {
         factory = Persistence.createEntityManagerFactory("roombooking");
     }
@@ -31,20 +30,21 @@ public class HibernateManager implements ManagerDB {
     public Person authenticate(String email, boolean isTeacher) {
         try {
             entityManager = factory.createEntityManager();
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
             if (isTeacher) {
+                //Retreive teacher information.
+                CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
                 CriteriaQuery<Teacher> criteriaQuery = criteriaBuilder.createQuery(Teacher.class);
                 Root<Teacher> root = criteriaQuery.from(Teacher.class);
                 criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("teacherEmail"), email));
-
                 Teacher person = entityManager.createQuery(criteriaQuery).getSingleResult();
                 return person;
             } else {
+                //Retreive student information.
+                CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
                 CriteriaQuery<Student> criteriaQuery = criteriaBuilder.createQuery(Student.class);
                 Root<Student> root = criteriaQuery.from(Student.class);
                 criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("studentEmail"), email));
-
                 Student person = entityManager.createQuery(criteriaQuery).getSingleResult();
                 return person;
             }
@@ -61,9 +61,9 @@ public class HibernateManager implements ManagerDB {
     public Collection<? extends Room> getAvailable(Person person, String schedule) {
         try {
             entityManager = factory.createEntityManager();
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-
             if (person instanceof Teacher) {
+                //Retreive all the classroom from the database.
+                CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
                 CriteriaQuery<Classroom> criteriaQuery = criteriaBuilder.createQuery(Classroom.class);
                 Root<Classroom> root = criteriaQuery.from(Classroom.class);
                 criteriaQuery.select(root);
@@ -71,6 +71,7 @@ public class HibernateManager implements ManagerDB {
                 Collection<Classroom> available = new ArrayList<Classroom>();
 
                 for (Classroom iteration : classrooms) {
+                    //Choose only the classrooms that are available for the entire day or the half of the day we are looking for.
                     if (iteration.getAvailable()) {
                         if (iteration.getBooking().size() != 0) {
                             if (!iteration.getBooking().iterator().next().getSchedule().equals(schedule)) {
@@ -81,20 +82,25 @@ public class HibernateManager implements ManagerDB {
                         }
                     }
                 }
+
                 return available;
             } else {
+                //Retreive all the available laboratories
+                CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
                 CriteriaQuery<Laboratory> criteriaQuery = criteriaBuilder.createQuery(Laboratory.class);
                 Root<Laboratory> root = criteriaQuery.from(Laboratory.class);
                 criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("laboratoryAvailable"), true));
                 List<Laboratory> available = entityManager.createQuery(criteriaQuery).getResultList();
-
+                //Delete from the available laboratories the ones already booked by the student
                 entityManager.getTransaction().begin();
                 Student student = entityManager.find(Student.class, person.getId());
+
                 for (Laboratory iteration : student.getLaboratories()) {
                     if (available.contains(iteration)) {
                         available.remove(iteration);
                     }
                 }
+
                 entityManager.getTransaction().commit();
                 return available;
             }
@@ -103,14 +109,16 @@ public class HibernateManager implements ManagerDB {
         } finally {
             entityManager.close();
         }
+
         return null;
     }
 
     public Collection<? extends Room> getBooked(Person person) {
         try {
             entityManager = factory.createEntityManager();
-            entityManager.getTransaction().begin();
             if (person instanceof Teacher) {
+                //Retreive the booked rooms from the teacher entity.
+                entityManager.getTransaction().begin();
                 Teacher teacher = entityManager.find(Teacher.class, person.getId());
                 Collection<ClassroomBooking> booking = teacher.getBooked();
                 Collection<Classroom> booked = new ArrayList<Classroom>();
@@ -122,6 +130,8 @@ public class HibernateManager implements ManagerDB {
                 entityManager.getTransaction().commit();
                 return booked;
             } else {
+                //Retreive the booked rooms from the student entity.
+                entityManager.getTransaction().begin();
                 Student student = entityManager.find(Student.class, person.getId());
                 Collection<Laboratory> booked = student.getLaboratories();
                 entityManager.getTransaction().commit();
@@ -139,20 +149,18 @@ public class HibernateManager implements ManagerDB {
     public void setBooking(Person person, Room room, String schedule) {
         try {
             entityManager = factory.createEntityManager();
-            entityManager.getTransaction().begin();
             if (person instanceof Teacher) {
+                //Creating a new booking.
+                entityManager.getTransaction().begin();
+                Classroom classroom;
                 ClassroomBooking classroombooking = new ClassroomBooking();
-
                 classroombooking.setRoom(room);
                 classroombooking.setSchedule(schedule);
                 classroombooking.setPerson(person);
-
-                entityManager.persist(classroombooking);
-
-                Classroom classroom;
+                entityManager.persist(classroombooking);       
                 classroom = entityManager.find(Classroom.class, room.getId());
 
-                // Update if unavailable
+                //If the room become unavailable change the availability and update the room.
                 if (classroom.getBooking().size() == 2) {
                     classroom.setAvailable(false);
                     entityManager.merge(classroom);
@@ -160,16 +168,17 @@ public class HibernateManager implements ManagerDB {
 
                 entityManager.getTransaction().commit();
             } else {
-                // The method setStudent is not defined in the interface so need to convert to
-                // laboratory before using
+                //Creating a new booking.
+                entityManager.getTransaction().begin();
                 Laboratory laboratory = (Laboratory) room;
                 Student student = (Student) person;
                 laboratory.setStudent(student);
                 student.setLaboratories(laboratory);
                 entityManager.merge(laboratory);
                 entityManager.merge(student);
-
                 laboratory = entityManager.find(Laboratory.class, room.getId());
+
+                //If the room become unavailable change the availability and update the room.
                 if (laboratory.getBookingNumber() == laboratory.getCapacity()) {
                     laboratory.setAvailable(false);
                     entityManager.merge(laboratory);
@@ -187,12 +196,14 @@ public class HibernateManager implements ManagerDB {
     public void deleteBooking(Person person, Room room, long bookingId) {
         try {
             entityManager = factory.createEntityManager();
-            entityManager.getTransaction().begin();
             if (person instanceof Teacher) { 
+                //Retreiving the room and the reservation to delete and do it.
+                entityManager.getTransaction().begin();
                 Classroom classroom = entityManager.find(Classroom.class, room.getId());
                 ClassroomBooking classroomBooking = entityManager.find(ClassroomBooking.class, bookingId);
                 classroom.deleteBooking(classroomBooking);
 
+                //Check if the room become available then update it.
                 if (classroom.getBooking().size() < 2 && !classroom.getAvailable()) {
                     classroom.setAvailable(true);
                 }
@@ -201,11 +212,14 @@ public class HibernateManager implements ManagerDB {
                 entityManager.merge(classroom);
                 entityManager.getTransaction().commit();
             } else {
+                //Retreiving the room and the student for delete the reservation.
+                entityManager.getTransaction().begin();
                 Laboratory laboratory = entityManager.find(Laboratory.class, room.getId());
                 Student student = entityManager.find(Student.class, person.getId());
                 laboratory.deleteBooking(student);
                 student.deleteBooking(laboratory);
 
+                //Check if the room become available then update it.
                 if (laboratory.getBookingNumber() == laboratory.getCapacity()) {
                     laboratory.setAvailable(true);
                 }
@@ -226,26 +240,27 @@ public class HibernateManager implements ManagerDB {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
             if (person instanceof Teacher) {
+                //Retreiving the old reservation info and the new room to book.
                 Classroom oldClassroom = entityManager.find(Classroom.class, oldRoom.getId());
                 Classroom newClassroom = entityManager.find(Classroom.class, newRoom.getId());
                 ClassroomBooking bookingToRemove = entityManager.find(ClassroomBooking.class, bookingId);
                 ClassroomBooking newClassroomBooking = new ClassroomBooking();
-
                 oldClassroom.deleteBooking(bookingToRemove);
 
+                //Check if the old room become available then update it.
                 if (oldClassroom.getBooking().size() < 2 && !oldClassroom.getAvailable()) {
                     oldClassroom.setAvailable(true);
                 }
 
                 entityManager.remove(bookingToRemove);
                 entityManager.merge(oldClassroom);
-
+                //Making the new reservation.
                 newClassroomBooking.setPerson(person);
                 newClassroomBooking.setSchedule(newSchedule);
                 newClassroomBooking.setRoom(newRoom);
-
                 newClassroom.setBooking(newClassroomBooking);
 
+                //Check if the new room become unavailable then update it.
                 if (newClassroom.getBooking().size() == 2) {
                     newClassroom.setAvailable(false);
                     entityManager.merge(newClassroom);
@@ -254,20 +269,21 @@ public class HibernateManager implements ManagerDB {
                 entityManager.persist(newClassroomBooking);
                 entityManager.getTransaction().commit();
             } else {
+                //Retreiving the old reservation info and the new room to book.
                 Laboratory oldLaboratory = entityManager.find(Laboratory.class, oldRoom.getId());
+                Laboratory newLaboratory = entityManager.find(Laboratory.class, newRoom.getId());
                 Student student = entityManager.find(Student.class, person.getId());
-
                 oldLaboratory.deleteBooking(student);
                 student.deleteBooking(oldLaboratory);
-
-                Laboratory newLaboratory = entityManager.find(Laboratory.class, newRoom.getId());
                 newLaboratory.setStudent(student);
                 student.setLaboratories(newLaboratory);
 
+                //Check if the old room become available and then update it.
                 if (oldLaboratory.getBookingNumber() == oldLaboratory.getCapacity()) {
                     oldLaboratory.setAvailable(true);
                 }
 
+                //Check if the new room become unavailable and then update it.
                 if (newLaboratory.getBookingNumber() == newLaboratory.getCapacity()) {
                     newLaboratory.setAvailable(false);
                 }
