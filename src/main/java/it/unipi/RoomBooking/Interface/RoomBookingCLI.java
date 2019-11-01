@@ -1,4 +1,3 @@
-/*
 package it.unipi.RoomBooking.Interface;
 
 import java.util.ArrayList;
@@ -289,5 +288,3 @@ public final class RoomBookingCLI {
 		input.close();
 	}
 }
-
-*/
