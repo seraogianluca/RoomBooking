@@ -4,6 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import it.unipi.RoomBooking.Data.Interface.*;
@@ -20,15 +21,22 @@ public class RoomBookingTest {
     public HibernateManager manager = new HibernateManager();
 
     @Test
-    public void testAutenticationStudent() {
+    public void studentAuthenticationTest() {
         try {
-            manager.start();
-            System.out.println("Student test.");
+            System.out.println("*********************************");
+            System.out.println("*  Student authentication test  *");
+            System.out.println("*********************************");
+
             Student student = new Student();
-            student = (Student) manager.authenticate("demo@studenti.unipi.it", false);
+            manager.start();
+            student = (Student)manager.authenticate("demo@studenti.unipi.it", false);
+            assertEquals("Retreived the wrong student.", 1, student.getId());
             System.out.println(student.toString());
-            assertTrue(true);
+
+            student = (Student)manager.authenticate("randomstring", false);
+            assertEquals("Retreived the wrong student.", 1, student.getId());
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             assertTrue(false);
         } finally {
             manager.exit();
@@ -36,21 +44,36 @@ public class RoomBookingTest {
     }
 
     @Test
-    public void testBookAvailableLaboratory() {
+    public void availableLaboratoriesTest() {
         try {
-            manager.start();
-            System.out.println("Available laboratory test.");
-            Collection<Room> laboratory = new ArrayList<Room>();
+            System.out.println("*********************************");
+            System.out.println("*  Available Laboratories test  *");
+            System.out.println("*********************************");
+
             Student student = new Student();
+            Collection<Room> laboratories = new ArrayList<Room>();
+
+            manager.start();
+            System.out.println("---------------------------------");
             student = (Student) manager.authenticate("demo@studenti.unipi.it", false);
             System.out.println(student.toString());
-            laboratory.addAll(manager.getAvailable(student, null));
-            for (Room l : laboratory) {
-                System.out.println(l.toString());
+            laboratories.addAll(manager.getAvailable(student, null));
+            boolean flags[] = new boolean[laboratories.size()];
+            boolean checkArray[] = new boolean[laboratories.size()];
+            Arrays.fill(checkArray, true);
+
+            for(int i = 0; i < laboratories.size(); i++) {
+                flags[i] = laboratories.iterator().next().getAvailable();
             }
-            System.out.println("Book a laboratory.");
-            manager.setBooking(student, laboratory.iterator().next(), null);
-            assertTrue(true);
+
+            System.out.println("---------------------------------");
+            System.out.println("Available laboratories retreived:");            
+            for(Room lab : laboratories) {
+                System.out.println(lab.toString());   
+            }
+            System.out.println("---------------------------------");
+            
+            assertArrayEquals("Laboratory not available as return.", checkArray, flags);
         } catch (Exception e) {
             assertTrue(false);
         } finally {
@@ -126,15 +149,18 @@ public class RoomBookingTest {
     }
 
     @Test
-    public void testAutenticationTeacher() {
+    public void teacherAuthenticationTest() {
         try {
+            System.out.println("**********************************");
+            System.out.println("*  Teacher authentication test   *");
+            System.out.println("**********************************");
+
             manager.start();
-            System.out.println("Teacher test.");
             Teacher teacher = new Teacher();
             teacher = (Teacher) manager.authenticate("demo@unipi.it", true);
-            System.out.println(teacher.toString());
-            assertTrue(true);
+            assertEquals("Retreived the wrong student.", 1, teacher.getId());
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             assertTrue(false);
         } finally {
             manager.exit();

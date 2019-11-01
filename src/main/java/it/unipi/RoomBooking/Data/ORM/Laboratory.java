@@ -95,8 +95,8 @@ public class Laboratory implements Room {
 
     public String toString() {
         return "Laboratory Information: " + 
-        "\nID: " + laboratoryId + 
-        "\nName: " + laboratoryName +
-        "\n" + building.toString();
+               "ID: " + laboratoryId + " " + 
+               "Name: " + laboratoryName + " " +
+               building.toString();
     }
 }

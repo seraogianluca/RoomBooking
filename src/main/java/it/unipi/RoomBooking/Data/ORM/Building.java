@@ -63,7 +63,7 @@ public class Building implements BuildingInterface {
 
     public String toString() {
         return "Building Information: " +  
-        "\nName: " + buildingName + 
-        "\nAddress: " + buildingAddress;
+        "Name: " + buildingName + " " +
+        "Address: " + buildingAddress;
     }
 }

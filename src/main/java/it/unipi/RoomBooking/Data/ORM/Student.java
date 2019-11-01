@@ -77,7 +77,7 @@ public class Student implements Person {
 
     public String toString() {
         return "Student Information: " + 
-                "\nName: " + studentName + 
-                "\nLastname: " + studentLastname;
+                "Name: " + studentName + " " +
+                "Lastname: " + studentLastname;
     }
 }
