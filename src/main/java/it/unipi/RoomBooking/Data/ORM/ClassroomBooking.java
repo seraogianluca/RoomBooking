@@ -66,9 +66,6 @@ public class ClassroomBooking implements Booking {
     }
 
     public String toString() {
-        return "\nBooking Information: " + 
-                "\nBooking Id: " + classroomBookingId + 
-                "\nScheduled: " + classroomBookingSchedule + 
-                "\n" + teacher.toString()  + "\n";       
+        return String.format("%-5s %-15s %-15s", classroomBookingId, getRoom().getName(),classroomBookingSchedule);       
     }
 }

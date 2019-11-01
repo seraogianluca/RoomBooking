@@ -89,7 +89,15 @@ public class Classroom implements Room {
         }
         return -1;
     }
-
+    public Collection<ClassroomBooking> getBookedByTeacherId(long teacherId){
+        Collection<ClassroomBooking> collection=new ArrayList<ClassroomBooking>();
+        for(ClassroomBooking iteration : this.classroomBookings){
+            if(iteration.getPersonId() == teacherId){
+                collection.add(iteration);
+            }
+        }
+        return collection;
+    }
     public ClassroomBooking getBookingById(long id) {
         for(ClassroomBooking iteration : this.classroomBookings){
             if(iteration.getId() == id){
@@ -104,12 +112,19 @@ public class Classroom implements Room {
     }
 
     public String toString() {
-        return "Classroom Information: " +
-                "\nID: " + classroomId + 
-                "\nName: " + classroomName +
-                "\nCapacity: " + classroomCapacity +
-                "\nAvailable: " + classroomAvailable +
-                "\n" + building.toString() + 
-                "\n" + classroomBookings.toString();
+        return String.format("%-5s %-15s %-25s %-10s", classroomId, classroomName, building.getName(), classroomCapacity);
+        
+    }
+
+    public String toStringBooked(){
+       /* for( ClassroomBooking i : classroomBookings){
+            if(i.getPersonId()== teacherId){
+                System.out.printf("%-5s %-15s %-15s\n", i.getId(), i.getRoom().getName(), i.getSchedule());
+            }
+        }*/
+        for(ClassroomBooking i: classroomBookings){
+            System.out.println(i.toString());
+        }
+       return null;
     }
 }

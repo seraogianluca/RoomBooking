@@ -10,7 +10,8 @@ public interface Person {
     public String getName();
     public String getLastname();
     public String getEmail();
-    
     public String toString();
+   
+    
     
 }

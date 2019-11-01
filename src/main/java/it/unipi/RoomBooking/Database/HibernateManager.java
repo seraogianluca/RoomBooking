@@ -146,7 +146,7 @@ public class HibernateManager implements ManagerDB {
         return null;
     }
 
-    public void setBooking(Person person, Room room, String schedule) {
+    public void setBooking(Person person, long roomId, String schedule) {
         try {
             entityManager = factory.createEntityManager();
             if (person instanceof Teacher) {
@@ -154,12 +154,13 @@ public class HibernateManager implements ManagerDB {
                 entityManager.getTransaction().begin();
                 Classroom classroom;
                 ClassroomBooking classroombooking = new ClassroomBooking();
-                classroombooking.setRoom(room);
+                classroom = entityManager.find(Classroom.class, roomId);
+                classroombooking.setRoom(classroom);
                 classroombooking.setSchedule(schedule);
                 classroombooking.setPerson(person);
                 entityManager.persist(classroombooking);       
-                classroom = entityManager.find(Classroom.class, room.getId());
-
+                
+                classroom = entityManager.find(Classroom.class, roomId);
                 //If the room become unavailable change the availability and update the room.
                 if (classroom.getBooking().size() == 2) {
                     classroom.setAvailable(false);
@@ -170,14 +171,14 @@ public class HibernateManager implements ManagerDB {
             } else {
                 //Creating a new booking.
                 entityManager.getTransaction().begin();
-                Laboratory laboratory = (Laboratory) room;
+                Laboratory laboratory = entityManager.find(Laboratory.class, roomId);
                 Student student = (Student) person;
                 laboratory.setStudent(student);
                 student.setLaboratories(laboratory);
                 entityManager.merge(laboratory);
                 entityManager.merge(student);
-                laboratory = entityManager.find(Laboratory.class, room.getId());
 
+                laboratory = entityManager.find(Laboratory.class, roomId);
                 //If the room become unavailable change the availability and update the room.
                 if (laboratory.getBookingNumber() == laboratory.getCapacity()) {
                     laboratory.setAvailable(false);
@@ -193,14 +194,15 @@ public class HibernateManager implements ManagerDB {
         }
     }
 
-    public void deleteBooking(Person person, Room room, long bookingId) {
+    public void deleteBooking(Person person, long bookingId) {
         try {
             entityManager = factory.createEntityManager();
             if (person instanceof Teacher) { 
                 //Retreiving the room and the reservation to delete and do it.
                 entityManager.getTransaction().begin();
-                Classroom classroom = entityManager.find(Classroom.class, room.getId());
+                //Classroom classroom = entityManager.find(Classroom.class, roomId);
                 ClassroomBooking classroomBooking = entityManager.find(ClassroomBooking.class, bookingId);
+                Classroom classroom = entityManager.find(Classroom.class, classroomBooking.getRoomId()); 
                 classroom.deleteBooking(classroomBooking);
 
                 //Check if the room become available then update it.
@@ -214,7 +216,7 @@ public class HibernateManager implements ManagerDB {
             } else {
                 //Retreiving the room and the student for delete the reservation.
                 entityManager.getTransaction().begin();
-                Laboratory laboratory = entityManager.find(Laboratory.class, room.getId());
+                Laboratory laboratory = entityManager.find(Laboratory.class, bookingId);
                 Student student = entityManager.find(Student.class, person.getId());
                 laboratory.deleteBooking(student);
                 student.deleteBooking(laboratory);

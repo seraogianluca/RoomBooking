@@ -12,5 +12,6 @@ public interface Room {
     public boolean getAvailable();
 
     public String toString();
+    public String toStringBooked();
     
 }
