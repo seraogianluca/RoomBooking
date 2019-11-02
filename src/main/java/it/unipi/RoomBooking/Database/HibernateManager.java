@@ -215,6 +215,7 @@ public class HibernateManager implements ManagerDB {
                 
                 entityManager.remove(classroomBooking); 
                 entityManager.merge(classroom);
+                entityManager.persist(classroomBooking);
                 entityManager.getTransaction().commit();
             } else {
                 //Retreiving the room and the student for delete the reservation.
@@ -231,6 +232,7 @@ public class HibernateManager implements ManagerDB {
 
                 entityManager.merge(laboratory);
                 entityManager.merge(student);
+
                 entityManager.getTransaction().commit();
             }
         } catch (Exception ex) {
@@ -251,28 +253,31 @@ public class HibernateManager implements ManagerDB {
                 ClassroomBooking bookingToRemove = entityManager.find(ClassroomBooking.class, bookingId);
                 ClassroomBooking newClassroomBooking = new ClassroomBooking();
                 oldClassroom.deleteBooking(bookingToRemove);
-
+      
                 //Check if the old room become available then update it.
                 if (oldClassroom.getBooking().size() < 2 && !oldClassroom.getAvailable()) {
                     oldClassroom.setAvailable(true);
                 }
-                //!!!questa riga sotto se la tolgo mi null pointeer, ma se la commento non mi toglie il vecchio booking
-                entityManager.remove(bookingToRemove); // mi dava null pointer perche l hai gia rimossa sopra riga 248
+                entityManager.remove(bookingToRemove);
                 entityManager.merge(oldClassroom);
+            
+
                 //Making the new reservation.
                 newClassroomBooking.setPerson(person);
                 newClassroomBooking.setSchedule(newSchedule);
                 newClassroomBooking.setRoom(newClassroom);
+                entityManager.persist(newClassroomBooking);
                 newClassroom.setBooking(newClassroomBooking);
 
                 //Check if the new room become unavailable then update it.
                 if (newClassroom.getBooking().size() == 2) {
                     newClassroom.setAvailable(false);
-                    entityManager.merge(newClassroom);
                 }
 
-                entityManager.persist(newClassroomBooking);
+                entityManager.merge(newClassroom);
+                
                 entityManager.getTransaction().commit();
+                System.out.println("alloraaaaaaaaaaaaaa");
             } else {
                 //Retreiving the old reservation info and the new room to book.
                 Laboratory oldLaboratory = entityManager.find(Laboratory.class, oldRoomId);

@@ -298,6 +298,7 @@ public final class RoomBookingCLI {
 						} else {
 							System.out.print("\nChoose the new schedule: ");
 							requestedSchedule = setSchedule();
+							
 						}
 					}
 				}else{	
