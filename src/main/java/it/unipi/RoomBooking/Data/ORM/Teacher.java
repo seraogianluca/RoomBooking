@@ -72,6 +72,7 @@ public class Teacher implements Person {
         return this.classroomBookings;
     }
 
+    
     public String toString(){
         return "Teacher Information: " +
                 "\nName: " + teacherName + 

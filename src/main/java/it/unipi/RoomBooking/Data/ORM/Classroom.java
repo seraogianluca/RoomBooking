@@ -95,6 +95,8 @@ public class Classroom implements Room {
             if(iteration.getPersonId() == teacherId){
                 collection.add(iteration);
             }
+            //////////////mi stampa piu roba del dovutoooooo perche
+        
         }
         return collection;
     }
