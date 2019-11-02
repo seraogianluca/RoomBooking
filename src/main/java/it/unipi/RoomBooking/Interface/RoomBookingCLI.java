@@ -222,7 +222,6 @@ public final class RoomBookingCLI {
 							if(Long.parseLong(requestedRoom)==iterator.getId()){
 								bookingId=iterator.getId();
 								isValid=true;
-								System.out.println("stanza richiesta: "+ iterator.getId() + bookingId);
 								break;
 							}
 						}
@@ -233,7 +232,6 @@ public final class RoomBookingCLI {
 						if(i.getId()==Long.parseLong(requestedRoom)){
 							bookingId=i.getId(); 
 							isValid = true;
-							System.out.println("stanza richiesta: "+ bookingId);
 							break;
 						}
 					}
@@ -280,12 +278,14 @@ public final class RoomBookingCLI {
 					while (!isValid) {
 						System.out.print("\nChoose the room you want to change by ID >");
 						oldbookingId = input.next();
+						System.out.print("\nChoose the schedule you want to change: ");
+						String oldSchedule = setSchedule();
 											
 						for(Room iteration : bookedRooms){
 							Classroom c = (Classroom) iteration;
 							Collection<ClassroomBooking> collection=c.getBookedByTeacherId(user.getId());
 							for(ClassroomBooking iterator: collection){
-								if(Long.parseLong(oldbookingId)==iterator.getId()){
+								if(Long.parseLong(oldbookingId)==iterator.getId()&&iterator.getSchedule().equals(oldSchedule)){
 									oldRoomId=iterator.getRoomId();
 									isValid=true;
 									break;
@@ -294,7 +294,7 @@ public final class RoomBookingCLI {
 						}
 			
 						if (!isValid) {
-							System.out.println("\nPlease insert a valid room.");
+							System.out.println("\nPlease insert a valid room and schedule.");
 						} else {
 							System.out.print("\nChoose the new schedule: ");
 							requestedSchedule = setSchedule();
@@ -309,6 +309,7 @@ public final class RoomBookingCLI {
 						for (Room i : bookedRooms ) {	
 							if(i.getId()==oldRoomId){
 								isValid = true;
+								oldbookingId="1";//per student gli va assegnato un valore a caso sennò chiama l'eccezione xk è null
 								break;
 							}
 						}
@@ -331,7 +332,6 @@ public final class RoomBookingCLI {
 						requestedRoom = input.next();
 						for (Room i : availableRooms ) {
 							if(i.getId()==Long.parseLong(requestedRoom)){ //idroom
-								oldbookingId=requestedRoom;//gli va assegnato un valore a caso sennò chiama l'eccezione xk è null
 								isValid = true;
 								break;
 							}

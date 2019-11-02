@@ -256,7 +256,7 @@ public class HibernateManager implements ManagerDB {
                 if (oldClassroom.getBooking().size() < 2 && !oldClassroom.getAvailable()) {
                     oldClassroom.setAvailable(true);
                 }
-                //!!!questa riga sotto se la tolgo mi dice si sta tentando di eliminare roba, ma se la commento non mi toglie il vecchio booking
+                //!!!questa riga sotto se la tolgo mi null pointeer, ma se la commento non mi toglie il vecchio booking
                 entityManager.remove(bookingToRemove); // mi dava null pointer perche l hai gia rimossa sopra riga 248
                 entityManager.merge(oldClassroom);
                 //Making the new reservation.
