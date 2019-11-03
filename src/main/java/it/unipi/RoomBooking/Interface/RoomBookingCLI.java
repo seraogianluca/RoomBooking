@@ -193,8 +193,7 @@ public final class RoomBookingCLI {
 	}
 
 	private static void deleteBooking() {
-		//qui cancella bene ma da problemi di visualizzazione dei booking del teacher. sempre derivato dalla showroom come nella update
-		//controllare lato hibernatemanager
+		
 		String requestedRoom = null;
 		Collection<? extends Room> bookedRooms;
 		boolean isValid = false;
@@ -252,9 +251,7 @@ public final class RoomBookingCLI {
 	}
 
 	private static void updateBooking() {
-		//la parte di student funziona. la parte id teacher da problemi sulla cancellazione del vecchio booking dal lato hibernatemanager 
-		//la parte di teache da anche problemi sulla visualizzazione delle booked di teacher 
-		//ma quello è un problema della show rooms o meglio della getbookingbyteacherid della classe callassroom
+		
 		String oldRoom = null;
 		String requestedSchedule = null;
 		String requestedRoom = null;

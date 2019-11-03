@@ -215,7 +215,6 @@ public class HibernateManager implements ManagerDB {
                 
                 entityManager.remove(classroomBooking); 
                 entityManager.merge(classroom);
-                entityManager.persist(classroomBooking);
                 entityManager.getTransaction().commit();
             } else {
                 //Retreiving the room and the student for delete the reservation.
@@ -277,7 +276,7 @@ public class HibernateManager implements ManagerDB {
                 entityManager.merge(newClassroom);
                 
                 entityManager.getTransaction().commit();
-                System.out.println("alloraaaaaaaaaaaaaa");
+               
             } else {
                 //Retreiving the old reservation info and the new room to book.
                 Laboratory oldLaboratory = entityManager.find(Laboratory.class, oldRoomId);
