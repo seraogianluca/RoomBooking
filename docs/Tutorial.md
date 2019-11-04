@@ -2,11 +2,12 @@
 
 ## 1. Introduction
 
-In this tutorial we will explain how to manage `one-to-many`, `many-to-one` and `many-to-many` relationships with Java Hibernate Framework implements the specifications of JPA (Java Persistance API) for data persistence.
+In this tutorial we will explain how to manage `one-to-many`, `many-to-one` and `many-to-many` relationships with Java Hibernate Framework implements the specifications of **JPA** (Java Persistance API) for data persistence.
+
+Later, we will explain to you how to making simple **CRUD** operation on related entities in JPA.
 
 You can read more about JPA on [Java EE 8 Official Documentation](https://javaee.github.io/javaee-spec/javadocs/).
 
-<Later we will explain to you how to making simple CRUD operation on related entities.>
 
 ### 1.1 Entities
 
@@ -283,30 +284,190 @@ We can see the *many-to-many* and the *many-to-one* relationship between the two
 
 ![CRUD](/schemas/task1/CRUD.png)
 
-The commands corresponding to these operations in MySQL are `INSERT`, `SELECT`, `UPDATE`
+The commands corresponding to these operations in MySQL are `INSERT` (adds new records), `SELECT` (retrieves or selects existing records), `UPDATE` (modifies existing records) and `DELETE` (removes tables or records in a table).
+
+Let's look an example of implementation Model Class. We can start with the following code *Student.java* class and *Laboratory.java* class:
+
+**Student.java**
+
+````java
+@Entity
+@Table(name = "student")
+public class Student {
+    @Id
+    @Column(name = "STUDENT_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long studentId;
+
+    @ManyToMany(mappedBy = "students", fetch = FetchType.EAGER)
+    private Collection<Laboratory> laboratories = new ArrayList<Laboratory>();
+
+    public long getId() {
+        return this.studentId;
+    }
+
+    public Collection<Laboratory> getLaboratories() {
+        return this.laboratories;
+    }
+
+    public void setLaboratories(Laboratory laboratory) {
+        this.laboratories.add(laboratory);
+    }
+
+    public void deleteBooking(Laboratory laboratory) {
+        this.laboratories.remove(laboratory);
+    }
+}
+````
+
+**Laboratory.java**
+
+````java
+@Entity
+@Table(name = "laboratory")
+public class Laboratory implements Room {
+    @Id
+    @Column(name = "LABORATORY_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long laboratoryId;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "laboratory_booking", joinColumns = {
+            @JoinColumn(name = "LABORATORY_ID") }, inverseJoinColumns = { @JoinColumn(name = "STUDENT_ID") })
+    private Collection<Student> students = new ArrayList<Student>();
+
+    public void setStudent(Student student) {
+        this.students.add(student);
+    }
+
+    public long getId() {
+        return this.laboratoryId;
+    }
+
+    public void deleteBooking(Student student) {
+        this.students.remove(student);
+    }
+}
+````
+
+In this example we have an implementation of **DAO** Class. It is implemented in the *HibernateManager.java* class by doing an implements of the *ManagerDB.java* interface.
+
+**ManagerDB.java**
+````java
+public interface ManagerDB {
+    public void setBooking(Student student, long roomId);
+    public Collection<Student> getBooked(Student student);
+    public void updateBooking(Student student, long oldRoomID, long newRoomId, long bookingId);
+    public void deleteBooking(Student student, long bookingId);
+}
+````
+**HibernateManager.java**
+````java
+public class HibernateManager implements ManagerDB {
+    private EntityManagerFactory factory;
+    private EntityManager entityManager;
+
+    // Implementation 
+    public void setBooking(Student student, long roomId, String schedule) {...}
+    public Collection<Laboratory> getBooked(Student student) {...}
+    public void updateBooking(Student student, long oldRoomId, long newRoomId, long bookingId, String newSchedule) {...}
+    public void deleteBooking(Student student, long bookingId) {...}
+   
+}
+````
+Once the file is created, we will take a look to all the CRUD operations:
+
 ### 5.1 Create Operation
 ````java
-Collection<Room> laboratory = new ArrayList<Room>();
+public void setBooking(Student student, long roomId, String schedule) {
+    try {
+        entityManager = factory.createEntityManager();
+        //Creating a new booking.
+        entityManager.getTransaction().begin();
+        Laboratory laboratory = entityManager.find(Laboratory.class, roomId);
+        Student student = (Student) student;
+        laboratory.setStudent(student);
+        student.setLaboratories(laboratory);
+        entityManager.merge(laboratory);
+        entityManager.merge(student);
+
+        laboratory = entityManager.find(Laboratory.class, roomId);
+        
+        entityManager.merge(laboratory);
+        entityManager.getTransaction().commit();
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        entityManager.close();
+    }
+}
 ````
 
 ### 5.2 Read Operation
 ````java
-public long getId() {
-    return this.laboratoryId;
+public Collection<Laboratory> getBooked(Student student) {
+    try {
+        entityManager = factory.createEntityManager();
+        //Retreive the booked rooms from the student entity.
+        entityManager.getTransaction().begin();
+        Student student = entityManager.find(Student.class, student.getId());
+        Collection<Laboratory> booked = student.getLaboratories();
+        entityManager.getTransaction().commit();
+        return booked;
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        entityManager.close();
+    } 
+    return null;
 }
 ````
 
 ### 5.3 Update Operation
 
 ````java
-public void setName(String name) {
-    this.laboratoryName = name;
+public void updateBooking(Student student, long oldRoomId, long newRoomId, long bookingId, String newSchedule) {
+    try {
+        entityManager = factory.createEntityManager();
+        entityManager.getTransaction().begin();
+    
+        //Retreiving the old reservation info and the new room to book.
+        Laboratory oldLaboratory = entityManager.find(Laboratory.class, oldRoomId);
+        Laboratory newLaboratory = entityManager.find(Laboratory.class, newRoomId); 
+        Student student = entityManager.find(Student.class, student.getId());
+        oldLaboratory.deleteBooking(student);
+        student.deleteBooking(oldLaboratory);
+        newLaboratory.setStudent(student);
+        student.setLaboratories(newLaboratory);
+
+        entityManager.merge(oldLaboratory);
+        entityManager.merge(student);
+        entityManager.merge(newLaboratory);
+        entityManager.getTransaction().commit();
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        entityManager.close();
+    } 
 }
 ````
 ### 5.4 Delete Operation
 ````java
-public void deleteBooking(Student student) {
-    this.students.remove(student);
+public void deleteBooking(Student student, long bookingId) {
+    try {
+        entityManager = factory.createEntityManager();
+        //Retreiving the room and the student for delete the reservation.
+        entityManager.getTransaction().begin();
+        Laboratory laboratory = entityManager.find(Laboratory.class, bookingId);
+        Student student = entityManager.find(Student.class, student.getId());
+        laboratory.deleteBooking(student);
+        student.deleteBooking(laboratory);
+
+        entityManager.merge(laboratory);
+        entityManager.merge(student);
+
+        entityManager.getTransaction().commit();
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        entityManager.close();
+    } 
 }
 ````
 
