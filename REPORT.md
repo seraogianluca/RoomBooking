@@ -27,7 +27,7 @@ The application is developed in java using two classes. A class that provide the
 
 
 # Test
-The application was tested with a simulation of the user beavior and cheking if the results were consistent with the database.
+The application was tested with a simulation of the user behavior and cheking if the results were consistent with the database.
 In the following images is possible to see how the user iteracts with the interface during the tests.
 
 - Startup screen

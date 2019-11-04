@@ -233,7 +233,7 @@ public class HibernateManager implements ManagerDB {
                 student.deleteBooking(laboratory);
 
                 //Check if the room become available then update it.
-                if (laboratory.getBookingNumber() == laboratory.getCapacity()) {
+                if (laboratory.getBookingNumber() < laboratory.getCapacity()) {
                     laboratory.setAvailable(true);
                 }
 
@@ -296,7 +296,7 @@ public class HibernateManager implements ManagerDB {
                 student.setLaboratories(newLaboratory);
 
                 //Check if the old room become available and then update it.
-                if (oldLaboratory.getBookingNumber() == oldLaboratory.getCapacity()) {
+                if (oldLaboratory.getBookingNumber() < oldLaboratory.getCapacity()) {
                     oldLaboratory.setAvailable(true);
                 }
 
