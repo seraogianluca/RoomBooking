@@ -3,6 +3,9 @@ package it.unipi.RoomBooking.Database;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,6 +25,11 @@ public class HibernateManager implements ManagerDB {
     private EntityManager entityManager;
 
     public void start() {
+        /* Set Hibernate log level */
+        LogManager logManager = LogManager.getLogManager();
+        Logger logger = logManager.getLogger("");
+        logger.setLevel(Level.SEVERE);
+        
         factory = Persistence.createEntityManagerFactory("roombooking");
     }
 
