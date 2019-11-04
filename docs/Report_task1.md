@@ -57,7 +57,7 @@ The application is standalone, mono-process and single-thread. The application i
 ## 6. Test
 The application was tested using the test dataset included in the database directory simulating all the use cases.
 
-## 6. User manual
+## 7. User manual
 
 ### Startup and log in
 The application at the startup ask to specify if the user is a student or a teacher before logging in:
