@@ -52,7 +52,7 @@ We implemented the data model over a relational database. In the following image
 
 The application is standalone, mono-process and single-thread. The application is multi-layer. A data access layer carries out the comunication with the database layer and all the operations related to the data management: insert, read, update and delete. A user interaction layer carries out the interaction with the user and the comunication with the data access layer below.
 
-![Architecture](/schemas/task1/RoomBookingArchitecture.png)
+![Architecture](/schemas/task1/Architecture.png)
 
 ## 6. Test
 The application was tested using the test dataset included in the database directory simulating all the use cases.
