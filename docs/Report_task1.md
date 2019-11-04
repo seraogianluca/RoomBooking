@@ -141,7 +141,7 @@ Choose the room you booked by ID >
 If the user selects the correct room the procedure ends with success:
 
 ```
-Booking succesfully deleteD.
+Booking succesfully deleted.
 ```
 
 ### Update a booking
