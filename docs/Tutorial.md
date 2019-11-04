@@ -2,9 +2,12 @@
 
 ## 1. Introduction
 
-In this tutorial we will explain how to manage one-to-many and many-to-many relationships and how to making simple CRUD operation on related entities with Hibernate implements JPA.
+In this tutorial we will explain how to manage `one-to-many`, `many-to-one` and `many-to-many` relationships with Java Hibernate Framework implements the specifications of **JPA** (Java Persistance API) for data persistence.
+
+Later, we will explain to you how to making simple **CRUD** operation on related entities in JPA.
 
 You can read more about JPA on [Java EE 8 Official Documentation](https://javaee.github.io/javaee-spec/javadocs/).
+
 
 ### 1.1 Entities
 
@@ -56,9 +59,15 @@ Let's consider the relation between `teacher` and `classroom_booking` entity.
 
 ![one_to_many](/schemas/task1/one_to_many.png)
 
-In this side the attribute that models the association is `teacher`, and the relationship annotation between the join tables is `@OneToMany`. 
+In such case, **one teacher can have many reservations of classrooms (classroom_booking)**, so here we have a *one-to-many* mapping.
 
-A `one-to-many` relation between these two entities means that a teacher can do multiple reservations and each reservation is related just to one teacher.  
+The way this works at the database level is we have *TEACHER_ID* as a primary key in the *teacher* table and also a *TEACHER_ID* as a foreign key in *classroom_booking*.
+
+In this side the attribute that models the association is *teacher*, and the relationship annotation between the join tables is `@OneToMany`. 
+
+Let's map the *Teacher* class to the Collection *ClassroomBooking* it a way that reflects the relationship in the database:
+
+**Teacher.java**
 
 ````java
 @Entity
@@ -80,7 +89,7 @@ public class Teacher implements Person {
 }
 ````
 
-The `@JoinColumn` annotation helps Hibernate to figure out that there is a `TEACHER_ID` Foreign Key column in the `classroom_booking` table that defines this associating. It's an optional annotation.
+Please note that the `@OneToMany` annotation is used to define the property in *teacher* class that will be used to map the `mappedBy` variable. That's why we have a property named *teacher* in the *classroom_booking* class.
 
 The `@Fetch` decides on whether or not to load all the data belongs to associations as soon as you fetch data from parent table. Fetch type supports two types of loading: 
 
@@ -91,15 +100,21 @@ The `@Fetch` decides on whether or not to load all the data belongs to associati
 
 Many to one relationship is where one entity contains values that refer to another entity that has unique values.
 
-Consider the following relationship between `classroom_booking` to `teacher` entity. 
+Consider the following relationship between *classroom_booking* to *teacher* entity. 
 
 **Entity Relationship Diagram**
 
 ![many_to_one](/schemas/task1/many_to_one.png)
 
-According to the relationship many `classroom_booking` can have the same `teacher`. In this side the attribute that models the association is `classroom_booking`, and the relationship annotation between the join tables is `@ManyToOne`. 
+According to the relationship *many-to-one*, **many reservations of classrooms (classroom_booking) can have one teacher**. 
+
+the attribute that models the association is *classroom_booking*, and the relationship annotation between the join tables is `@ManyToOne`. 
+
+**ClassroomBooking.java**
 
 ````java
+import javax.persistence.*;
+
 @Entity
 @Table(name = "classroom_booking")
 public class ClassroomBooking implements Booking {
@@ -120,22 +135,33 @@ public class ClassroomBooking implements Booking {
 }
 ````
 
+The `@JoinColumn` annotation references the mapped column adn helps Hibernate to figure out that there is a *TEACHER_ID* foreign key column in the *classroom_booking* table that defines is associated with *teacher* table. It's an optional annotation.
+
+In this side, we are making this a **bidirectional** relationship, because we are able to access *classroom_booking* from *teacher*, and also *teachers* from *classroom_booking*.
+
+It's a good practice to mark *many-to-one* side as the **owning** side. We mark like **inverse** side the *teacher* class including the `mappedBy` attribute.
+
 ## 4. Many-to-many relation
 
 A Many to Many relationship occurs when multiple records in a table are associated with multiple records in another table. 
 
-Let’s take a look at the relationship mapping between `laboratory` and `student` entity. 
+Let’s take a look at the relationship mapping between *laboratory* and *student* entity. 
 
 **Entity Relationship Diagram**
 
-![many_to_many](/schemas/task1/many_to_many.png)
+![many_to_many](/schemas/task1/many_to_many_table.png)
 
-The Set `laboratory` attribute models the association in the domain model and the `@ManyToMany` annotation tells Hibernate the unidirectional `many-to-many` relationship .
+The Set *laboratory* attribute models the association in the domain model and the `@ManyToMany` annotation tells Hibernate the unidirectional *many-to-many* relationship .
 
-In real life, a student will book several laboratories simultaneously, while a laboratory will be occupate by several students at a time.
+In real life, a **student will book several laboratories simultaneously, while a laboratory will be occupate by several students at a time**.
 
-In the example code below the `parent` side of the association is the `laboratory`, it means that the association is defined in this side and the `child` side, `student` entity refers to it.
+In the example code below the **parent** side of the association is the *laboratory*, it means that the association is defined in this side and the **child** side, *student* entity refers to it.
 
+The following code snippet shows a mapping that tells Hibernate to use the *laboratory_booking* table with the *LABORATORY_ID* column as the foreign key to the *laboratory* table and the *STUDENT_ID* column as the foreign key to the *student* table.
+
+The model classes *Laboratory* and *Student* need to be created with JPA annotations:
+
+**Laboratory.java**
 ````java
 @Entity
 @Table(name = "laboratory")
@@ -158,46 +184,293 @@ public class Laboratory implements Room {
 }
 ````
 
-If you don’t provide any additional information, Hibernate uses its default mapping which expects an association table with the name of both entities and the primary key attributes of both entities. But, in this example we set the table with the name `laboratory_booking` and with the columns `LABORATORY_ID` and `STUDENT_ID`.
+If you don’t provide any additional information, Hibernate uses its default mapping which expects an association table with the name of both entities and the primary key attributes of both entities. But, in this example we set the table with the name *laboratory_booking* and with the columns *LABORATORY_ID* and *STUDENT_ID*.
 
-Like the other annotation, we can customize the table with `@JoinTable` annotation and its attributes `@JoinColumns`. The joinColumns attribute defines the foreign key columns for the entity on which you define the association mapping. The `inverseJoinColumns` attribute specifies the foreign key columns of the associated entity.
+Like the others annotations, we can customize the table with `@JoinTable` annotation and its attributes `@JoinColumns`. The *joinColumns* attribute defines the foreign key columns for the entity on which you define the association mapping. The `inverseJoinColumns` attribute specifies the foreign key columns of the associated entity.
 
-The following code snippet shows a mapping that tells Hibernate to use the store_product table with the fk_product column as the foreign key to the Product table and the fk_store column as the foreign key to the Store table.
+**Student.java**
+````java
+@Entity
+@Table(name = "student")
+public class Student implements Person {
+    @Id
+    @Column(name = "STUDENT_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long studentId;
 
-## 4. Simple CRUD operations
+    // Other columns
+    // ...
+
+    @ManyToMany(mappedBy = "students", fetch = FetchType.EAGER)
+    private Collection<Laboratory> laboratories = new ArrayList<Laboratory>();
+
+    // Getters and Setters
+    // ...
+}
+````
+As we can see, both the *laboratory* class and *student* classes refer to one another, which means that the association between them is **bidirectional**. 
+
+In this example *many-to-many*, we mark *laboratory* class as the **owning** side and we mark the **inverse** side *Student* class including the `mappedBy` attribute. These are the same rules used for a *bidirectional one-to-many* relationship.
+
+## 4. Execution
+
+In order to see all the previous annotation in action, we can write the following JUnit test:
+
+````java
+/**
+ * Unit test for RoomBooking App.
+ */
+
+public class RoomBookingTest {
+
+    public HibernateManager manager = new HibernateManager();
+
+    /**
+    * Test 1. @OneToMany, @ManyToOne.
+    * Get All the Classrooms from One Teacher 
+    */
+    @Test
+    public void testGetTeacherClassroom() {
+        try {
+            manager.start();
+            System.out.println("Fetching booked classroom by Teacher ID");
+            Collection<Room> booked = new ArrayList<Room>();
+            Teacher teacher = new Teacher();
+            teacher = (Teacher) manager.authenticate("demo@teacher.unipi.com", true);
+            System.out.println(teacher.toString());
+            booked.addAll(manager.getBooked(teacher));
+            for (Room b : booked) {
+                System.out.println(b.toString());
+            }
+            assertTrue(true);
+        } catch (Exception e) {
+            assertTrue(false);
+        } finally {
+            manager.exit();
+        }
+    }
+
+    /**
+    * Test 2. @ManyToMany.
+    * Get All the Laboratories from One Student 
+    */
+    @Test
+    public void testGetLaboratoryStudent() {
+        try {
+            manager.start();
+            System.out.println("Fetching booked laboratory.");
+            Collection<Room> booked_lab = new ArrayList<Room>();
+            Student student = new Student();
+            student = (Student) manager.authenticate("demo@studenti.unipi.com", false);
+            System.out.println(student.toString());
+            booked_lab.addAll(manager.getBooked(student));
+            for (Room c : booked_lab) {
+                System.out.println(c.toString());
+            }
+            assertTrue(true);
+        } catch (Exception e) {
+            assertTrue(false);
+        } finally {
+            manager.exit();
+        }
+    }
+}
+````
+We can see the *many-to-many* and the *many-to-one* relationship between the two entities created in the database. We saw how to create mappings on Hibernate with a simple Database structure.
+
+![Demo](/schemas/task1/hibernate_mapped.png)
+
+## 5. Simple CRUD operations
 
 ![CRUD](/schemas/task1/CRUD.png)
 
+The commands corresponding to these operations in MySQL are `INSERT` (adds new records), `SELECT` (retrieves or selects existing records), `UPDATE` (modifies existing records) and `DELETE` (removes tables or records in a table).
 
+Let's look an example of implementation Model Class. We can start with the following code *Student.java* class and *Laboratory.java* class:
 
+**Student.java**
 
-### 4.1 Create Operation
 ````java
-Collection<Room> laboratory = new ArrayList<Room>();
-````
+@Entity
+@Table(name = "student")
+public class Student {
+    @Id
+    @Column(name = "STUDENT_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long studentId;
 
-### 4.2 Read Operation
-````java
-public long getId() {
-    return this.laboratoryId;
+    @ManyToMany(mappedBy = "students", fetch = FetchType.EAGER)
+    private Collection<Laboratory> laboratories = new ArrayList<Laboratory>();
+
+    public long getId() {
+        return this.studentId;
+    }
+
+    public Collection<Laboratory> getLaboratories() {
+        return this.laboratories;
+    }
+
+    public void setLaboratories(Laboratory laboratory) {
+        this.laboratories.add(laboratory);
+    }
+
+    public void deleteBooking(Laboratory laboratory) {
+        this.laboratories.remove(laboratory);
+    }
 }
 ````
 
-### 4.3 Update Operation
+**Laboratory.java**
 
 ````java
-public void setName(String name) {
-    this.laboratoryName = name;
+@Entity
+@Table(name = "laboratory")
+public class Laboratory implements Room {
+    @Id
+    @Column(name = "LABORATORY_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long laboratoryId;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "laboratory_booking", joinColumns = {
+            @JoinColumn(name = "LABORATORY_ID") }, inverseJoinColumns = { @JoinColumn(name = "STUDENT_ID") })
+    private Collection<Student> students = new ArrayList<Student>();
+
+    public void setStudent(Student student) {
+        this.students.add(student);
+    }
+
+    public long getId() {
+        return this.laboratoryId;
+    }
+
+    public void deleteBooking(Student student) {
+        this.students.remove(student);
+    }
 }
 ````
-### 4.4 Delete Operation
+
+In this example we have an implementation of **DAO** Class. It is implemented in the *HibernateManager.java* class by doing an implements of the *ManagerDB.java* interface.
+
+**ManagerDB.java**
 ````java
-public void deleteBooking(Student student) {
-    this.students.remove(student);
+public interface ManagerDB {
+    public void setBooking(Student student, long roomId);
+    public Collection<Student> getBooked(Student student);
+    public void updateBooking(Student student, long oldRoomID, long newRoomId, long bookingId);
+    public void deleteBooking(Student student, long bookingId);
+}
+````
+**HibernateManager.java**
+````java
+public class HibernateManager implements ManagerDB {
+    private EntityManagerFactory factory;
+    private EntityManager entityManager;
+
+    // Implementation 
+    public void setBooking(Student student, long roomId, String schedule) {...}
+    public Collection<Laboratory> getBooked(Student student) {...}
+    public void updateBooking(Student student, long oldRoomId, long newRoomId, long bookingId, String newSchedule) {...}
+    public void deleteBooking(Student student, long bookingId) {...}
+   
+}
+````
+Once the file is created, we will take a look to all the CRUD operations:
+
+### 5.1 Create Operation
+````java
+public void setBooking(Student student, long roomId, String schedule) {
+    try {
+        entityManager = factory.createEntityManager();
+        //Creating a new booking.
+        entityManager.getTransaction().begin();
+        Laboratory laboratory = entityManager.find(Laboratory.class, roomId);
+        Student student = (Student) student;
+        laboratory.setStudent(student);
+        student.setLaboratories(laboratory);
+        entityManager.merge(laboratory);
+        entityManager.merge(student);
+
+        laboratory = entityManager.find(Laboratory.class, roomId);
+        
+        entityManager.merge(laboratory);
+        entityManager.getTransaction().commit();
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        entityManager.close();
+    }
 }
 ````
 
+### 5.2 Read Operation
+````java
+public Collection<Laboratory> getBooked(Student student) {
+    try {
+        entityManager = factory.createEntityManager();
+        //Retreive the booked rooms from the student entity.
+        entityManager.getTransaction().begin();
+        Student student = entityManager.find(Student.class, student.getId());
+        Collection<Laboratory> booked = student.getLaboratories();
+        entityManager.getTransaction().commit();
+        return booked;
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        entityManager.close();
+    } 
+    return null;
+}
+````
 
+### 5.3 Update Operation
 
+````java
+public void updateBooking(Student student, long oldRoomId, long newRoomId, long bookingId, String newSchedule) {
+    try {
+        entityManager = factory.createEntityManager();
+        entityManager.getTransaction().begin();
+    
+        //Retreiving the old reservation info and the new room to book.
+        Laboratory oldLaboratory = entityManager.find(Laboratory.class, oldRoomId);
+        Laboratory newLaboratory = entityManager.find(Laboratory.class, newRoomId); 
+        Student student = entityManager.find(Student.class, student.getId());
+        oldLaboratory.deleteBooking(student);
+        student.deleteBooking(oldLaboratory);
+        newLaboratory.setStudent(student);
+        student.setLaboratories(newLaboratory);
 
-You can Download and Install the complete example on [GitHub](https://github.com/seraogianluca/RoomBooking/tree/develop_task1).
+        entityManager.merge(oldLaboratory);
+        entityManager.merge(student);
+        entityManager.merge(newLaboratory);
+        entityManager.getTransaction().commit();
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        entityManager.close();
+    } 
+}
+````
+### 5.4 Delete Operation
+````java
+public void deleteBooking(Student student, long bookingId) {
+    try {
+        entityManager = factory.createEntityManager();
+        //Retreiving the room and the student for delete the reservation.
+        entityManager.getTransaction().begin();
+        Laboratory laboratory = entityManager.find(Laboratory.class, bookingId);
+        Student student = entityManager.find(Student.class, student.getId());
+        laboratory.deleteBooking(student);
+        student.deleteBooking(laboratory);
+
+        entityManager.merge(laboratory);
+        entityManager.merge(student);
+
+        entityManager.getTransaction().commit();
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        entityManager.close();
+    } 
+}
+````
+
+You can Install or Download the source code of this tutorial with a complete example over on [GitHub](https://github.com/seraogianluca/RoomBooking/tree/develop_task1).
+
+![Demo](/schemas/task1/GitHub.gif)
