@@ -60,7 +60,7 @@ The application was tested using the test dataset included in the database direc
 
 ## 7. User manual
 
-### Startup and log in
+### 7.1 Startup and log in
 The application at the startup ask to specify if the user is a student or a teacher before logging in:
 
 ```
@@ -96,7 +96,7 @@ The main menu offer several actions that can be perfomed by the user:
 Choose an action > 
 ```
 
-### Book a room
+### 7.2 Book a room
 
 In case the user is a teacher the application ask the schedule in which book the room, in case the user is a student the book a room procedure start directly from the next step:
 
@@ -124,7 +124,7 @@ If the user selects the correct room the procedure ends with success:
 Room succesfully booked.
 ```
 
-### Delete a booking
+### 7.3 Delete a booking
 
 The application shows a list of the user's bookings and asks to choose one of them:
 
@@ -145,7 +145,7 @@ If the user selects the correct room the procedure ends with success:
 Booking succesfully deleted.
 ```
 
-### Update a booking
+### 7.4 Update a booking
 
 The application shows a list of the user's bookings and asks to choose the one to be updated:
 ```
@@ -188,4 +188,4 @@ Booking succesfully updated.
 
 ## 8. Credits
 
-Application designed and developed by Barigliano Lorenzo, Gomez Marsha, Mazzini Matilde, Serao Gianluca.
+Application designed and developed by Barigliano Lorenzo, Gómez Marsha, Mazzini Matilde, Serao Gianluca.
