@@ -2,6 +2,11 @@
 
 ## Table of contents
 
+1. [Introduction](#1-introduction)
+2. [Bidirectional One-to-many relation](#2-bidirectional-one-to-many-relation)
+3. [Bidirectional Many-to-many relation](#3-bidirectional-many-to-many-relation)
+4. [Simple CRUD operations](#4-simple-crud-operations)
+
 
 ## 1. Introduction
 
@@ -130,7 +135,7 @@ The `@JoinColumn` annotation tells Hibernate to map the relation on a column of 
 
 In this way we mapped the relation between the entities as a bidirectional relation, that can be navigated from both sides. In the bidirectional relations it's a good practice to mark the *many-to-one* side as the **parent** side.
 
-## 4. Bidirectional Many-to-many relation
+## 3. Bidirectional Many-to-many relation
 
 A Many to Many relation occurs when multiple records in a table are associated with multiple records in the related one. 
 
