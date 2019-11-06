@@ -1,4 +1,4 @@
-# Task 1 - Workgroup activity report
+# Workgroup activity report - Design phase
 
 ## Table of contents
 1. [Introduction](#1-introduction)
@@ -8,7 +8,6 @@
 5. [Software Architecture](#5-software-architecture)
 6. [Test](#6-test)
 7. [User manual](#7-user-manual)
-8. [Credits](#8-credits)
 
 ## 1. Introduction
 The Room Booking Application is a system that let users to book university classrooms and laboratories. This application is thinked for the teachers who need a classroom for seminaries or lectures and for the students who need workstations in the laboratories.
@@ -185,7 +184,3 @@ If the user selects the correct room the procedure ends with success:
 ```
 Booking succesfully updated.
 ```
-
-## 8. Credits
-
-Application designed and developed by Barigliano Lorenzo, Gómez Marsha, Mazzini Matilde, Serao Gianluca.

@@ -29,44 +29,44 @@ public final class RoomBookingCLI {
 
 	private static void ident() throws UserNotExistException {
 		String email = null;
+		boolean isValid = false;
 		boolean isValid2 = false;
 		String value;
 		System.out.println(version);
 
-		try{
-			database.start();
-		
+		while(!isValid) {
+			try{
 				while(!isValid2){
-					System.out.print("Are you a teacher or a student?\n"+
-									"T - Teacher \n"+
-									"S - Student \n"+
-									">"			
-									);				
+					System.out.print("\nAre you a teacher or a student?\n"+
+									"\nT - Teacher"+
+									"\nS - Student\n"+
+									"\n>"			
+					);				
+				
 					value = input.next();
+
 					if(value.toLowerCase().equals("t")){
 						isTeacher = true;
 						isValid2 = true;
 					} else if(value.toLowerCase().equals("s")) {
 						isTeacher = false;
 						isValid2 = true;
-					}
-					else{
+					} else{
 						System.out.print("Insert a correct value\n");
 						isValid2 = false;
 					}
 				}		 
+			
+
 				System.out.print("\nInsert your Email > ");
 				email = input.next().toString();
-				user = database.authenticate(email, isTeacher);
-				
-			
-		} catch(UserNotExistException uex) {
-			System.out.println(uex.getMessage());
-			throw new UserNotExistException();
-		}catch(Exception e){
-			System.out.println("exception occurred");
-		}finally{
-			database.exit();
+				user = database.authenticate(email, isTeacher);	
+				isValid = true;
+			} catch(UserNotExistException uex) {
+				System.out.println(uex.getMessage());
+				isValid = false;
+				isValid2 = false;
+			}
 		}
 	}
 
@@ -151,41 +151,36 @@ public final class RoomBookingCLI {
 		Collection<? extends Room> availableRooms;
 		boolean isValid = false;
 
-		try{
-			database.start();
-			if (isTeacher){
-				requestedSchedule = setSchedule();
-			}
+		if (isTeacher){
+			requestedSchedule = setSchedule();
+		}
 
-			availableRooms = database.getAvailable(user, requestedSchedule);
-			if (availableRooms.size()==0){
-				System.out.println("No available rooms\n");
-				return;
-			}
-			showRooms(availableRooms, false);
-
+		availableRooms = database.getAvailable(user, requestedSchedule);
+		
+		if (availableRooms.size()==0){
+			System.out.println("No available rooms\n");
+			return;
+		}
+		
+		showRooms(availableRooms, false);
 			
-			while (!isValid) {
-				System.out.print("\nChoose a room by ID > ");
-				requestedRoom = input.next();
+		while (!isValid) {
+			System.out.print("\nChoose a room by ID > ");
+			requestedRoom = input.next();
 			
-				for (Room i : availableRooms ) {
-					if(i.getId()==Long.parseLong(requestedRoom)){
-						isValid = true;
-						break;
-					}
-				}
-				if (!isValid) {
-					System.out.println("\nPlease insert a valid room.");
-				} else {
-			    	database.setBooking(user, Long.parseLong(requestedRoom), requestedSchedule);
-					System.out.println("\nRoom succesfully booked.");
+			for (Room i : availableRooms ) {
+				if(i.getId()==Long.parseLong(requestedRoom)){
+					isValid = true;
+					break;
 				}
 			}
-		}catch(Exception e){
-			System.out.println("Exception occurred");
-		}finally{
-			database.exit();
+				
+			if (!isValid) {
+				System.out.println("\nPlease insert a valid room.");
+			} else {
+			    database.setBooking(user, Long.parseLong(requestedRoom), requestedSchedule);
+				System.out.println("\nRoom succesfully booked.");
+			}
 		}
 	}
 
@@ -196,54 +191,50 @@ public final class RoomBookingCLI {
 		boolean isValid = false;
 		long bookingId=-1;
 		
-		try{
-			database.start();
-			bookedRooms = database.getBooked(user);
+		bookedRooms = database.getBooked(user);
 	
-			if (bookedRooms.size()==0){
-				System.out.println("No available rooms\n");
-				return;
-			}
-			showRooms(bookedRooms, true);
+		if (bookedRooms.size()==0){
+			System.out.println("No available rooms\n");
+			return;
+		}
+		
+		showRooms(bookedRooms, true);
 
-			while (!isValid) {
-				System.out.print("\nChoose the room you booked by ID > ");
-				requestedRoom = input.next();
+		while (!isValid) {
+			System.out.print("\nChoose the room you booked by ID > ");
+			requestedRoom = input.next();
 			
-				if(isTeacher){
-					for(Room iteration : bookedRooms){
-						Classroom c = (Classroom) iteration;
-						Collection<ClassroomBooking> collection=c.getBookedByTeacherId(user.getId());
-						for(ClassroomBooking iterator: collection){
-							if(Long.parseLong(requestedRoom)==iterator.getId()){
-								bookingId=iterator.getId();
-								isValid=true;
-								break;
-							}
-						}
-					}
-				}else{
-					for (Room i : bookedRooms ) {	
-				
-						if(i.getId()==Long.parseLong(requestedRoom)){
-							bookingId=i.getId(); 
-							isValid = true;
+			if(isTeacher){
+				for(Room iteration : bookedRooms){
+					Classroom c = (Classroom) iteration;
+					Collection<ClassroomBooking> collection=c.getBookedByTeacherId(user.getId());
+			
+					for(ClassroomBooking iterator: collection){
+						if(Long.parseLong(requestedRoom)==iterator.getId()){
+							bookingId=iterator.getId();
+							isValid=true;
 							break;
 						}
 					}
 				}
+			
+			} else {
+				for (Room i : bookedRooms ) {	
 				
-				if (!isValid) {
-					System.out.println("\nPlease insert a valid room.");
-				} else {
-					database.deleteBooking(user, bookingId);
-					System.out.println("\nBooking succesfully deleted.");
+					if(i.getId()==Long.parseLong(requestedRoom)){
+						bookingId=i.getId(); 
+						isValid = true;
+						break;
+					}
 				}
 			}
-		}catch(Exception e){
-			System.out.println("Exception occurred in delete function");
-		}finally{
-			database.exit();
+				
+			if (!isValid) {
+				System.out.println("\nPlease insert a valid room.");
+			} else {
+				database.deleteBooking(user, bookingId);
+				System.out.println("\nBooking succesfully deleted.");
+			}
 		}
 	}
 
@@ -257,90 +248,87 @@ public final class RoomBookingCLI {
 		boolean isValid = false;
 		String oldbookingId=null;
 		long oldRoomId=-1;
-		try{
-			database.start();
-			bookedRooms = database.getBooked(user);
 
-			if (bookedRooms.size()==0){
-				System.out.println("No available rooms\n");
-				return;
-			}
-			showRooms(bookedRooms, true);
+		bookedRooms = database.getBooked(user);
 
-			while (!isValid) {
-				if(isTeacher){
-					while (!isValid) {
-						System.out.print("\nChoose the room you want to change by ID >");
-						oldbookingId = input.next();
-						//System.out.print("\nChoose the schedule you want to change: ");
-						//String oldSchedule = setSchedule();
+		if (bookedRooms.size()==0){
+			System.out.println("No available rooms\n");
+			return;
+		}
+		
+		showRooms(bookedRooms, true);
+
+		while (!isValid) {
+			if(isTeacher){
+				while (!isValid) {
+					System.out.print("\nChoose the room you want to change by ID >");
+					oldbookingId = input.next();
 											
-						for(Room iteration : bookedRooms){
-							Classroom c = (Classroom) iteration;
-							Collection<ClassroomBooking> collection=c.getBookedByTeacherId(user.getId());
-							for(ClassroomBooking iterator: collection){
-								if(Long.parseLong(oldbookingId)==iterator.getId()/*&&iterator.getSchedule().equals(oldSchedule)*/){
-									oldRoomId=iterator.getRoomId();
-									isValid=true;
-									break;
-								}
-							}
-						}
-			
-						if (!isValid) {
-							System.out.println("\nPlease insert a valid room.");
-						} else {
-							System.out.print("\nChoose the new schedule: ");
-							requestedSchedule = setSchedule();
-						}
-					}
-				} else {	
-					while (!isValid) {
-						System.out.print("\nChoose the room you want to change by ID > ");
-						oldRoom= input.next();
-						oldRoomId=Long.parseLong(oldRoom);
-						for (Room i : bookedRooms ) {	
-							if(i.getId()==oldRoomId){
-								isValid = true;
-								oldbookingId="1";//for the student this value is not used after
+					for(Room iteration : bookedRooms){
+						Classroom c = (Classroom) iteration;
+						Collection<ClassroomBooking> collection=c.getBookedByTeacherId(user.getId());
+						for(ClassroomBooking iterator: collection){
+							if(Long.parseLong(oldbookingId)==iterator.getId()){
+								oldRoomId=iterator.getRoomId();
+								isValid=true;
 								break;
 							}
 						}
-						if (!isValid) {
-							System.out.println("\nPlease insert a valid room.");
-						} 
 					}
-				}	
-							
-				isValid=false;				
-				availableRooms = database.getAvailable(user, requestedSchedule);
-				if (availableRooms.size()==0){
-					System.out.println("No available rooms\n");
-					return;
-				}
-				showRooms(availableRooms, false);
-				while (!isValid) {
-
-					System.out.print("\nChoose a room by ID > ");
-					requestedRoom = input.next();
-					for (Room i : availableRooms ) {
-						if(i.getId()==Long.parseLong(requestedRoom)){ //idroom
-							isValid = true;
-							break;
-						}
-					}
+			
 					if (!isValid) {
 						System.out.println("\nPlease insert a valid room.");
 					} else {
-						database.updateBooking(user, oldRoomId, Long.parseLong(requestedRoom), Long.parseLong(oldbookingId), requestedSchedule);
-						System.out.println("\nBooking succesfully updated.");
+						System.out.print("\nChoose the new schedule: ");
+						requestedSchedule = setSchedule();
 					}
 				}
+			} else {	
+				while (!isValid) {
+					System.out.print("\nChoose the room you want to change by ID > ");
+					oldRoom= input.next();
+					oldRoomId=Long.parseLong(oldRoom);
+					for (Room i : bookedRooms ) {	
+						if(i.getId()==oldRoomId){
+							isValid = true;
+							oldbookingId="1"; //for the student this value is not used after
+							break;
+						}
+					}
+			
+					if (!isValid) {
+						System.out.println("\nPlease insert a valid room.");
+					} 
+				}
+			}	
+							
+			isValid=false;				
+			availableRooms = database.getAvailable(user, requestedSchedule);
+			
+			if (availableRooms.size()==0){
+				System.out.println("\nNo available rooms.");
+				return;
 			}
-		}catch(Exception e){
-			System.out.println("Exception occurred in update booking");
-		}finally{
-			database.exit();
+
+			showRooms(availableRooms, false);
+			while (!isValid) {
+
+				System.out.print("\nChoose a room by ID > ");
+				requestedRoom = input.next();
+				for (Room i : availableRooms ) {
+					if(i.getId()==Long.parseLong(requestedRoom)){ //idroom
+						isValid = true;
+						break;
+					}
+				}
+	
+				if (!isValid) {
+					System.out.println("\nPlease insert a valid room.");
+				} else {
+					database.updateBooking(user, oldRoomId, Long.parseLong(requestedRoom), Long.parseLong(oldbookingId), requestedSchedule);
+					System.out.println("\nBooking succesfully updated.");
+				}
+			}
 		}	
 	}
 
@@ -350,38 +338,39 @@ public final class RoomBookingCLI {
 		String command = null;
 
 		database = new HibernateManager();
-		
 		try {
+			database.start();
 			ident();
-		} catch (UserNotExistException e) {
-			terminate = true;
-		}
 
-		while (!terminate) {
-			command = getCommand();
-
-			if (command == null) {
-				input.close();
-				terminate = true;
+			while (!terminate) {
+				command = getCommand();
+	
+				if (command == null) {
+					input.close();
+					terminate = true;
+				}
+	
+				switch (Integer.parseInt(command)) {
+				case 1:
+					bookARoom();
+					break;
+				case 2:
+					deleteBooking();
+					break;
+				case 3:
+					updateBooking();
+					break;
+				case 4:
+					terminate = true;
+					System.out.println("\nSee you soon!");
+					break;
+				}
 			}
-
-			switch (Integer.parseInt(command)) {
-			case 1:
-				bookARoom();
-				break;
-			case 2:
-				deleteBooking();
-				break;
-			case 3:
-				updateBooking();
-				break;
-			case 4:
-				terminate = true;
-				System.out.println("\nSee you soon!");
-				break;
-			}
-		}
-
-		input.close();
+		} catch(Exception ex) {
+			System.err.println("An exception occurred.");
+		} finally {
+			database.exit();
+			input.close();
+		}	
 	}
 }
