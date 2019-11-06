@@ -60,7 +60,7 @@ The application was tested using the test dataset included in the database direc
 ## 7. User manual
 
 ### 7.1 Startup and log in
-The application at the startup ask to specify if the user is a student or a teacher before logging in:
+The application at the startup asks to specify if the user is a student or a teacher before logging in:
 
 ```
  _____                         ____              _    _                       __   ___  
@@ -97,7 +97,7 @@ Choose an action >
 
 ### 7.2 Book a room
 
-In case the user is a teacher the application ask the schedule in which book the room, in case the user is a student the book a room procedure start directly from the next step:
+In case the user is a teacher the application asks the schedule in which book the room, in case the user is a student the book a room procedure start directly from the next step:
 
 ```
 [M] - Morning.
@@ -158,7 +158,7 @@ ID    Room            Schedule
 Choose the room you want to change by ID >
 
 ```
-In case the user is a teacher the application ask the new schedule in which book the room, in case the user is a student the update procedure skips this step:
+In case the user is a teacher the application asks the new schedule in which book the room, in case the user is a student the update procedure skips this step:
 
 ```
 Choose the new schedule: 
