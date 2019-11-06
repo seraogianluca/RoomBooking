@@ -19,7 +19,7 @@ You can read more about JPA on [Java EE 8 Official Documentation](https://javaee
 
 ### 1.1 Entities
 
-Entities in JPA are representations of the data that can be persisted to the database. In particular, an entity represents a table in the database and each instance of it represents a row of the table. Entities are mapped on Java's classes through Annotations.
+Entities in JPA are representations of the data that can be persisted to the database. In particular, an entity represents a table in the database and each instance of it represents a row. Entities are mapped on Java's classes through Annotations.
 To map an entity we need to specify the `@Entity` annotation. The table name and columns can be specified with the `@Table` and the `@Column` annotations respectively.
 
 A simple enitity declaration is showed in the code below:
@@ -39,7 +39,7 @@ public class Entity {
 }
 ````
 
-The `@Id` annotation represent the table primary key and can be used only once. The `@GeneratedValue` annotation is for the auto generated keys. The `strategy = GenerationType.IDENTITY` option indicates that the primary keys for the entity is assigned using a database identity column. The `@Table` and `@Column` are not mandatory but in case omitted the class and the field need to have the same name of the database table and attribute. 
+The `@Id` annotation represents the table primary key and can be used only once. The `@GeneratedValue` annotation is for the auto generated keys. The `strategy = GenerationType.IDENTITY` option indicates that the primary keys for the entity is assigned using a database identity column. The `@Table` and `@Column` are not mandatory but in case omitted the class and the field need to have the same name of the database table and attribute. 
 
 ### 1.2 Relations
 
@@ -49,27 +49,25 @@ JPA supports the same relations as the relational databases. The relations can b
 * Many-to-one
 * Many-to-many
 
-Each of these relations can be mapped as unidirectional and bidirectional association. This means that you can model them as an attribute on only one of the associated entities or both. The bidirectional association mapping is the most common way to model this relationship with JPA and Hibernate. 
+Each of these relations can be mapped as unidirectional and bidirectional association. This means that you can model them as an attribute on only one of the associated entities or both. The bidirectional association mapping is the most common way to model this relations with JPA and Hibernate. 
 
 The annotations to map the different kind of relation are self explaining: `@OneToMany`, `@ManyToOne`, `@ManyToMany`.
 
-Hibernate manage these relations creating a join table on the database. On the `one-to-many` and `many-to-one` relations this behaviour can be avoided specifying on an attribute the `@JoinColumn` annotation, this means that the relation will be mapped on an attribute as foreign key instead of a join table. On the `many-to-many` this behaviour can't be avoided but the join table can be managed through the `@JoinTable` annotation.
-
-In the following the relations will be explained in more details.
+Hibernate manage these relations creating a join table on the database. On the `one-to-many` and `many-to-one` relations this behaviour can be avoided specifying on an attribute the `@JoinColumn` annotation, this means that the relation will be mapped on an attribute as foreign key. On the `many-to-many` this behaviour can't be avoided but the join table can be managed through the `@JoinTable` annotation.
 
 ## 2. Bidirectional One-to-many relation
 
-One to many means that one row in a table is mapped to multiple rows in the related one.
+A one to many relation means that one row in a table is related to multiple rows in another table.
 
-Let's consider the following relation between `teacher` and `classroom_booking`: 
+Let's consider the relation between `teacher` and `classroom booking` entities: 
 
 ![one_to_many](/schemas/task1/one_to_many.png)
 
-In such case, **one teacher can have many reservations of classrooms (classroom_booking)**, this means that there is a `one-to-many` relation between `teacher` and `classroom_booking`.
+In such case, **one teacher can have many classrooms reservations**, that is a `one-to-many` relation.
 
-The way this works at the database level is that *TEACHER_ID* as a primary key in the *teacher* table and a foreign key in *classroom_booking* table.
+At the database level *TEACHER_ID* is a primary key in the *teacher* table and a foreign key in *classroom_booking* table.
 
-Every bidirectional association has parent and a child side. The parent side is the one in which the assciation is defined and the child is the one who refers to it. In this example the teacher entity is the child side and the relation is mapped on the `teacher` field of the `classom_booking` class.
+Every bidirectional association has parent and a child side. The parent side is the one in which the assciation is defined and the child is the one who refers to it. In this example, the teacher entity is the child side and the relation is mapped on the `teacher` field of the `classom booking` class.
 
 The code below shows the mapping on the teacher side:
 
@@ -97,12 +95,12 @@ public class Teacher implements Person {
 
 Please note that in the `@OneToMany` annotation the `mappedBy = "teacher"` option is used to link the `classroomBookings` Collection field to the associated one in the parent side, in this case `teacher`.
 
-The `fetch = FetchType.EAGER` option establish whether or not the data belonging to association will be loaded when the entity is fetched. Fetch type is of two types: 
+The `fetch = FetchType.EAGER` option establishes whether or not the data belonging to association will be loaded when the entity is fetched. Fetch type is of two types: 
 
 - **LAZY**: means that the child entities are fetched only when you try to access them.
 - **EAGER**: means that the child entities are fetched at the time their parent is fetched. 
 
-Let's consider the parent side of the relation. In this side, according to the relationship *many-to-one*, **many reservations of classrooms (classroom_booking) can have just one teacher**.  The field that models the association is `teacher`. 
+Let's consider the parent side of the relation. In this side, according to the relation *many-to-one*, **many classrooms reservations can have just one teacher**.
 
 The code below shows the mapping of the classroom booking side:
 
@@ -131,21 +129,21 @@ public class ClassroomBooking implements Booking {
 }
 ````
 
-The `@JoinColumn` annotation tells Hibernate to map the relation on a column of the table instead of creating a join table between the entities. In this way the relation will be mapped using foreign keys.
+The `@JoinColumn` annotation tells Hibernate to map the relation on the column of the table instead of creating a join table between the entities. This means that the relation will be mapped using foreign keys.
 
-In this way we mapped the relation between the entities as a bidirectional relation, that can be navigated from both sides. In the bidirectional relations it's a good practice to mark the *many-to-one* side as the **parent** side.
+Mapping the both side make the relation bidirectional, so can be navigated from both sides. In the bidirectional relations it's a good practice to mark the *many-to-one* side as the **parent** side.
 
 ## 3. Bidirectional Many-to-many relation
 
 A Many to Many relation occurs when multiple records in a table are associated with multiple records in the related one. 
 
-Let’s consider the following relation between `student` and `laboratory`: 
+Let’s consider the relation between `student` and `laboratory`: 
 
 ![many_to_many](/schemas/task1/many_to_many.png)
 
 A **student may book several laboratories, while a laboratory may be booked by several students**.
 
-In the example code the **parent** side of the association is the *laboratory*, and the **child** side *student* refers to it.
+In this example the parent side of the relation is `laboratory`, and the child side is `student`.
 
 **Laboratory.java**
 ````java
@@ -169,7 +167,7 @@ public class Laboratory implements Room {
     // ...
 }
 ````
-In the `many-to-many` relation, the join table creation can't be avoided but this table can be managed through the `@JoinTable` annotation. The `joinColumns` option defines the foreign key columns for the entity on which you define the association mapping. The `inverseJoinColumns` option specifies the foreign key columns of the associated entity. The default table name is the combination of both entity names, this behaviour can be modified with the `name` option that specify the join table name. 
+In the `many-to-many` relation the join table creation can't be avoided, but this table can be managed through the `@JoinTable` annotation. The `joinColumns` option defines the foreign key for the entity on which you define the association mapping. The `inverseJoinColumns` option specifies the foreign key of the associated entity. The default table name is the combination of both entity names, this can be modified specifying the `name` option. 
 
 Below the code of the student side:
 
@@ -197,6 +195,8 @@ As the `one-to-many` case the parent side is specified through the `mappedBy` op
 
 ## 4. Simple CRUD operations
 
+In the following we will explain woth two short examples how to make **CRUD** operations on related entities.
+
 ![CRUD](/schemas/task1/CRUD.png)
 
 The commands corresponding to these operations in MySQL are `INSERT` (adds new records), `SELECT` (selects existing records), `UPDATE` (modifies existing records) and `DELETE` (removes tables or records in a table).
@@ -217,9 +217,9 @@ public class HibernateManager {
    
 }
 ````
-To make operations on the entities we work on the entities instances and then commit the actions in the database. 
+To make **CRUD** operations on the entities we use the entities instances, then we commit the actions in the database. 
 
-In the example below, to book a room we read before the `classroom` we want to book from the database, then we create a new `classroom_booking` instance. In this new instance we put all the information about the `classroom_booking` then we store it on the database. We need also to update the related `classroom` entity adding in the list of `classroom_booking` the one we create and then update it.
+In the example below, to book a room we read before the `classroom` we want to book from the database, then we create a new `classroom booking` instance. The new instance is initialized with the information about the `classroom booking` then stored in the database. We need to update also the related `classroom` entity adding in the list of `classroom booking` the one we create.
 
 ````java
 public void setBooking(Student student, long roomId, String schedule) {
@@ -256,7 +256,7 @@ public void setBooking(Student student, long roomId, String schedule) {
     }
 }
 ````
-In the example below, to delete a booking we read the `classroom_booking` we want to remove from the database, then we read the `classroom` related to the booking. We need to remove the elements from the respective lists and then remove `classroom_booking` from the database and update `classroom`.
+In the next example, to delete a booking we read the `classroom booking` we want to remove from the database and the related `classroom`. We need to remove the elements from the respective lists and then remove `classroom booking` from the database and update `classroom`.
 
 ````java
 public void deleteBooking(Person person, long bookingId) {
