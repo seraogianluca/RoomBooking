@@ -57,15 +57,15 @@ public class ClassroomBooking implements Booking {
         return this.teacher.getId();
     }
 
-    public long getRoomId() {
-        return this.classroom.getId();
+    public String getRoomName() {
+        return this.classroom.getName();
     }
 
-    public Room getRoom() {
+    public String getRoom() {
+        return this.classroom.getName();
+    }
+
+    public Room getClassroom() {
         return this.classroom;
-    }
-
-    public String toString() {
-        return String.format("%-5s %-15s %-15s", classroomBookingId, getRoom().getName(),classroomBookingSchedule);       
     }
 }
