@@ -19,7 +19,7 @@ public class Booked implements Booking {
     public Booked(Booking cla) {
         //Constructor for classroom booking
         this.id = cla.getId();
-        this.room = cla.getRoom();
+        this.room = cla.getRoomName();
         this.schedule = cla.getSchedule();
         this.type = "cla";
     }
@@ -36,7 +36,7 @@ public class Booked implements Booking {
         return this.id;
     }
 
-    public String getRoom() {
+    public String getRoomName() {
         return this.room;
     }
 

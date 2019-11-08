@@ -69,6 +69,10 @@ public class Classroom implements Room {
         return this.classroomName;
     }
 
+    public String getBuilding() {
+        return this.building.getName();
+    }
+
     public int getCapacity() {
         return this.classroomCapacity;
     }

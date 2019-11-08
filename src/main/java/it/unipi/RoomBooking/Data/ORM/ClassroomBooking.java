@@ -61,10 +61,6 @@ public class ClassroomBooking implements Booking {
         return this.classroom.getName();
     }
 
-    public String getRoom() {
-        return this.classroom.getName();
-    }
-
     public Room getClassroom() {
         return this.classroom;
     }

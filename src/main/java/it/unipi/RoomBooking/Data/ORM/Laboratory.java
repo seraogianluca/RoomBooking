@@ -84,6 +84,10 @@ public class Laboratory implements Room {
         return this.students;
     }
 
+    public String getBuilding() {
+        return this.building.getName();
+    }
+
     public void deleteBooking(Student student) {
         this.students.remove(student);
     }

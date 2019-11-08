@@ -13,31 +13,98 @@ public class LevelDbDriver {
 
 	public void start() {
 		options = new Options();
+		options.createIfMissing(true);
 	}
 
-    public static void initializeDB(){  //in this function we have to populate the keyvalue
+	public void exit() {
+		factory.destroy(new File("./src/main/resources/DB/available"), options);
+		factory.destroy(new File("./src/main/resources/DB/booked"), options);
+	}
+
+	public void putAvailable(String roomType, long roomId, String roomName, String buildingName, int capacity, String available) {
+		try {
+			levelDb = factory.open(new File("./src/main/resources/DB/available"), options);
+			String keyName = "avl:" + roomType + ":" + roomId + ":roomname";
+			levelDb.put(bytes(keyName), bytes(roomName));
+			String keyBuilding = "avl:" + roomType + ":" + roomId + ":buildingname";
+			levelDb.put(bytes(keyBuilding), bytes(buildingName));
+			String keyCapacity = "avl:" + roomType + ":" + roomId + ":roomcapacity";
+			levelDb.put(bytes(keyCapacity), bytes(Integer.toString(capacity)));
+			String keyAvailable = "avl:" + roomType + ":" + roomId + ":available";
+			levelDb.put(bytes(keyAvailable), bytes(available));
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			levelDb.close();
+		}
+	}
+
+	public void putBooked(String roomType, long roomId, long userId, String roomName, String schedule) {
+		try {
+			levelDb = factory.open(new File("./src/main/resources/DB/booked"), options);
+			String keyName = "bkg:" + roomType + ":" + userId + ":" + roomId + ":roomname";
+			levelDb.put(bytes(keyName), bytes(roomName));
+
+			if(roomType.equals("cla")) {
+				String keySchedule = "bkg:" + roomType + ":" + userId + ":" + roomId + ":schedule";
+				levelDb.put(bytes(keySchedule), bytes(schedule));
+			}	
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			levelDb.close();
+		}
+	}
+
+	public static void getbookedClassrooms(Person person, String requestedSchedule){ 
+    	DB bookingDB;
+	
+		try {  
+			bookingDB  = factory.open(new File("./src/main/resources/DB/booked"),options);
+			
+			//put key value
+			
+			//"String.format("%-5s %-15s %-25s %-10s", $laboratoryId, $labName, $buildingName, $capacity)"
+			//"String.format("%-5s %-15s", $laboratoryId, $laboratoryName)"
+
+			String type ="t";
+			String userID= "2";
+			DBIterator iterator = bookingDB.iterator();
+			
+			if(type.equals("t")) {
+				for(iterator.seek(bytes("bkg:cla:")); iterator.hasNext(); iterator.next()) {
+					String key = asString(iterator.peekNext().getKey());
+				    if(key.startsWith("bkg:cla:"+userID)) {
+					String value = asString(iterator.peekNext().getValue());
+					System.out.println(value);
+				}
+				}
+			  iterator.close();			
+			  bookingDB.close();
+			
+			}} catch (IOException e) {
+			e.printStackTrace();
+		}finally {
+			 // Make sure you close the db to shutdown the 
+			 // database and avoid resource leaks.
+			
+		}
     }
+	}
 
 	public static void getavailable(Person person, String requestedSchedule){   //ma va bene importare person?
         //options.createIfMissing(false);
         
 		try {  
-			levelDb = factory.open(new File("C:\\Users\\Matilde\\Desktop\\levelDBStore\\available"),options);
+			levelDb = factory.open(new File("./src/main/resources/DB"),options);
 			 //CERCA PERCORSO	
 			//put key value  //POPOLAMENTO PER TESTARE
 			levelDb.put(bytes("avl:cla:1:info"),bytes(String.format("%-5s %-15s %-25s %-10s", 1, "A13", "Polo A", 80)));
-			levelDb.put(bytes("avl:cla:2:info"),bytes(String.format("%-5s %-15s %-25s %-10s", 2, "A22", "Polo A", 80)));
-			levelDb.put(bytes("avl:cla:3:info"),bytes(String.format("%-5s %-15s %-25s %-10s", 3, "B32", "Polo B", 80)));
 			levelDb.put(bytes("avl:cla:1:available"),bytes("m"));
-			levelDb.put(bytes("avl:cla:2:available"),bytes("a"));
-			levelDb.put(bytes("avl:cla:3:available"),bytes("f"));
 			
 			levelDb.put(bytes("avl:lab:1:info"),bytes(String.format("%-5s %-15s %-25s %-10s", 1, "SI1", "Polo B", 80)));
-			levelDb.put(bytes("avl:lab:2:info"),bytes(String.format("%-5s %-15s %-25s %-10s", 2, "SI2", "Polo B", 80)));
-			levelDb.put(bytes("avl:lab:3:info"),bytes(String.format("%-5s %-15s %-25s %-10s", 3, "SI4", "Polo B", 80)));
 			levelDb.put(bytes("avl:lab:1:available"),bytes("3"));
-			levelDb.put(bytes("avl:lab:2:available"),bytes("80"));
-			levelDb.put(bytes("avl:lab:3:available"),bytes("0"));  //se è 0, c'è con lo 0 o si elimina la riga?
+
 		
 			//String requestedSchedule="a";
 			//String type ="t";
