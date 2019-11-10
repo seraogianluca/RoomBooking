@@ -1,8 +1,8 @@
 package it.unipi.RoomBooking.Database;
 
-//import java.util.Collection;
-import it.unipi.RoomBooking.Data.NORM.User;
-//import it.unipi.RoomBooking.Data.Interface.Room;
+import java.util.Collection;
+
+import it.unipi.RoomBooking.Data.NORM.*;
 import it.unipi.RoomBooking.Exceptions.UserNotExistException;
 
 public interface Manager {
@@ -11,9 +11,10 @@ public interface Manager {
     public void initializeAvailable(User user);
     public void initializeBooked(User user);
     public User authenticate(String email) throws UserNotExistException;
-    //public Collection<? extends Room> getAvailable(Person person, String schedule);
-    //public Collection<? extends Room> getBooked(Person person);
+    public Collection<Available> getAvailable(String requestedSchedule, String role);
+    public Collection<Booked> getBooked(String role);
     //public void setBooking(Person person, long roomId, String schedule);
     //public void deleteBooking(Person person, long bookingId);
     //public void updateBooking(Person person, long oldRoomID, long newRoomId, long bookingId, String schedule);
+
 }

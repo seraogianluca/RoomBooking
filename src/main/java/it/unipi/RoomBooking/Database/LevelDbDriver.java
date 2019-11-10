@@ -2,10 +2,13 @@ package it.unipi.RoomBooking.Database;
 
 import org.iq80.leveldb.*;
 
-import it.unipi.RoomBooking.Data.Interface.Person; ///CHECK
-import it.unipi.RoomBooking.Data.ORM.Teacher;   ///check
+import it.unipi.RoomBooking.Data.NORM.Available;
+import it.unipi.RoomBooking.Data.NORM.Booked;
+
 import static org.fusesource.leveldbjni.JniDBFactory.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class LevelDbDriver {
 	private static DB levelDb;
@@ -17,11 +20,33 @@ public class LevelDbDriver {
 	}
 
 	public void exit() {
-		factory.destroy(new File("./src/main/resources/DB/available"), options);
-		factory.destroy(new File("./src/main/resources/DB/booked"), options);
+		try {
+			factory.destroy(new File("./src/main/resources/DB/available"), options);
+			factory.destroy(new File("./src/main/resources/DB/booked"), options);
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
 	}
 
-	public void putAvailable(String roomType, long roomId, String roomName, String buildingName, int capacity, String available) {
+
+	public void deleteBooking(String roomType, long roomId, long userId, String roomName, String schedule) throws IOException{
+		try{
+			levelDb = factory.open(new File("./src/main/resources/DB/booked"), options);
+			String keyName = "bkg:" + roomType + ":" + userId + ":" + roomId + ":roomname";
+			levelDb.delete(bytes(keyName));
+
+			if (roomType.equals("cla")) {
+				String keySchedule = "bkg:" + roomType + ":" + userId + ":" + roomId + ":schedule";
+				levelDb.delete(bytes(keySchedule));
+				}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			levelDb.close();
+	}
+
+	public void putAvailable(String roomType, long roomId, String roomName, String buildingName, int capacity,
+			String available) throws IOException {
 		try {
 			levelDb = factory.open(new File("./src/main/resources/DB/available"), options);
 			String keyName = "avl:" + roomType + ":" + roomId + ":roomname";
@@ -39,16 +64,17 @@ public class LevelDbDriver {
 		}
 	}
 
-	public void putBooked(String roomType, long roomId, long userId, String roomName, String schedule) {
+	public void putBooked(String roomType, long roomId, long userId, String roomName, String schedule)
+			throws IOException {
 		try {
 			levelDb = factory.open(new File("./src/main/resources/DB/booked"), options);
 			String keyName = "bkg:" + roomType + ":" + userId + ":" + roomId + ":roomname";
 			levelDb.put(bytes(keyName), bytes(roomName));
 
-			if(roomType.equals("cla")) {
+			if (roomType.equals("cla")) {
 				String keySchedule = "bkg:" + roomType + ":" + userId + ":" + roomId + ":schedule";
 				levelDb.put(bytes(keySchedule), bytes(schedule));
-			}	
+			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} finally {
@@ -56,103 +82,90 @@ public class LevelDbDriver {
 		}
 	}
 
-	public static void getbookedClassrooms(Person person, String requestedSchedule){ 
-    	DB bookingDB;
-	
-		try {  
-			bookingDB  = factory.open(new File("./src/main/resources/DB/booked"),options);
-			
-			//put key value
-			
-			//"String.format("%-5s %-15s %-25s %-10s", $laboratoryId, $labName, $buildingName, $capacity)"
-			//"String.format("%-5s %-15s", $laboratoryId, $laboratoryName)"
-
-			String type ="t";
-			String userID= "2";
-			DBIterator iterator = bookingDB.iterator();
-			
-			if(type.equals("t")) {
-				for(iterator.seek(bytes("bkg:cla:")); iterator.hasNext(); iterator.next()) {
-					String key = asString(iterator.peekNext().getKey());
-				    if(key.startsWith("bkg:cla:"+userID)) {
-					String value = asString(iterator.peekNext().getValue());
-					System.out.println(value);
-				}
-				}
-			  iterator.close();			
-			  bookingDB.close();
-			
-			}} catch (IOException e) {
-			e.printStackTrace();
-		}finally {
-			 // Make sure you close the db to shutdown the 
-			 // database and avoid resource leaks.
-			
-		}
-    }
-	}
-
-	public static void getavailable(Person person, String requestedSchedule){   //ma va bene importare person?
-        //options.createIfMissing(false);
-        
-		try {  
-			levelDb = factory.open(new File("./src/main/resources/DB"),options);
-			 //CERCA PERCORSO	
-			//put key value  //POPOLAMENTO PER TESTARE
-			levelDb.put(bytes("avl:cla:1:info"),bytes(String.format("%-5s %-15s %-25s %-10s", 1, "A13", "Polo A", 80)));
-			levelDb.put(bytes("avl:cla:1:available"),bytes("m"));
-			
-			levelDb.put(bytes("avl:lab:1:info"),bytes(String.format("%-5s %-15s %-25s %-10s", 1, "SI1", "Polo B", 80)));
-			levelDb.put(bytes("avl:lab:1:available"),bytes("3"));
-
-		
-			//String requestedSchedule="a";
-			//String type ="t";
-			
+	public Collection<Booked> getBooked(String role) throws IOException {
+		try {
+			levelDb = factory.open(new File("./src/main/resources/DB/booked"), options);
 			DBIterator iterator = levelDb.iterator();
-			try {
-				if(person instanceof Teacher) {
-				  for(iterator.seek(bytes("avl:cla:")); iterator.hasNext(); iterator.next()) {
-				    String key = asString(iterator.peekNext().getKey());
-				    if(key.endsWith("available")) {
-				    	String avlflag = asString(iterator.peekNext().getValue());
-						if(avlflag.equals(requestedSchedule)||avlflag.equals("f")) {  //in the key that end with available i select the ones that are fullday or requestedschedule available
-							String[] keySplit = key.split(":");
-							String roomID = keySplit[2];  //split the key of these rows and take the part in which you find the roomid of the available room
-							String key1 = "avl:cla:"+roomID+":info";		//create the new key to select the info rows
-							String value = asString(levelDb.get(bytes(key1)));
-						    		//System.out.println(key1+" = "+ value);
-									System.out.println(value);
-						}
-				    }
-				  }
+			Collection<Booked> bookings = new ArrayList<Booked>();
+			if (role.equals("S")) {
+				for (iterator.seek(bytes("bkg:lab:")); iterator.hasNext(); iterator.next()) {
+					String key = asString(iterator.peekNext().getKey());
+					String[] keySplit = key.split(":");
+					String roomName = asString(iterator.peekNext().getValue());
+					bookings.add(new Booked(Long.parseLong(keySplit[3]), roomName, null, "lab"));
 				}
-				else { 
-					for(iterator.seek(bytes("avl:lab:")); iterator.hasNext(); iterator.next()) {
-						String key = asString(iterator.peekNext().getKey());
-						if(key.endsWith("available")) {
-					    	String avlflag = asString(iterator.peekNext().getValue());
-							if(Integer.parseInt(avlflag)>0) {  //in the key that end with available i select the ones that are fullday or requestedschedule available
-								String[] keySplit = key.split(":");
-								String roomID = keySplit[2];  //split the key of these rows and take the part in which you find the roomid of the available room
-								String key1 = "avl:lab:"+roomID+":info";		//create the new key to select the info rows
-								String value = asString(levelDb.get(bytes(key1)));
-							    		//System.out.println(key1+" = "+ value);
-										System.out.println(value);
-							}
-						}
+				return bookings;
+			} else {
+				for (iterator.seek(bytes("bkg:cla:")); iterator.hasNext(); iterator.next()) {
+					String key = asString(iterator.peekNext().getKey());
+
+					if (key.endsWith("roomname")) {
+						String roomName = asString(iterator.peekNext().getValue());
+						String[] keySplit = key.split(":");
+						String keySchedule = "bkg:cla:" + keySplit[2] + ":" + keySplit[3] + ":schedule";
+						String schedule = asString(levelDb.get(bytes(keySchedule)));
+						bookings.add(new Booked(Long.parseLong(keySplit[3]), roomName, schedule, "cla"));
 					}
 				}
-			}finally {
-			  // Make sure you close the iterator to avoid resource leaks.
-			  iterator.close();
+				return bookings;
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally {
-			 // Make sure you close the db to shutdown the 
-             // database and avoid resource leaks.
-             
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			levelDb.close();
 		}
-    }
+		return null;
+	}
+
+	public Collection<Available> getAvailable(String requestedSchedule, String role) throws IOException {
+		try {
+			levelDb = factory.open(new File("./src/main/resources/DB/available"), options);
+			DBIterator iterator = levelDb.iterator();
+			Collection<Available> availables = new ArrayList<Available>();
+			String roomType;
+
+			if (role.equals("S")) {
+				roomType = "lab";
+			} else {
+				roomType = "cla";
+			}
+
+			for (iterator.seek(bytes("avl:" + roomType + ":")); iterator.hasNext(); iterator.next()) {
+				String key = asString(iterator.peekNext().getKey());
+				if (key.endsWith("available")) {
+					boolean isAvailable = true;
+
+					if (roomType.equals("cla")) {
+						String available = asString(iterator.peekNext().getValue());
+						if (!(available.equals(requestedSchedule) || available.equals("f"))) {
+							isAvailable = false;
+						}
+					}
+
+					if (isAvailable) {
+						String[] keySplit = key.split(":");
+						String keyName = "avl:" + roomType + ":" + keySplit[2] + ":roomname";
+						String name = asString(levelDb.get(bytes(keyName)));
+						String keyBuilding = "avl:" + roomType + ":" + keySplit[2] + ":buildingname";
+						String building = asString(levelDb.get(bytes(keyBuilding)));
+						String keyCapacity = "avl:" + roomType + ":" + keySplit[2] + ":roomcapacity";
+						int capacity = Integer.parseInt(asString(levelDb.get(bytes(keyCapacity))));
+						String keyAvailable = "avl:" + roomType + ":" + keySplit[2] + ":available";
+						String available = asString(levelDb.get(bytes(keyAvailable)));
+						availables.add(new Available(name, building, available, roomType, Long.parseLong(keySplit[2]),
+								capacity));
+					}
+				}
+			}
+			return availables;
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			levelDb.close();
+		}
+		return null;
+	}
+
+	
+
 }
