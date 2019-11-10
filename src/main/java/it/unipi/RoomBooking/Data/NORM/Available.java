@@ -1,5 +1,7 @@
 package it.unipi.RoomBooking.Data.NORM;
 
+import it.unipi.RoomBooking.Data.Interface.Room;
+
 public class Available {
 
     private String roomName;
@@ -16,6 +18,15 @@ public class Available {
         this.type = type;
         this.id = id;
         this.capacity = capacity;
+    }
+
+    public Available(Room cla) {
+        //Constructor for classroom booking
+        this.roomName = cla.getName();
+        this.building = cla.getBuilding();
+        this.id = cla.getId();
+        this.capacity = cla.getCapacity();
+        this.type = "cla";
     }
 
     public String getRoom() {

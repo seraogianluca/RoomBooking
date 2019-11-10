@@ -13,8 +13,8 @@ public interface Manager {
     public User authenticate(String email) throws UserNotExistException;
     public Collection<Available> getAvailable(String requestedSchedule, String role);
     public Collection<Booked> getBooked(String role);
-    //public void setBooking(Person person, long roomId, String schedule);
-    //public void deleteBooking(Person person, long bookingId);
+    public void setBooking(User user, Available roomToBook, String requestedSchedule);
+    public void deleteBooking(User user, long bookingId);
     //public void updateBooking(Person person, long oldRoomID, long newRoomId, long bookingId, String schedule);
 
 }

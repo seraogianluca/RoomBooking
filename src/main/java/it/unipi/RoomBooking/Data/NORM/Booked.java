@@ -36,12 +36,20 @@ public class Booked implements Booking {
         return this.id;
     }
 
+    public String getType() {
+        return this.type;
+    }
+
     public String getRoomName() {
         return this.room;
     }
 
     public String getSchedule() {
         return this.schedule;
+    }
+
+    public long getRoomId() {
+        return this.roomId;
     }
 
     public void setId(long id) {
@@ -60,6 +68,10 @@ public class Booked implements Booking {
         this.type = type;
     }
     
+    public void setRoomId(long roomId) {
+        this.roomId = roomId;
+    }
+
     public String toString() {
         String string = null;
         if(type.equals("cla")) {
