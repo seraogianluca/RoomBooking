@@ -78,7 +78,7 @@ public class LevelDbDriver {
 				}
 			} else {
 				int seats = Integer.parseInt(asString(levelDb.get(bytes(keyAvailable)))) - 1;
-				levelDb.put(bytes(keyAvailable),bytes(Integer.toString(seats)));
+				levelDb.put(bytes(keyAvailable), bytes(Integer.toString(seats)));
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -96,7 +96,7 @@ public class LevelDbDriver {
 				levelDb.put(bytes(keyAvailable), bytes("f"));
 			} else {
 				int seats = Integer.parseInt(asString(levelDb.get(bytes(keyAvailable)))) + 1;
-				levelDb.put(bytes(keyAvailable),bytes(Integer.toString(seats)));
+				levelDb.put(bytes(keyAvailable), bytes(Integer.toString(seats)));
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -123,25 +123,21 @@ public class LevelDbDriver {
 		}
 	}
 
-	public void deleteBooked(String roomType, long roomId, long userId)
-		throws IOException {
-			try {
-				levelDb = factory.open(new File("./src/main/resources/DB/booked"), options);
-				String keyName = "bkg:" + roomType + ":" + userId + ":" + roomId + ":roomname";
-				levelDb.delete(bytes(keyName));
-	
-				if (roomType.equals("cla")) {
-					String keySchedule = "bkg:" + roomType + ":" + userId + ":" + roomId + ":schedule";
-					levelDb.delete(bytes(keySchedule));
-				}
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-			} finally {
-				levelDb.close();
+	public void deleteBooked(String roomType, long roomId, long userId) throws IOException {
+		try {
+			levelDb = factory.open(new File("./src/main/resources/DB/booked"), options);
+			String keyName = "bkg:" + roomType + ":" + userId + ":" + roomId + ":roomname";
+			levelDb.delete(bytes(keyName));
+
+			if (roomType.equals("cla")) {
+				String keySchedule = "bkg:" + roomType + ":" + userId + ":" + roomId + ":schedule";
+				levelDb.delete(bytes(keySchedule));
 			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			levelDb.close();
 		}
-
-
 	}
 
 	public Collection<Booked> getBooked(String role) throws IOException {

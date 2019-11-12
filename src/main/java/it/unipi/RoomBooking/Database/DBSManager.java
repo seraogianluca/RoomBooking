@@ -186,45 +186,49 @@ public class DBSManager implements Manager {
         }
     }
 
-    public void updateBooking(User user, Available roomToBook, String requestedSchedule, Booked booked ) {
+    public void updateBooking(User user, Available roomToBook, String requestedSchedule, Booked booked) {
         try {
             if (user.getRole().equals("T")) {
-                //delete old booking
+                // delete old booking
                 hibernate.deleteClassroomBooking(booked.getId());
                 levelDb.deleteBooked(booked.getType(), booked.getId(), user.getId());
                 if (!hibernate.getAvailability(booked.getType(), booked.getId())) {
                     Available av = new Available(hibernate.getClassroom(booked.getId()));
-                    levelDb.putAvailable(booked.getType(), booked.getId(), booked.getRoomName(), av.getBuilding(),av.getCapacity(), booked.getSchedule());
+                    levelDb.putAvailable(booked.getType(), booked.getId(), booked.getRoomName(), av.getBuilding(),
+                            av.getCapacity(), booked.getSchedule());
                     hibernate.updateAvailability(booked.getType(), booked.getId(), true);
                 } else {
                     levelDb.setAvailability(booked.getType(), booked.getId());
                 }
 
-                //set new booking
+                // set new booking
                 hibernate.setClassroomBooking(user.getId(), roomToBook.getId(), requestedSchedule);
-                levelDb.putBooked(roomToBook.getType(), roomToBook.getId(), user.getId(), roomToBook.getRoom(), requestedSchedule);
+                levelDb.putBooked(roomToBook.getType(), roomToBook.getId(), user.getId(), roomToBook.getRoom(),
+                        requestedSchedule);
                 if (checkAvailability(roomToBook)) {
                     levelDb.deleteFromAvailable(roomToBook.getType(), roomToBook.getId());
                     hibernate.updateAvailability(roomToBook.getType(), roomToBook.getId(), false);
                 } else {
                     levelDb.updateAvailability(roomToBook.getType(), roomToBook.getId(), requestedSchedule);
                 }
-        
+
             } else {
-                 //delete old booking
+                // delete old booking
                 hibernate.deleteLaboratoryBooking(user.getId(), booked.getId());
                 levelDb.deleteBooked(booked.getType(), booked.getId(), user.getId());
                 if (!hibernate.getAvailability(booked.getType(), booked.getId())) {
                     Available av = new Available(hibernate.getLaboratory(booked.getId()));
-                    levelDb.putAvailable(booked.getType(), booked.getId(), booked.getRoomName(), av.getBuilding(), av.getCapacity(), "1");
+                    levelDb.putAvailable(booked.getType(), booked.getId(), booked.getRoomName(), av.getBuilding(),
+                            av.getCapacity(), "1");
                     hibernate.updateAvailability(booked.getType(), booked.getId(), true);
                 } else {
                     levelDb.setAvailability(booked.getType(), booked.getId());
                 }
 
-                //set new booking
+                // set new booking
                 hibernate.setLaboratoryBooking(user.getId(), roomToBook.getId());
-                levelDb.putBooked(roomToBook.getType(), roomToBook.getId(), user.getId(), roomToBook.getRoom(), requestedSchedule);
+                levelDb.putBooked(roomToBook.getType(), roomToBook.getId(), user.getId(), roomToBook.getRoom(),
+                        requestedSchedule);
                 if (checkAvailability(roomToBook)) {
                     levelDb.deleteFromAvailable(roomToBook.getType(), roomToBook.getId());
                     hibernate.updateAvailability(roomToBook.getType(), roomToBook.getId(), false);
@@ -237,5 +241,9 @@ public class DBSManager implements Manager {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+    }
+
+    public void deleteBooking(User user, long bookingId) {
+
     }
 }
