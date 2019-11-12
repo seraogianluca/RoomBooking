@@ -290,7 +290,7 @@ public class HibernateDriver {
         return null;
     }
 
-    public Classroom getLaboratory(long laboratoryId) {
+    public Laboratory getLaboratory(long laboratoryId) {
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
@@ -472,4 +472,5 @@ public class HibernateDriver {
     }
 }
 */
-// }
+
+}
