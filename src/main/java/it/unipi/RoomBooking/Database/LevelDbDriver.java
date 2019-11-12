@@ -167,8 +167,11 @@ public class LevelDbDriver {
 						bookings.add(new Booked(Long.parseLong(keySplit[3]), roomName, schedule, "cla"));
 					}
 				}
-				return bookings;
+
 			}
+
+			iterator.close();
+			return bookings;	
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} finally {
@@ -217,6 +220,7 @@ public class LevelDbDriver {
 					}
 				}
 			}
+			iterator.close();
 			return availables;
 		} catch (IOException ioe) {
 			ioe.printStackTrace();

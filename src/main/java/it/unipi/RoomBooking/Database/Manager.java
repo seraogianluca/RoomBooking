@@ -14,7 +14,7 @@ public interface Manager {
     public Collection<Available> getAvailable(String requestedSchedule, String role);
     public Collection<Booked> getBooked(String role);
     public void setBooking(User user, Available roomToBook, String requestedSchedule);
-    public void deleteBooking(User user, long bookingId);
+    public void deleteBooking(User user, Booked booked);
     public void updateBooking(User user, Available roomToBook, String requestedSchedule, Booked booked);
 
 }
