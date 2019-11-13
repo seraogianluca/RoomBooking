@@ -164,7 +164,7 @@ public class DBSManager implements Manager {
             } else {
                 hibernate.deleteLaboratoryBooking(user.getId(), booked.getId());
             }
-            levelDb.deleteBooked(booked.getType(), booked.getId(), user.getId());
+            levelDb.deleteBooked(booked.getType(), booked.getId(), user.getId(), user.getRole());
 
             if (!hibernate.getAvailability(booked.getType(), booked.getId())) {
                 if (user.getRole().equals("T")) {
@@ -192,7 +192,7 @@ public class DBSManager implements Manager {
             if (user.getRole().equals("T")) {
                 //delete old classroom  booking
                 hibernate.deleteClassroomBooking(booked.getId());
-                levelDb.deleteBooked(booked.getType(), booked.getId(), user.getId());
+                levelDb.deleteBooked(booked.getType(), booked.getId(), user.getId(), user.getRole());
                 if (!hibernate.getAvailability(booked.getType(), booked.getId())) {
                     Available av = new Available(hibernate.getClassroom(booked.getId()));
                     levelDb.putAvailable(booked.getType(), booked.getId(), booked.getRoomName(), av.getBuilding(),av.getCapacity(), booked.getSchedule());
@@ -207,7 +207,7 @@ public class DBSManager implements Manager {
             } else {
                  //delete old  laboratory booking
                 hibernate.deleteLaboratoryBooking(user.getId(), booked.getId());
-                levelDb.deleteBooked(booked.getType(), booked.getId(), user.getId());
+                levelDb.deleteBooked(booked.getType(), booked.getId(), user.getId(), user.getRole());
                 if (!hibernate.getAvailability(booked.getType(), booked.getId())) {
                     Available av = new Available(hibernate.getLaboratory(booked.getId()));
                     levelDb.putAvailable(booked.getType(), booked.getId(), booked.getRoomName(), av.getBuilding(), av.getCapacity(), "1");

@@ -124,7 +124,7 @@ public class LevelDbDriver {
 		}
 	}
 
-	public void deleteBooked(String roomType, long roomId, long userId) throws IOException {
+	public void deleteBooked(String roomType, long roomId, long userId, String userRole) throws IOException {
 		try {
 			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\booked"), options);
 
@@ -133,7 +133,10 @@ public class LevelDbDriver {
 
 			if (roomType.equals("cla")) {
 				String keySchedule = "bkg:" + roomType + ":" + userId + ":" + roomId + ":schedule";
-				levelDb.delete(bytes(keySchedule));
+				Collection<Booked> booked = getBooked(userRole);
+				if (booked.size() >= 1) {
+					levelDb.delete(bytes(keySchedule));
+				}
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -147,31 +150,32 @@ public class LevelDbDriver {
 			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\booked"), options);
 			DBIterator iterator = levelDb.iterator();
 			Collection<Booked> bookings = new ArrayList<Booked>();
-			if (role.equals("S")) {
-				for (iterator.seek(bytes("bkg:lab:")); iterator.hasNext(); iterator.next()) {
-					String key = asString(iterator.peekNext().getKey());
-					String[] keySplit = key.split(":");
-					String roomName = asString(iterator.peekNext().getValue());
-					bookings.add(new Booked(Long.parseLong(keySplit[3]), roomName, null, "lab"));
-				}
-				return bookings;
-			} else {
-				for (iterator.seek(bytes("bkg:cla:")); iterator.hasNext(); iterator.next()) {
-					String key = asString(iterator.peekNext().getKey());
-
-					if (key.endsWith("roomname")) {
-						String roomName = asString(iterator.peekNext().getValue());
+			if (iterator.hasNext() == true) {
+				if (role.equals("S")) {
+					for (iterator.seek(bytes("bkg:lab:")); iterator.hasNext(); iterator.next()) {
+						String key = asString(iterator.peekNext().getKey());
 						String[] keySplit = key.split(":");
-						String keySchedule = "bkg:cla:" + keySplit[2] + ":" + keySplit[3] + ":schedule";
-						String schedule = asString(levelDb.get(bytes(keySchedule)));
-						bookings.add(new Booked(Long.parseLong(keySplit[3]), roomName, schedule, "cla"));
+						String roomName = asString(iterator.peekNext().getValue());
+						bookings.add(new Booked(Long.parseLong(keySplit[3]), roomName, null, "lab"));
+					}
+					return bookings;
+				} else {
+					for (iterator.seek(bytes("bkg:cla:")); iterator.hasNext(); iterator.next()) {
+						String key = asString(iterator.peekNext().getKey());
+
+						if (key.endsWith("roomname")) {
+							String roomName = asString(iterator.peekNext().getValue());
+							String[] keySplit = key.split(":");
+							String keySchedule = "bkg:cla:" + keySplit[2] + ":" + keySplit[3] + ":schedule";
+							String schedule = asString(levelDb.get(bytes(keySchedule)));
+							bookings.add(new Booked(Long.parseLong(keySplit[3]), roomName, schedule, "cla"));
+						}
 					}
 				}
-
 			}
 
 			iterator.close();
-			return bookings;	
+			return bookings;
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} finally {

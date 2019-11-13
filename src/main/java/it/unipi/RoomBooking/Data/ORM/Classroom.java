@@ -99,8 +99,6 @@ public class Classroom implements Room {
             if(iteration.getPersonId() == teacherId){
                 collection.add(iteration);
             }
-            //////////////mi stampa piu roba del dovutoooooo perche
-        
         }
         return collection;
     }
@@ -123,11 +121,6 @@ public class Classroom implements Room {
     }
 
     public String toStringBooked(){
-       /* for( ClassroomBooking i : classroomBookings){
-            if(i.getPersonId()== teacherId){
-                System.out.printf("%-5s %-15s %-15s\n", i.getId(), i.getRoom().getName(), i.getSchedule());
-            }
-        }*/
         for(ClassroomBooking i: classroomBookings){
             System.out.println(i.toString());
         }
