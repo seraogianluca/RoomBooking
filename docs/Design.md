@@ -44,7 +44,7 @@ The application has the following non-functional requirements:
 The following use cases are identified:
 ![Use Cases](/schemas/task1/UseCases.png)
 
-The `choose schedule` is specified as an `extend` because only the `teacher` users can choose the part of the day (Morning, Afternoon) in which they want to book the classroom.
+The `choose schedule` is specified as a `extend` because only the `teacher` users can choose the part of the day (Morning, Afternoon) in which they want to book the classroom.
 
 The following classes are idientified:
 ![Classes](/schemas/task1/ClassesUMLFirst.png)
