@@ -71,12 +71,4 @@ public class Teacher implements Person {
     public Collection<ClassroomBooking> getBooked() {
         return this.classroomBookings;
     }
-
-    
-    public String toString(){
-        return "Teacher Information: " +
-                "\nName: " + teacherName + 
-                "\nLastname: " + teacherLastname;
-    }
-
 }

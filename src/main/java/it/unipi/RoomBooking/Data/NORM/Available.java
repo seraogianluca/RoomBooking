@@ -4,27 +4,27 @@ import it.unipi.RoomBooking.Data.Interface.Room;
 
 public class Available {
 
+    private long id;
     private String roomName;
     private String building;
     private String available;
     private String type;
-    private long id;
     private int capacity;
 
     public Available(String roomName, String building, String available, String type, long id, int capacity) {
+        this.id = id;
         this.roomName = roomName;
         this.building = building;
         this.available = available;
         this.type = type;
-        this.id = id;
         this.capacity = capacity;
     }
 
     public Available(Room cla) {
         //Constructor for classroom booking
+        this.id = cla.getId();
         this.roomName = cla.getName();
         this.building = cla.getBuilding();
-        this.id = cla.getId();
         this.capacity = cla.getCapacity();
         this.type = "cla";
     }

@@ -10,9 +10,5 @@ public interface Room {
     public String getName();
     public int getCapacity();
     public String getBuilding();
-    public boolean getAvailable();
-
-    public String toString();
-    public String toStringBooked();
-    
+    public boolean getAvailable();   
 }

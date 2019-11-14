@@ -96,13 +96,4 @@ public class Laboratory implements Room {
         return students.size();
     }
 
-
-    public String toString() {
-        return String.format("%-5s %-15s %-25s %-10s", laboratoryId, laboratoryName, building.getName(), laboratoryCapacity);            
-    }
- 
-    public String toStringBooked() {
-        return String.format("%-5s %-15s", laboratoryId, laboratoryName);            
-    }
-
 }
