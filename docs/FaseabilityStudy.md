@@ -17,7 +17,7 @@ A possible data model for the application exploiting a relational database solut
 ## 3. Possible solutions
 
     WITH WHAT
-        key value databasesssssssssss
+        key value databases
             haloDB (constraints on key and leveldb)
             levelDb
 ## 4. LevelDB

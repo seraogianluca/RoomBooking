@@ -21,8 +21,8 @@ public class DBSManager implements Manager {
     }
 
     public void exit() {
-        hibernate.exit();
         levelDb.exit();
+        hibernate.exit();
     }
 
     public void initializeAvailable(User user) {
