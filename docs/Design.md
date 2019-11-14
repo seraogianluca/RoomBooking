@@ -36,9 +36,9 @@ The application has the following non-functional requirements:
 - New classrooms, laboratories and buildings can only be inserted by the administrator.
 - The classrooms, laboratories and buildings in the system can't be deleted.
 - Users must be identified by email.
-- Teachers' emails must belong to the [at] unipi [dot] it domain.
-- Students' emails must belong to the [at] studenti [dot] unipi [dot] it domain.
-- Administrator's email must belong to the [at] admin [dot] unipi [dot] it domain.
+- Teachers' emails must belong to the [at] university domain.
+- Students' emails must belong to the [at] studenti [dot] university domain.
+- Administrator's email must belong to the [at] admin [dot] university domain.
 
 ## 4. Schemas
 The following use cases are identified:

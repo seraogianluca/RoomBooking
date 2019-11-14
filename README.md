@@ -5,10 +5,13 @@ A simple JAVA application for the workgroup tasks of the Large-Scale and Multi-S
 ## Project documentation
 - The Design document can be retrived at the following link: [Design Document](/docs/Design.md)
 
+- The Feasibility Study on the use of a Key-Value Data Storage can be retrived at the following link: [Feasibility Study on the use of a Key-Value Data Storage](/docs/FeasibilityStudy.md)
+
 - The User manual can be retrived at the following link: [User Manual](/docs/Manual.md)
 
 - Tutorial about the JPA relations mapping can be retrived at the following link: [Making annotations and writing CRUD operations in JPA](/docs/Tutorial.md)
 
+Key-value database feasibility study
 ## Credits
 
 Application designed and developed by Barigliano Lorenzo, Gómez Marsha, Mazzini Matilde, Serao Gianluca.
