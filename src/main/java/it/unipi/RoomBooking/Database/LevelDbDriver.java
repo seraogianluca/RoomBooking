@@ -146,10 +146,11 @@ public class LevelDbDriver {
 	}
 
 	public Collection<Booked> getBooked(String role) throws IOException {
+		Collection<Booked> bookings = new ArrayList<Booked>();
+
 		try {
 			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\booked"), options);
 			DBIterator iterator = levelDb.iterator();
-			Collection<Booked> bookings = new ArrayList<Booked>();
 			if (role.equals("S")) {
 				for (iterator.seek(bytes("bkg:lab:")); iterator.hasNext(); iterator.next()) {
 					String key = asString(iterator.peekNext().getKey());
@@ -179,14 +180,15 @@ public class LevelDbDriver {
 		} finally {
 			levelDb.close();
 		}
-		return null;
+		return bookings;
 	}
 
 	public Collection<Available> getAvailable(String requestedSchedule, String role) throws IOException {
+		Collection<Available> availables = new ArrayList<Available>();
+
 		try {
 			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
 			DBIterator iterator = levelDb.iterator();
-			Collection<Available> availables = new ArrayList<Available>();
 			String roomType;
 
 			if (role.equals("S")) {
@@ -229,7 +231,7 @@ public class LevelDbDriver {
 		} finally {
 			levelDb.close();
 		}
-		return null;
+		return availables;
 	}
 
 }
