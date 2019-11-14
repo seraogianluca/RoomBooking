@@ -219,7 +219,8 @@ public class HibernateDriver {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
             if (roomType.equals("cla")) {
-                Classroom classroom = entityManager.find(Classroom.class, roomId);
+                ClassroomBooking classroomBooking = entityManager.find(ClassroomBooking.class, roomId);
+                Classroom classroom = (Classroom)classroomBooking.getClassroom();
                 flag = classroom.getAvailable();
             } else {
                 Laboratory laboratory = entityManager.find(Laboratory.class, roomId);

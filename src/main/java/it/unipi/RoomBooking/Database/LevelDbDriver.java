@@ -67,17 +67,33 @@ public class LevelDbDriver {
 		}
 	}
 
-	public void updateAvailability(String roomType, long roomId, String requestedSchedule) throws IOException {
+	public void updateAvailability(String roomType, long roomId, String requestedSchedule, String roomName)
+			throws IOException {
 		try {
 			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
-			String keyAvailable = "avl:" + roomType + ":" + roomId + ":available";
+
 			if (roomType.equals("cla")) {
+				DBIterator iterator = levelDb.iterator();
+				long room = 0;
+
+				for (iterator.seek(bytes("avl:")); iterator.hasNext(); iterator.next()) {
+					String key = asString(iterator.peekNext().getKey());
+					if (key.endsWith("roomname")) {
+						String[] keySplit = key.split(":");
+						room = Long.parseLong(keySplit[2]);
+						break;
+					}
+				}
+
+				String keyAvailable = "avl:" + roomType + ":" + room + ":available";
+
 				if (requestedSchedule.equals("m")) {
 					levelDb.put(bytes(keyAvailable), bytes("a"));
 				} else {
 					levelDb.put(bytes(keyAvailable), bytes("m"));
 				}
 			} else {
+				String keyAvailable = "avl:" + roomType + ":" + roomId + ":available";
 				int seats = Integer.parseInt(asString(levelDb.get(bytes(keyAvailable)))) - 1;
 				levelDb.put(bytes(keyAvailable), bytes(Integer.toString(seats)));
 			}
@@ -92,10 +108,23 @@ public class LevelDbDriver {
 		try {
 			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
 
-			String keyAvailable = "avl:" + roomType + ":" + roomId + ":available";
 			if (roomType.equals("cla")) {
+				DBIterator iterator = levelDb.iterator();
+				long room = 0;
+
+				for (iterator.seek(bytes("avl:")); iterator.hasNext(); iterator.next()) {
+					String key = asString(iterator.peekNext().getKey());
+					if (key.endsWith("roomname")) {
+						String[] keySplit = key.split(":");
+						room = Long.parseLong(keySplit[2]);
+						break;
+					}
+				}
+
+				String keyAvailable = "avl:" + roomType + ":" + room + ":available";
 				levelDb.put(bytes(keyAvailable), bytes("f"));
 			} else {
+				String keyAvailable = "avl:" + roomType + ":" + roomId + ":available";
 				int seats = Integer.parseInt(asString(levelDb.get(bytes(keyAvailable)))) + 1;
 				levelDb.put(bytes(keyAvailable), bytes(Integer.toString(seats)));
 			}
@@ -124,19 +153,15 @@ public class LevelDbDriver {
 		}
 	}
 
-	public void deleteBooked(String roomType, long roomId, long userId, String userRole) throws IOException {
+	public void deleteBooked(String roomType, long roomId, long userId) throws IOException {
 		try {
 			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\booked"), options);
-
 			String keyName = "bkg:" + roomType + ":" + userId + ":" + roomId + ":roomname";
 			levelDb.delete(bytes(keyName));
 
 			if (roomType.equals("cla")) {
 				String keySchedule = "bkg:" + roomType + ":" + userId + ":" + roomId + ":schedule";
-				Collection<Booked> booked = getBooked(userRole);
-				if (booked.size() >= 1) {
-					levelDb.delete(bytes(keySchedule));
-				}
+				levelDb.delete(bytes(keySchedule));
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();

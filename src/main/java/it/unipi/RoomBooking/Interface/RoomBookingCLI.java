@@ -216,18 +216,13 @@ public final class RoomBookingCLI {
 		bookedRooms = database.getBooked(user.getRole());
 
 		if (bookedRooms.size() == 0) {
-			out.println(RED + "No available rooms\n" + WHITE);
+			out.println(RED + "No booked rooms\n" + WHITE);
 			return;
 		}
 
 		while (!isValid) {
+			showbooked();
 			System.out.print("\nChoose the room you booked by ID > ");
-			System.out.printf("\n%-5s %-15s %-25s", "ID", "Room", "Building");
-			System.out.println("\n===================================================================");
-			for (Booked i : bookedRooms) {
-				out.println(i.toString());
-			}
-
 			requestedRoom = input.next();
 
 			for (Booked iteration : bookedRooms) {
@@ -370,7 +365,8 @@ public final class RoomBookingCLI {
 
 			database.initializeAvailable(user);
 			database.initializeBooked(user);
-			System.out.println(GREEN + "\nWelcome" + user.getName() + WHITE);
+
+			System.out.println(GREEN + "\nWelcome " + user.getName() + WHITE);
 
 			while (!terminate) {
 				command = getCommand();
