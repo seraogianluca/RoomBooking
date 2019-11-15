@@ -236,12 +236,10 @@ public class HibernateDriver {
     public void deleteClassroomBooking(long bookingId) {
         try {
             entityManager = factory.createEntityManager();
-            // Retreiving the room and the reservation to delete and do it.
             entityManager.getTransaction().begin();
             ClassroomBooking classroomBooking = entityManager.find(ClassroomBooking.class, bookingId);
             Classroom classroom = entityManager.find(Classroom.class, classroomBooking.getClassroom().getId());
             classroom.deleteBooking(classroomBooking);
-
             entityManager.remove(classroomBooking);
             entityManager.merge(classroom);
             entityManager.getTransaction().commit();
@@ -255,16 +253,13 @@ public class HibernateDriver {
     public void deleteLaboratoryBooking(long studentId, long laboratoryId) {
         try {
             entityManager = factory.createEntityManager();
-            // Retreiving the room and the student for delete the reservation.
             entityManager.getTransaction().begin();
             Laboratory laboratory = entityManager.find(Laboratory.class, laboratoryId);
             Student student = entityManager.find(Student.class, studentId);
             laboratory.deleteBooking(student);
             student.deleteBooking(laboratory);
-
             entityManager.merge(laboratory);
             entityManager.merge(student);
-
             entityManager.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -294,7 +289,6 @@ public class HibernateDriver {
         try {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
-
             Laboratory laboratory = entityManager.find(Laboratory.class, laboratoryId);
             entityManager.getTransaction().commit();
             return laboratory;
@@ -304,7 +298,6 @@ public class HibernateDriver {
             entityManager.close();
         }
         return null;
-
     }
 
     public ClassroomBooking getClassroomBooking(long classroomId, long userId, String schedule) {

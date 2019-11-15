@@ -175,9 +175,8 @@ public final class RoomBookingCLI {
 			return;
 		}
 
+		showBooked(bookedRooms);
 		while (!isValid) {
-			showBooked(bookedRooms);
-
 			out.print("\nChoose the room you booked by ID > ");
 			requestedRoom = input.next();
 
@@ -190,10 +189,10 @@ public final class RoomBookingCLI {
 			}
 
 			if (!isValid) {
-				System.out.println(YELLOW + "\nPlease insert a valid room." + WHITE);
+				out.println(YELLOW + "\nPlease insert a valid room." + WHITE);
 			} else {
 				database.deleteBooking(user, bookToDelete);
-				System.out.println(GREEN + "\nBooking succesfully deleted." + WHITE);
+				out.println(GREEN + "\nBooking succesfully deleted." + WHITE);
 			}
 		}
 	}
@@ -293,7 +292,7 @@ public final class RoomBookingCLI {
 				if (!isValid) {
 					System.out.println(YELLOW + "\nPlease insert a valid room." + WHITE);
 				} else {
-					database.updateBooking(user, roomAvailable, requestedSchedule, room);
+					//database.updateBooking(user, roomAvailable, requestedSchedule, room);
 					System.out.println(GREEN + "\nBooking succesfully updated." + WHITE);
 				}
 
