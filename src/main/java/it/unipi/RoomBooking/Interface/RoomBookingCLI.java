@@ -36,6 +36,7 @@ public final class RoomBookingCLI {
 
 				user = database.authenticate(email.toString());
 				isValid = true;
+				System.out.print("u are a" + user.getRole());
 			} catch (UserNotExistException uex) {
 				out.println(RED + uex.getMessage() + WHITE);
 				isValid = false;
@@ -47,11 +48,18 @@ public final class RoomBookingCLI {
 		String command;
 		boolean isValid = false;
 
-		out.println("\n1 - Book a Room." + 
-					"\n2 - Delete a booking." + 
-					"\n3 - Update a booking." + 
+		if(user.getRole().equals("A")){
+			out.println("\n1 - Insert a student." + 
+					"\n2 - Insert a teacher." + 
+					"\n3 - Insert a room." + 
 					"\n4 - Close.");
-
+		}
+		else{
+			out.println("\n1 - Book a Room." + 
+						"\n2 - Delete a booking." + 
+						"\n3 - Update a booking." + 
+						"\n4 - Close.");
+		}
 		while (!isValid) {
 			out.print("\nChoose an action > ");
 			command = input.next();
@@ -293,20 +301,57 @@ public final class RoomBookingCLI {
 		}
 	}
 
+	//Admin methods
+	public static void addStudent(){
+		String[] dataString= new String[3];
+		//insert name,lastname, email
+		out.print("\nInsert the name of the student > ");
+		dataString[0] = input.next();
+		out.print("\nInsert the lastname of the Student >");
+		dataString[1] = input.next();
+		out.print("\nInsert the email of the Student >");
+		dataString[2] = input.next();
+		
+		//call db method
+			//check if duplicate?
+		database.setStudent(dataString);
+		out.println("Student: "+ dataString[0]+" "+ dataString[1] + " added!");
+		
+	}
+	public static void addTeacher(){
+		String[] dataString= new String[3];
+		//insert name,lastname, email
+		out.print("\nInsert the name of the Teacher > ");
+		dataString[0] = input.next();
+		out.print("\nInsert the lastname of the Teacher >");
+		dataString[1] = input.next();
+		out.print("\nInsert the email of the Teacher >");
+		dataString[2] = input.next();
+		
+		//call db method
+			//check if duplicate?
+		database.setTeacher(dataString);
+		out.println("Teacher: "+ dataString[0]+" "+ dataString[1] + " added!");
+		
+	}
+
+
 	public static void main(String[] args) {
 
 		database = new DBSManager();
 		input = new Scanner(System.in);
 		boolean terminate = false;
 		String command = null;
+		int commandInt;
 
 		try {
 			database.start();
 			ident();
 
-			database.initializeAvailable(user);
-			database.initializeBooked(user);
-
+			if(user.getRole().equals("T") || (user.getRole().equals("S"))){
+				database.initializeAvailable(user);
+				database.initializeBooked(user);
+			}
 			out.println(GREEN + "\nWelcome " + user.getName() + WHITE);
 
 			while (!terminate) {
@@ -318,7 +363,13 @@ public final class RoomBookingCLI {
 					break;
 				}
 
-				switch (Integer.parseInt(command)) {
+				commandInt = Integer.parseInt(command);
+				if(user.getRole().equals("A")){ //admin commands has +10 to distinguish
+					commandInt +=10;
+				}
+				switch (commandInt) {
+					
+						
 				case 1:
 					bookARoom();
 					break;
@@ -332,6 +383,14 @@ public final class RoomBookingCLI {
 					terminate = true;
 					out.println("\nSee you soon!");
 					break;
+				//admin commands
+				case 11:
+					addStudent();
+					break;
+				case 12:
+					addTeacher();
+					break;
+
 				}
 			}
 		} finally {

@@ -377,12 +377,12 @@ public class HibernateDriver {
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
 
-            Teacher student = new Teacher();
+            Teacher teacher = new Teacher();
 
-            student.setName(name);
-            student.setLastname(lastName);
-            student.setEmail(email);
-            entityManager.merge(student);
+            teacher.setName(name);
+            teacher.setLastname(lastName);
+            teacher.setEmail(email);
+            entityManager.merge(teacher);
             entityManager.getTransaction().commit();
         } catch (Exception ex) {
             ex.printStackTrace();
