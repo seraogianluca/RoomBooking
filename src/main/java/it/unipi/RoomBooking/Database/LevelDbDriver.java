@@ -29,7 +29,8 @@ public class LevelDbDriver {
 		}
 	}
 
-	public void putAvailable(String roomType, long roomId, String roomName, String buildingName, int capacity, String available) throws IOException {
+	public void putAvailable(String roomType, long roomId, String roomName, String buildingName, int capacity,
+			String available) throws IOException {
 		try {
 			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
 			String keyName = "avl:" + roomType + ":" + roomId + ":roomname";
@@ -65,36 +66,13 @@ public class LevelDbDriver {
 		}
 	}
 
-	public void updateAvailability(String roomType, long roomId, String roomName, String requestedSchedule) throws IOException {
+	public void increaseLaboratoryAvailability(long roomId) throws IOException {
 		try {
 			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
+			String key = "avl:lab:" + roomId + ":available";
+			int seats = Integer.parseInt(asString(levelDb.get(bytes(key)))) + 1;
+			levelDb.put(bytes(key), bytes(Integer.toString(seats)));
 
-			if (roomType.equals("cla")) {
-				DBIterator iterator = levelDb.iterator();
-				//For classrooms roomId is the bookingId
-				long room = 0;
-
-				for (iterator.seek(bytes("avl:cla:")); iterator.hasNext(); iterator.next()) {
-					String key = asString(iterator.peekNext().getKey());
-					if (key.endsWith("roomname")) {
-						String[] keySplit = key.split(":");
-						room = Long.parseLong(keySplit[2]);
-						break;
-					}
-				}
-
-				iterator.close();
-				levelDb.delete(bytes("avl:cla:" + room + ":available"));
-				if (requestedSchedule.equals("m")) {
-					levelDb.put(bytes("avl:cla:" + room + ":available"), bytes("a"));
-				} else {
-					levelDb.put(bytes("avl:cla:" + room + ":available"), bytes("m"));
-				}
-			} else {
-				int seats = Integer.parseInt(asString(levelDb.get(bytes("avl:lab:" + roomId + ":available")))) - 1;
-				levelDb.delete(bytes("avl:lab:" + roomId + ":available"));
-				levelDb.put(bytes("avl:lab:" + roomId + ":available"), bytes(Integer.toString(seats)));
-			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} finally {
@@ -102,31 +80,39 @@ public class LevelDbDriver {
 		}
 	}
 
-	public void setAvailability(String roomType, long roomId) throws IOException {
+	public void decreaseLaboratoryAvailability(long roomId) throws IOException {
 		try {
 			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
+			String key = "avl:lab:" + roomId + ":available";
+			int seats = Integer.parseInt(asString(levelDb.get(bytes(key)))) - 1;
+			levelDb.put(bytes(key), bytes(Integer.toString(seats)));
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			levelDb.close();
+		}
+	}
 
-			if (roomType.equals("cla")) {
-				DBIterator iterator = levelDb.iterator();
-				long room = 0;
+	public void setClassroomAvailability(long roomId) throws IOException {
+		try {
+			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
+			String key = "avl:cla" + roomId + ":available";
+			levelDb.put(bytes(key), bytes("f"));
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			levelDb.close();
+		}
+	}
 
-				for (iterator.seek(bytes("avl:")); iterator.hasNext(); iterator.next()) {
-					String key = asString(iterator.peekNext().getKey());
-					if (key.endsWith("roomname")) {
-						String[] keySplit = key.split(":");
-						room = Long.parseLong(keySplit[2]);
-						break;
-					}
-				}
-
-				iterator.close();
-
-				String keyAvailable = "avl:" + roomType + ":" + room + ":available";
-				levelDb.put(bytes(keyAvailable), bytes("f"));
+	public void updateClassroomAvailability(long roomId, String requestedSchedule) throws IOException {
+		try {
+			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
+			levelDb.delete(bytes("avl:cla:" + roomId + ":available"));
+			if (requestedSchedule.equals("m")) {
+				levelDb.put(bytes("avl:cla:" + roomId + ":available"), bytes("a"));
 			} else {
-				String keyAvailable = "avl:" + roomType + ":" + roomId + ":available";
-				int seats = Integer.parseInt(asString(levelDb.get(bytes(keyAvailable)))) + 1;
-				levelDb.put(bytes(keyAvailable), bytes(Integer.toString(seats)));
+				levelDb.put(bytes("avl:cla:" + roomId + ":available"), bytes("m"));
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
@@ -191,7 +177,8 @@ public class LevelDbDriver {
 					if (key.endsWith("roomname")) {
 						String[] keySplit = key.split(":");
 						String roomName = asString(levelDb.get(bytes(key)));
-						String schedule = asString(levelDb.get(bytes("bkg:cla:" + keySplit[2] + ":" + keySplit[3] + ":schedule")));
+						String schedule = asString(
+								levelDb.get(bytes("bkg:cla:" + keySplit[2] + ":" + keySplit[3] + ":schedule")));
 						bookings.add(new Booked(Long.parseLong(keySplit[3]), roomName, schedule, "cla"));
 					}
 				}
@@ -227,7 +214,7 @@ public class LevelDbDriver {
 					String available = asString(levelDb.get(bytes(key)));
 					boolean isAvailable = true;
 
-					if (roomType.equals("cla")) {						
+					if (roomType.equals("cla")) {
 						if (!(available.equals(requestedSchedule) || available.equals("f"))) {
 							isAvailable = false;
 						}
@@ -240,9 +227,12 @@ public class LevelDbDriver {
 					if (isAvailable) {
 						String[] keySplit = key.split(":");
 						String name = asString(levelDb.get(bytes("avl:" + roomType + ":" + keySplit[2] + ":roomname")));
-						String building = asString(levelDb.get(bytes("avl:" + roomType + ":" + keySplit[2] + ":buildingname")));
-						int capacity = Integer.parseInt(asString(levelDb.get(bytes("avl:" + roomType + ":" + keySplit[2] + ":roomcapacity"))));
-						availables.add(new Available(name, building, available, roomType, Long.parseLong(keySplit[2]), capacity));
+						String building = asString(
+								levelDb.get(bytes("avl:" + roomType + ":" + keySplit[2] + ":buildingname")));
+						int capacity = Integer.parseInt(
+								asString(levelDb.get(bytes("avl:" + roomType + ":" + keySplit[2] + ":roomcapacity"))));
+						availables.add(new Available(name, building, available, roomType, Long.parseLong(keySplit[2]),
+								capacity));
 					}
 				}
 			}
