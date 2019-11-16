@@ -14,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import it.unipi.RoomBooking.Data.Interface.Person;
+import it.unipi.RoomBooking.Data.Interface.Room;
 import it.unipi.RoomBooking.Data.ORM.*;
 import it.unipi.RoomBooking.Exceptions.UserNotExistException;
 
@@ -383,4 +384,122 @@ public class HibernateDriver {
             entityManager.close();
         }
     }
+
+    public void createClassroom(String[] data ,Building b){
+        try{
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            Classroom c = new Classroom();
+
+            c.setAvailable(true);
+            c.setBuilding(b);
+            c.setCapacity(Integer.parseInt(data[2]));
+            c.setName(data[1]);
+            entityManager.merge(c);
+            
+            entityManager.getTransaction().commit();
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+        }finally{
+            entityManager.close();
+        }
+    }
+
+    public void createLaboratory(String[] data, Building b){
+        try{
+            entityManager = factory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            Laboratory l = new Laboratory();
+
+            l.setAvailable(true);
+            l.setBuilding(b);
+            l.setCapacity(Integer.parseInt(data[2]));
+            l.setName(data[1]);
+            entityManager.merge(l);
+            
+            entityManager.getTransaction().commit();
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+        }finally{
+            entityManager.close();
+        }
+    }
+
+    public Building getBuilding(String building){
+
+        Building build=null;
+        try{
+            entityManager = factory.createEntityManager();         
+            
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Building> criteriaQuery = criteriaBuilder.createQuery(Building.class);
+            Root<Building> root = criteriaQuery.from(Building.class);
+            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("buildingName"), building));
+            build = entityManager.createQuery(criteriaQuery).getSingleResult();
+
+            
+            return build;
+        }   
+        catch(Exception ex){
+            ex.printStackTrace();
+        }finally{
+            entityManager.close();
+        }
+        return null;
+    }
+
+    public boolean checkDuplicateUser(String data, String role){
+       
+        try{
+            entityManager = factory.createEntityManager();         
+            
+            if(role.equals("T")){
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Teacher> criteriaQuery = criteriaBuilder.createQuery(Teacher.class);
+            Root<Teacher> root = criteriaQuery.from(Teacher.class);
+            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("teacherEmail"), data));
+            
+            return !(entityManager.createQuery(criteriaQuery).getResultList().size() > 0);  
+            }
+            else{
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Student> criteriaQuery = criteriaBuilder.createQuery(Student.class);
+            Root<Student> root = criteriaQuery.from(Student.class);
+            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("studentEmail"), data));
+            
+            return !(entityManager.createQuery(criteriaQuery).getResultList().size() > 0);
+            }
+           
+        }   
+        catch(Exception ex){
+            ex.printStackTrace();
+        }finally{
+            entityManager.close();
+        }
+
+        return false;
+    }
+
+    public boolean checkBuilding(String build){
+        try{
+            entityManager = factory.createEntityManager();
+            
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Building> criteriaQuery = criteriaBuilder.createQuery(Building.class);
+            Root<Building> root = criteriaQuery.from(Building.class);
+            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("buildingName"), build));
+            return (entityManager.createQuery(criteriaQuery).getResultList().size() > 0);
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+        }finally{
+            entityManager.close();
+        }
+        return false;
+    }
+
 }

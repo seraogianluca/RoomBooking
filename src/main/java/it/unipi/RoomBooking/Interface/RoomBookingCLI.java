@@ -6,6 +6,7 @@ import java.util.*;
 import it.unipi.RoomBooking.Data.NORM.Available;
 import it.unipi.RoomBooking.Data.NORM.Booked;
 import it.unipi.RoomBooking.Data.NORM.User;
+import it.unipi.RoomBooking.Data.ORM.Classroom;
 import it.unipi.RoomBooking.Database.*;
 import it.unipi.RoomBooking.Exceptions.UserNotExistException;
 
@@ -46,12 +47,18 @@ public final class RoomBookingCLI {
 	private static String getCommand() {
 		String command;
 		boolean isValid = false;
-
+		if(user.getRole().equals("A")){
+			out.println("\n1 - Insert a student." + 
+					"\n2 - Insert a teacher." + 
+					"\n3 - Insert a room or a building." +
+					"\n4 Close. ");
+				}
+		else{
 		out.println("\n1 - Book a Room." + 
 					"\n2 - Delete a booking." + 
 					"\n3 - Update a booking." + 
 					"\n4 - Close.");
-
+		}
 		while (!isValid) {
 			out.print("\nChoose an action > ");
 			command = input.next();
@@ -289,23 +296,26 @@ public final class RoomBookingCLI {
 	//Admin methods
 	private static void addStudent(){
 		String[] dataString= new String[3];
-		//insert name,lastname, email
+		
 		out.print("\nInsert the name of the student > ");
 		dataString[0] = input.next();
 		out.print("\nInsert the lastname of the Student >");
 		dataString[1] = input.next();
 		out.print("\nInsert the email of the Student >");
 		dataString[2] = input.next();
-		
-		//call db method
-			//check if duplicate?
+	
+		if(database.checkDuplicateUser(dataString[2], user.getRole()) == false){
+			out.println(RED + "User already exists!" + WHITE);
+			return;
+			}
 		database.setStudent(dataString);
-		out.println("Student: "+ dataString[0]+" "+ dataString[1] + " added!");
+		out.println(GREEN + "\nStudent: "+ dataString[0]+" "+ dataString[1] + " added!" + WHITE);
+		
 		
 	}
 	private static void addTeacher(){
 		String[] dataString= new String[3];
-		//insert name,lastname, email
+		
 		out.print("\nInsert the name of the Teacher > ");
 		dataString[0] = input.next();
 		out.print("\nInsert the lastname of the Teacher >");
@@ -313,11 +323,80 @@ public final class RoomBookingCLI {
 		out.print("\nInsert the email of the Teacher >");
 		dataString[2] = input.next();
 		
-		//call db method
-			//check if duplicate?
-		database.setTeacher(dataString);
-		out.println("Teacher: "+ dataString[0]+" "+ dataString[1] + " added!");
 		
+		if(database.checkDuplicateUser(dataString[2], user.getRole()) == false){
+			out.println(RED + "User already exists!" + WHITE);
+			return;
+		}
+		database.setTeacher(dataString);
+		out.println(GREEN + "\nTeacher: "+ dataString[0]+" "+ dataString[1] + " added!" + WHITE);
+		
+	}
+
+	private static void addRoom(){
+		
+		//ask if want add in a existing building or add a new one (ok?)
+		out.print("\nDo you want to add a room in a existing building or add a new one?");
+		out.println("\n1 - Existing building" + 
+					"\n2 - Insert a building");
+		String cmd=input.next();
+		String [] data = new String[6]; //check the dim
+		if(cmd.equals("1")){ //existing build
+			//ask if want to add a class or a lab
+			out.print("\nDo you want to add a Classroom or a Laboratory?");
+			out.println("\n1 - Classroom" + 
+					"\n2 - Laboratory");
+			String typeRoom = input.next();
+			if(typeRoom.equals("1")){ //classroom
+				data[3] = "cla";
+				out.print("\nIn which building? > "); 
+				
+				//maybe show the buildings?
+				data[0]=input.next();
+				if(!database.checkBuilding(data[0])){
+					System.out.println(RED + "Building not exists!" + WHITE);
+					return;
+				}
+
+				out.print("Insert the name of the room >");
+				data[1]=input.next();
+				
+				out.print("Insert capacity >");
+				data[2] = input.next();
+
+				database.setRoom(data);
+				out.println(GREEN + "\nClassroom: "+ data[1]+" "+ "added!" + WHITE);
+			}
+			else{ //lab
+				data[3] = "lab";
+				out.print("\nIn which building? > "); //check if building is correct
+				//maybe show the buildings?
+				data[0]=input.next();
+				
+				out.print("Insert the name of the Lab >");
+				data[1]=input.next();
+				
+				out.print("Insert capacity >");
+				data[2] = input.next();
+				database.setRoom(data);
+				out.println(GREEN + "\nLaboratory: "+ data[1]+" "+ "added!" + WHITE);
+			}
+			
+			
+		}
+			//create building in case
+		else { //add building
+			out.print("Insert the name of the new Building > ");
+			data[0]=input.next();
+			out.print("Insert the address of the new Building: > " );
+			data[1] = input.next();
+			database.setBuilding(data);
+			out.println(GREEN + "\nBuilding: "+ data[0]+" "+ "added!" + WHITE);
+
+		}
+		
+		
+
 	}
 
 	public static void main(String[] args) {
@@ -374,6 +453,14 @@ public final class RoomBookingCLI {
 				case 12:
 					addTeacher();
 					break;
+				case 13: 
+					addRoom();
+					break;
+				case 14:
+					terminate = true;
+					out.println("\nSee you soon!");
+				break;
+			
 
 				}
 			}

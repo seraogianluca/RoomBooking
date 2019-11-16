@@ -1,6 +1,7 @@
 package it.unipi.RoomBooking.Database;
 
 import it.unipi.RoomBooking.Data.NORM.*;
+import it.unipi.RoomBooking.Data.ORM.Building;
 import it.unipi.RoomBooking.Data.ORM.Classroom;
 import it.unipi.RoomBooking.Data.ORM.ClassroomBooking;
 import it.unipi.RoomBooking.Data.ORM.Laboratory;
@@ -214,6 +215,27 @@ public void setStudent(String[] data){   //exceptions?
 }
 public void setTeacher(String[] data){   //exceptions?  
     hibernate.createTeacher(data[0], data[1], data[2]);
+}
+
+public void setRoom (String[] data){ //exceptions?  
+    Building build=hibernate.getBuilding(data[0]);
+    if(data[3].equals("cla"))
+        hibernate.createClassroom(data ,build);
+    else
+        hibernate.createLaboratory(data, build);
+}
+
+public void setBuilding(String[] data){
+    hibernate.createBuilding(data[0], data[1]);
+}
+
+public boolean checkDuplicateUser(String data, String role){
+   return hibernate.checkDuplicateUser(data, role);
+
+}
+
+public boolean checkBuilding(String build){
+    return hibernate.checkBuilding(build);
 }
 
 }

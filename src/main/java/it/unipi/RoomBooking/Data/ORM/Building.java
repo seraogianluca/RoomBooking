@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.Hibernate;
+
 import it.unipi.RoomBooking.Data.Interface.BuildingInterface;
 
 @Entity
@@ -60,6 +62,7 @@ public class Building implements BuildingInterface {
     public void addClassroom(Classroom classroom) {
         this.buildingClassrooms.add(classroom);
     }
+
 
     public String toString() {
         return "Building Information: " +  

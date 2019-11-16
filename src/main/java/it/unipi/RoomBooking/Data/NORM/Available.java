@@ -29,6 +29,7 @@ public class Available {
         this.type = "cla";
     }
 
+
     public void setType(String type) {
         this.type = type;
     }
