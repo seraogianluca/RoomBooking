@@ -18,7 +18,7 @@ import it.unipi.RoomBooking.Data.ORM.*;
 import it.unipi.RoomBooking.Exceptions.UserNotExistException;
 
 public class HibernateDriver {
-    private static EntityManagerFactory factory;
+       private static EntityManagerFactory factory;
     private EntityManager entityManager;
 
     public void start() {

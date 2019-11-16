@@ -1,7 +1,6 @@
 package it.unipi.RoomBooking.Database;
 
 import org.iq80.leveldb.*;
-import org.jvnet.staxex.util.FinalArrayList;
 
 import it.unipi.RoomBooking.Data.NORM.Available;
 import it.unipi.RoomBooking.Data.NORM.Booked;
@@ -246,6 +245,5 @@ public class LevelDbDriver {
 
 		return availables;
 	}
-
 
 }

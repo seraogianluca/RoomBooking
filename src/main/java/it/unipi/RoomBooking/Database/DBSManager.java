@@ -28,9 +28,8 @@ public class DBSManager implements Manager {
     public void initializeAvailable(User user) {
         try {
             if (user.getRole().equals("T")) {
-                // retreive available classrooms
                 Collection<Classroom> classrooms = hibernate.getAvailableClassrooms();
-                // store available classes on kv
+
                 for (Classroom cla : classrooms) {
                     String available;
 
@@ -44,17 +43,14 @@ public class DBSManager implements Manager {
                         available = "f";
                     }
 
-                    levelDb.putAvailable("cla", cla.getId(), cla.getName(), cla.getBuilding(), cla.getCapacity(),
-                            available);
+                    levelDb.putAvailable("cla", cla.getId(), cla.getName(), cla.getBuilding(), cla.getCapacity(), available);
                 }
             } else if (user.getRole().equals("S")) {
-                // retreive available classrooms
                 Collection<Laboratory> laboratories = hibernate.getAvailableLaboratories(user.getId());
-                // store available classes on kv
+
                 for (Laboratory lab : laboratories) {
                     String available = Integer.toString(lab.getCapacity() - lab.getBookingNumber());
-                    levelDb.putAvailable("lab", lab.getId(), lab.getName(), lab.getBuilding(), lab.getCapacity(),
-                            available);
+                    levelDb.putAvailable("lab", lab.getId(), lab.getName(), lab.getBuilding(), lab.getCapacity(), available);
                 }
             }
         } catch (IOException ioe) {
@@ -68,17 +64,17 @@ public class DBSManager implements Manager {
                 Collection<ClassroomBooking> bookings = hibernate.getBookedClassrooms(user.getId());
 
                 for (ClassroomBooking book : bookings) {
-                   // levelDb.putBooked("cla", book.getId(), user.getId(), book.getRoomName(), book.getSchedule());
+                    levelDb.putBooked(user.getId(),"cla", book.getId(), book.getRoomName(), book.getSchedule());
                 }
             } else if (user.getRole().equals("S")) {
 
                 Collection<Laboratory> laboratories = hibernate.getBookedLaboratories(user.getId());
 
                 for (Laboratory lab : laboratories) {
-                  //  levelDb.putBooked("lab", lab.getId(), user.getId(), lab.getName(), null);
+                    levelDb.putBooked(user.getId(), "lab", lab.getId(), lab.getName(), null);
                 }
             }
-        } catch (Exception ioe) { // <-IOException
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
@@ -89,7 +85,6 @@ public class DBSManager implements Manager {
         try {
             if (email.contains("admin")) {
                 user = new User(-1, "admin", "admin", email, "A");
-               
             } else if (email.contains("studenti")) {
                 user = new User(hibernate.authenticate(email, false));
                 user.setRole("S");
@@ -107,6 +102,19 @@ public class DBSManager implements Manager {
     public Collection<Available> getAvailable(String requestedSchedule, String role) {
         try {
             Collection<Available> available = levelDb.getAvailable(requestedSchedule, role);
+
+            if(role.equals("S")) {
+                Collection<Booked> bookedLabs = getBooked(role);
+
+                for(Available a : available) {
+                    for(Booked b : bookedLabs) {
+                        if(b.getId() == a.getId()) {
+                            available.remove(a);
+                        }
+                    }
+                }
+            }
+
             return available;
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -128,11 +136,13 @@ public class DBSManager implements Manager {
         try {
             if (user.getRole().equals("T")) {
                 hibernate.setClassroomBooking(user.getId(), roomToBook.getId(), requestedSchedule);
+                ClassroomBooking newBook = hibernate.getClassroomBooking(roomToBook.getId(), user.getId(), requestedSchedule);
+                levelDb.putBooked(user.getId(), roomToBook.getType(), newBook.getId(), roomToBook.getRoom(), requestedSchedule);
             } else {
                 hibernate.setLaboratoryBooking(user.getId(), roomToBook.getId());
+                levelDb.putBooked(user.getId(), roomToBook.getType(), roomToBook.getId(), roomToBook.getRoom(), null);
             }
-            //levelDb.putBooked(roomToBook.getType(), roomToBook.getId(), user.getId(), roomToBook.getRoom(),
-               //     requestedSchedule);
+
             if (checkAvailability(roomToBook)) {
                 levelDb.deleteFromAvailable(roomToBook.getType(), roomToBook.getId());
                 hibernate.updateAvailability(roomToBook.getType(), roomToBook.getId(), false);
@@ -186,6 +196,7 @@ public class DBSManager implements Manager {
                     levelDb.increaseLaboratoryAvailability(booked.getId());
                 }
             }
+            levelDb.deleteBooked(booked.getType(), booked.getId(), user.getId());
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
@@ -196,6 +207,7 @@ public class DBSManager implements Manager {
         deleteBooking(user, booked);
         setBooking(user, roomToBook, requestedSchedule);
     }
+
 //Admin methods
 public void setStudent(String[] data){   //exceptions?  
     hibernate.createStudent(data[0], data[1], data[2]);
@@ -203,4 +215,5 @@ public void setStudent(String[] data){   //exceptions?
 public void setTeacher(String[] data){   //exceptions?  
     hibernate.createTeacher(data[0], data[1], data[2]);
 }
+
 }

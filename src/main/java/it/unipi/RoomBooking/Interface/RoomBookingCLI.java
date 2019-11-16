@@ -36,7 +36,6 @@ public final class RoomBookingCLI {
 
 				user = database.authenticate(email.toString());
 				isValid = true;
-				System.out.print("u are a" + user.getRole());
 			} catch (UserNotExistException uex) {
 				out.println(RED + uex.getMessage() + WHITE);
 				isValid = false;
@@ -48,18 +47,11 @@ public final class RoomBookingCLI {
 		String command;
 		boolean isValid = false;
 
-		if(user.getRole().equals("A")){
-			out.println("\n1 - Insert a student." + 
-					"\n2 - Insert a teacher." + 
-					"\n3 - Insert a room." + 
+		out.println("\n1 - Book a Room." + 
+					"\n2 - Delete a booking." + 
+					"\n3 - Update a booking." + 
 					"\n4 - Close.");
-		}
-		else{
-			out.println("\n1 - Book a Room." + 
-						"\n2 - Delete a booking." + 
-						"\n3 - Update a booking." + 
-						"\n4 - Close.");
-		}
+
 		while (!isValid) {
 			out.print("\nChoose an action > ");
 			command = input.next();
@@ -98,7 +90,7 @@ public final class RoomBookingCLI {
 		return requestedSchedule;
 	}
 
-	public static void showBooked(Collection<Booked> booked) {
+	private static void showBooked(Collection<Booked> booked) {
 		out.println("\nList of your booked rooms:\n");
 
 		if (user.getRole().equals("T")) {
@@ -115,7 +107,7 @@ public final class RoomBookingCLI {
 		}
 	}
 
-	public static void showAvailable(Collection<Available> available) {
+	private static void showAvailable(Collection<Available> available) {
 		out.printf("%-5s %-15s %-25s %-10s", "ID", "Room", "Building", "Capacity");
 		out.println("\n===================================================================");
 		for (Available i : available) {
@@ -198,7 +190,6 @@ public final class RoomBookingCLI {
 	}
 
 	private static void updateBooking() {
-
 		String oldRoom = null;
 		String requestedSchedule = null;
 		String requestedRoom = null;
@@ -208,12 +199,11 @@ public final class RoomBookingCLI {
 		Available roomAvailable = null;
 		boolean isValid = false;
 		String oldbookingId = null;
-		long oldRoomId = -1;
 
 		bookedRooms = database.getBooked(user.getRole());
 
 		if (bookedRooms.size() == 0) {
-			System.out.println(RED + "No available rooms\n" + WHITE);
+			out.println(RED + "No available rooms\n" + WHITE);
 			return;
 		}
 
@@ -221,43 +211,33 @@ public final class RoomBookingCLI {
 
 		while (!isValid) {
 			if (user.getRole().equals("T")) {
+				//Teacher
 				while (!isValid) {
-					System.out.print("\nChoose the room you want to change by ID >");
-
+					out.print("\nChoose the room you want to change by ID > ");
 					oldbookingId = input.next();
 
 					for (Booked iteration : bookedRooms) {
-						// Classroom c = (Classroom) iteration;
-
-						// Collection<ClassroomBooking> collection =
-						// c.getBookedByTeacherId(user.getId());
-						// for (ClassroomBooking iterator :collection) {
 						if (Long.parseLong(oldbookingId) == iteration.getId()) {
 							room = iteration;
-							oldRoomId = iteration.getId();
 							isValid = true;
 							break;
 						}
-						// }
 					}
 
 					if (!isValid) {
-						System.out.println(YELLOW + "\nPlease insert a valid room." + WHITE);
-					} else {
-						System.out.print("\nChoose the new schedule: ");
-
-						requestedSchedule = setSchedule();
+						out.println(YELLOW + "\nPlease insert a valid room." + WHITE);
 					}
 				}
-			} else { // student
+			} else {
+				//Student
 				while (!isValid) {
-					System.out.print("\nChoose the room you want to change by ID > ");
+					out.print("\nChoose the room you want to change by ID > ");
 					oldRoom = input.next();
-					oldRoomId = Long.parseLong(oldRoom);
 					for (Booked i : bookedRooms) {
-						if (i.getId() == oldRoomId) {
+						if (i.getId() == Long.parseLong(oldRoom)) {
+							room = i;
 							isValid = true;
-							oldbookingId = "1";// for the student this value is not used after break;
+							break;
 						}
 					}
 
@@ -268,17 +248,23 @@ public final class RoomBookingCLI {
 			}
 
 			isValid = false;
-			availableRooms = database.getAvailable(requestedRoom, user.getRole());
+
+			if(user.getRole().equals("T")) {
+				out.print("\nChoose the new schedule: ");
+				requestedSchedule = setSchedule();
+			}
+
+			availableRooms = database.getAvailable(requestedSchedule, user.getRole());
 
 			if (availableRooms.size() == 0) {
-				System.out.println(RED + "\nNo available rooms." + WHITE);
+				out.println(RED + "\nNo available rooms." + WHITE);
 				return;
 			}
 
 			showAvailable(availableRooms);
 			while (!isValid) {
 
-				System.out.print("\nChoose a room by ID > ");
+				out.print("\nChoose a room by ID > ");
 				requestedRoom = input.next();
 
 				for (Available i : availableRooms) {
@@ -290,10 +276,10 @@ public final class RoomBookingCLI {
 				}
 
 				if (!isValid) {
-					System.out.println(YELLOW + "\nPlease insert a valid room." + WHITE);
+					out.println(YELLOW + "\nPlease insert a valid room." + WHITE);
 				} else {
-					//database.updateBooking(user, roomAvailable, requestedSchedule, room);
-					System.out.println(GREEN + "\nBooking succesfully updated." + WHITE);
+					database.updateBooking(user, roomAvailable, requestedSchedule, room);
+					out.println(GREEN + "\nBooking succesfully updated." + WHITE);
 				}
 
 			}
@@ -301,7 +287,7 @@ public final class RoomBookingCLI {
 	}
 
 	//Admin methods
-	public static void addStudent(){
+	private static void addStudent(){
 		String[] dataString= new String[3];
 		//insert name,lastname, email
 		out.print("\nInsert the name of the student > ");
@@ -317,7 +303,7 @@ public final class RoomBookingCLI {
 		out.println("Student: "+ dataString[0]+" "+ dataString[1] + " added!");
 		
 	}
-	public static void addTeacher(){
+	private static void addTeacher(){
 		String[] dataString= new String[3];
 		//insert name,lastname, email
 		out.print("\nInsert the name of the Teacher > ");
@@ -333,7 +319,6 @@ public final class RoomBookingCLI {
 		out.println("Teacher: "+ dataString[0]+" "+ dataString[1] + " added!");
 		
 	}
-
 
 	public static void main(String[] args) {
 
