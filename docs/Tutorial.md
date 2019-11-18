@@ -1,4 +1,4 @@
-# Making annotations and writing CRUD operations in JPA
+# Workgroup activity report - Making annotations and writing CRUD operations in JPA
 
 ## Table of contents
 
