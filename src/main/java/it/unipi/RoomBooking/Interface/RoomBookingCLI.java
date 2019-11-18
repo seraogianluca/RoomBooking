@@ -6,7 +6,6 @@ import java.util.*;
 import it.unipi.RoomBooking.Data.NORM.Available;
 import it.unipi.RoomBooking.Data.NORM.Booked;
 import it.unipi.RoomBooking.Data.NORM.User;
-import it.unipi.RoomBooking.Data.ORM.Classroom;
 import it.unipi.RoomBooking.Database.*;
 import it.unipi.RoomBooking.Exceptions.UserNotExistException;
 

@@ -14,7 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import it.unipi.RoomBooking.Data.Interface.Person;
-import it.unipi.RoomBooking.Data.Interface.Room;
 import it.unipi.RoomBooking.Data.ORM.*;
 import it.unipi.RoomBooking.Exceptions.UserNotExistException;
 
