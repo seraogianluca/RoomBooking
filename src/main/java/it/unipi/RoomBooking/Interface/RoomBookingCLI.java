@@ -304,7 +304,7 @@ public final class RoomBookingCLI {
 		out.print("\nInsert the email of the Student >");
 		dataString[2] = input.next();
 	
-		if(database.checkDuplicateUser(dataString[2], user.getRole()) == false){
+		if(database.checkDuplicateUser(dataString[2], "S") == false){
 			out.println(RED + "User already exists!" + WHITE);
 			return;
 			}
@@ -324,7 +324,7 @@ public final class RoomBookingCLI {
 		dataString[2] = input.next();
 		
 		
-		if(database.checkDuplicateUser(dataString[2], user.getRole()) == false){
+		if(database.checkDuplicateUser(dataString[2], "T") == false){
 			out.println(RED + "User already exists!" + WHITE);
 			return;
 		}
