@@ -37,84 +37,190 @@ LevelDB is simple embedded database with fast in memory read/write operations. T
 Since levelDB is implemented in C++ the [JNI interface](https://github.com/fusesource/leveldbjni) will be used.
 
 ## 5. Solution
-Since the relational database is implented as core database of the system, the levelDB based database will be used to speed up the operations that are often performed by the system. This means that levelDB will be used to store informations that are retrived as view in the relational database, such as the available rooms and the booked rooms both for teachers and students. Furthermore, given the need of retrieving more than one room at time the keys will be constructed to easily retrieve a range of values through iteration on keys. In levelDB, data will be stored in a way that queryes in the relation database are easier. All the necessary data in a user session will be stored at the beginning and only for a session. Concerning the write operations, the data consistency in both and between databases is always ensured.
+Since the relational database is implented as core database of the system, the levelDB based database will be used to speed up the operations that are often performed by the system. This means that levelDB will be used to store informations that are retrived as view in the relational database, such as the available rooms and the booked rooms both for teachers and students. Furthermore, given the need of retrieving more than one room at time the keys will be constructed to easily retrieve a range of values through iteration on keys. In levelDB, data will be stored in a way that queryes in the relation database are easier. All the data needed will be retrieved from mySQL and stored in levelDB at the beginning of the session as soon as the authentication is done and only once in a session. Concerning the write operations, the data consistency in both and between databases is always ensured.
 
 ## 6. Implementation
-The aim of the key value is to keep updated and fast to retrieve data that are often used. For us are the list of the available rooms, and the booking made by the user.
-The key value database will be filled with two different data flows based in the user type as soon as the authentication is done. If the user is a teacher the `avl` available bucket will be filled with free classrooms informations, if the user is a student it will be filled with free laboratories informations. 
-In the `bkg` bookings bucket the bookings of that specific user will be stored.
+The aim of the key value is to mantain updated and fast to retrieve data that are often needed like the list of the available rooms and the list of the bookings made by the user.
+With different kinds of users the database will be filled with different kinds of data. If the user is a teacher the 'available' bucket will be filled with free classrooms informations, if the user is a student it will be filled with free laboratories informations. 
+The bookings of that specific user will be stored in the 'bookings' bucket. 
+
+### 6.1 Keys schema
+
+Keys for the 'available' bucket:
+````
+$roomtype:$roomId:roomname=""
+$roomtype:$roomId:buildingname=""
+$roomtype:$roomId:roomcapacity=""
+$roomtype:$roomId:available=""
+````
+In the classroom case the rows that are inserted in the bookings bucket are two because there is the need to store the schedule in which the classroom is booked. For the laboratories you only book a seat for all the day, so the row that is inserted in the bookings bucket is one.
+
+Keys for the classrooms 'bookings' bucket:
+````
+$roomtype:$userId:$roomId:roomname=""
+$roomtype:$userId:$roomId:schedule=""
+````
+Keys for the laboratories 'bookings' bucket:
+````
+$roomtype:$userId:$roomId:roomname=""
+````
 
 
-Keys schema
---
-Keys for the `avl` and the `bkg` bucket:
-````
-avl:$roomtype:$roomId:roomname=""
-avl:$roomtype:$roomId:buildingname=""
-avl:$roomtype:$roomId:roomcapacity=""
-avl:$roomtype:$roomId:available=""
-````
-````
-bkg:$roomtype:$userId:$roomId:roomname=""
-bkg:$roomtype:$userId:$roomId:schedule=""
-````
+### 6.2 Classrooms procedures
+In the available bucket you can only find the list of the available classrooms with the corresponding free schedule. Because of the fact that a classroom can be booked only for two different schedule, when the available value is different from "f" (free fullday) it means that the room can be booked for just once more.
 
-Example of the database in case there are 2 available classrooms:
+#### 6.2.1 Case 1. Availability = "f".
 
-Available bucket:
-
-````
-avl:cla:1:roomname="a22"
-avl:cla:1:buildingname="polo a"
-avl:cla:1:roomcapacity="55"
-avl:cla:1:available="a"	//available only in afternoon
-
-avl:cla:2:roomname="a11"
-avl:cla:2:buildingname="polo a"
-avl:cla:2:roomcapacity="43"
-avl:cla:2:available="f"  //available in both afternoon and morning
-````
-Bookings bucket:
-````
-bkg:cla:5:1:roomname="a22"
-bkg:cla:5:1:schedule="m"
-````
-
-Example when there are 2 available laboratories:
+Database state before the booking:
 
 Available bucket:
 ````
-avl:lab:3:roomname="si4"
-avl:lab:3:buildingname="polo b"
-avl:lab:3:roomcapacity="150"
-avl:lab:3:available="23"    //23 free workspace left
+cla:1:roomname="a22"
+cla:1:buildingname="polo a"
+cla:1:roomcapacity="55"
+cla:1:available="f"	//available in both afternoon and morning
 
-avl:lab:2:roomname="si3"
-avl:lab:2:buildingname="polo b"
-avl:lab:2:roomcapacity="150"
-avl:lab:2:available="1" //this means that this room is almost full
+//...other available rooms...//
 ````
 Bookings bucket:
 ````
-bkg:lab:1:3:roomname="si4"
-````
-In the classroom available bucket you can only find the list of the available classrooms with the corresponding free schedule. Because of the fact that a classroom can be booked only for two different schedule, when the available value is different from "f"(free fullday) it means that that room can be booked for just one another time.
-All the rows relative to a classroom in the available bucket will be deleted in case the classroom that is getting booked has the available value equal to "m" or "a": it means that after this booking it will not be available anymore.
-When a booking is deleted the room become available again, so it must be inserted in the available bucket with the corresponding free schedule.
-
-In the laboratory available bucket you can only find the list of the available laboratories with the corresponding free workstations. The available value rapresent the number of remaining free workstations before the room gets completely full.
-All the rows relative to a laboratory in the available bucket will be deleted in case the laboratory that is getting booked has the available value equal to 1: it means that after this booking it will not be available anymore.
-
-For every booking that is made, a new data in the `bkg` bucket is inserted.
-
-In the classroom case the rows that are inserted in the `bkg` bucket are two:
-````
-bkg:cla:$userId:$roomId:roomname="a22"
-bkg:cla:$userId:$roomId:schedule="m"
-````
-For the laboratories there is no need to store the schedule because you only book a seat, so the row that is inserted in the `bkg` bucket is one:
-````
-bkg:lab:$userId:$roomId:roomname="si4"
+//...other bookings...//
 ````
 
-All the checking operations will be done by the DBSManager that calls the consistency functions for both SQL and LevelDB everytime there is an upload.
+In this case, if a teacher (whit id=5) books the "a22" room for the afternoon, a new booking is inserted in the bookings bucket with the schedule equals to "a", and the availability value of the room will change to "m", because now the room will be only available in the morning.
+
+Database state after the booking:
+
+Available bucket:
+````
+cla:1:roomname="a22"
+cla:1:buildingname="polo a"
+cla:1:roomcapacity="55"
+cla:1:available="m"	//available only in the morning
+
+//...other available rooms...//
+````
+Bookings bucket:
+````
+cla:5:1:roomname="a22"
+cla:5:1:schedule="a"
+
+//...other bookings...//
+````
+
+When this booking will eventually be deleted, the availability value in the available bucket will be set to "f".
+
+#### 6.2.2 Case 2. Availability != "f".
+
+Database state before the booking:
+
+Available bucket:
+````
+cla:1:roomname="a22"
+cla:1:buildingname="polo a"
+cla:1:roomcapacity="55"
+cla:1:available="a"	//available only in the afternoon
+
+//...other available classrooms...//
+````
+Bookings bucket:
+````
+//...other bookings...//
+````
+In this case the room availability is equal to "a", it means that someone already booked it in the morning.
+If a teacher (whit id=5) books the "a22" room in the afternoon, a new booking is inserted in the bookings bucket, and all the informations about the room will be deleted from the available bucket, because now it is not available anymore.
+
+Database state after the booking:
+
+Available bucket:
+````
+//...other available classrooms...//
+````
+Bookings bucket:
+````
+cla:5:1:roomname="a22"
+cla:5:1:schedule="a"
+
+//...other bookings...//
+````
+
+When this booking will eventually be deleted, the room will become available again, so all the informations about the room will be inserted in the available bucket with the availability value equal to "a".
+
+### 6.3 Laboratories procedures
+
+In the laboratory available bucket you can only find the list of the available laboratories with the corresponding free workstations. The available value rapresent the number of remaining free workstations before the room gets completely full. When a laboratory has the available value equal to 1: it means that after this booking it will not be available anymore.
+
+#### 6.3.1 Case 1. Availability != "1".
+
+Database state before the booking:
+
+Available bucket:
+````
+lab:3:roomname="si4"
+lab:3:buildingname="polo b"
+lab:3:roomcapacity="150"
+lab:3:available="23"    //23 free workspace left
+
+//...other available laboratories...//
+````
+Bookings bucket:
+````
+//...other bookings...//
+````
+In this case the room availability is equal to "23", it means that there are 23 workstations left.
+If a student (whit id=1) books the "si4" room, a new booking is inserted in the bookings bucket, and the availability value of the room will change to "22", because now the room has lost a workstation.
+
+Database state after the booking:
+
+Available bucket:
+````
+lab:3:roomname="si4"
+lab:3:buildingname="polo b"
+lab:3:roomcapacity="150"
+lab:3:available="22"    //22 free workspace left
+
+//...other available laboratories...//
+````
+Bookings bucket:
+````
+lab:1:3:roomname="si4"
+
+//...other bookings...//
+````
+When a booking for this lab will eventually be deleted, the availability value in the available bucket will be incremented by 1.
+
+#### 6.3.2 Case 2. Availability = "1".
+
+Database state before the booking:
+
+Available bucket:
+````
+lab:3:roomname="si4"
+lab:3:buildingname="polo b"
+lab:3:roomcapacity="150"
+lab:3:available="1"    //this room is almost full, 1 seat left
+
+//...other available laboratories...//
+````
+Bookings bucket:
+````
+//...other bookings...//
+````
+In this case the lab availability is equal to "1", it means that after this booking the lab will be full.
+If a student (whit id=1) books the "si4" room, a new booking is inserted in the bookings bucket, and all the informations about the lab will be deleted from the available bucket, because now it is not available anymore.
+
+Database state after the booking:
+
+Available bucket:
+````
+//...other available laboratories...//
+````
+Bookings bucket:
+````
+lab:1:3:roomname="si4"
+
+//...other bookings...//
+````
+When a booking for this lab will eventually be deleted, the lab will become available again, so all the informations about the lab will be inserted in LevelDb with the availability value equal to 1.
+
+So it is important to notice that all the lab informations will be deleted/inserted from the available bucket only when all the seats are gone. It is not something that happens for every booking. 

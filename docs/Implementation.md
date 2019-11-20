@@ -15,4 +15,4 @@ Below an high level description of the solution classes through a uml analysis c
 
 The relational model is implemented as follow:
 
-![ER](/schemas/task1/ER.png)
+![ER](/schemas/task1/ER.png) 
