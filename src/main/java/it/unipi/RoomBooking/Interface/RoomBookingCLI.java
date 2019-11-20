@@ -49,17 +49,11 @@ public final class RoomBookingCLI {
 	private static String getCommand() {
 		String command;
 		boolean isValid = false;
-		if(user.getRole().equals("A")){
-			out.println("\n1 - Insert a student." + 
-					"\n2 - Insert a teacher." + 
-					"\n3 - Insert a room or a building." +
-					"\n4 - Close. ");
-				}
-		else{
-		out.println("\n1 - Book a Room." + 
-					"\n2 - Delete a booking." + 
-					"\n3 - Update a booking." + 
-					"\n4 - Close.");
+		if (user.getRole().equals("A")) {
+			out.println("\n1 - Insert a student." + "\n2 - Insert a teacher." + "\n3 - Insert a room or a building."
+					+ "\n4 - Close. ");
+		} else {
+			out.println("\n1 - Book a Room." + "\n2 - Delete a booking." + "\n3 - Update a booking." + "\n4 - Close.");
 		}
 		while (!isValid) {
 			out.print("\nChoose an action > ");
@@ -80,8 +74,7 @@ public final class RoomBookingCLI {
 		String requestedSchedule = null;
 		boolean isValid = false;
 
-		out.println("\n[M] - Morning." + 
-					"\n[A] - Afternoon.");
+		out.println("\n[M] - Morning." + "\n[A] - Afternoon.");
 
 		while (!isValid) {
 			out.print("\nChoose a schedule > ");
@@ -103,10 +96,10 @@ public final class RoomBookingCLI {
 		out.println("\nList of your booked rooms:\n");
 
 		if (user.getRole().equals("T")) {
-			//Teacher
+			// Teacher
 			out.printf("%-5s %-15s %-15s", "ID", "Room", "Schedule");
-		} else { 
-			//Student
+		} else {
+			// Student
 			out.printf("%-5s %-15s", "ID", "Room");
 		}
 		out.println("\n=========================================");
@@ -220,7 +213,7 @@ public final class RoomBookingCLI {
 
 		while (!isValid) {
 			if (user.getRole().equals("T")) {
-				//Teacher
+				// Teacher
 				while (!isValid) {
 					out.print("\nChoose the room you want to change by ID > ");
 					oldbookingId = input.next();
@@ -238,7 +231,7 @@ public final class RoomBookingCLI {
 					}
 				}
 			} else {
-				//Student
+				// Student
 				while (!isValid) {
 					out.print("\nChoose the room you want to change by ID > ");
 					oldRoom = input.next();
@@ -258,7 +251,7 @@ public final class RoomBookingCLI {
 
 			isValid = false;
 
-			if(user.getRole().equals("T")) {
+			if (user.getRole().equals("T")) {
 				out.print("\nChoose the new schedule: ");
 				requestedSchedule = setSchedule();
 			}
@@ -295,141 +288,136 @@ public final class RoomBookingCLI {
 		}
 	}
 
-	//Admin methods
-	private static void addStudent(){
+	// Admin methods
+	private static void addStudent() {
 		String[] dataString = new String[3];
 		input = new Scanner(System.in);
 
 		out.print("\nInsert the name of the student > ");
 		dataString[0] = input.nextLine();
 
-		out.print("\nInsert the lastname of the Student >");
+		out.print("\nInsert the lastname of the Student > ");
 		dataString[1] = input.nextLine();
 
-		out.print("\nInsert the email of the Student >");
+		out.print("\nInsert the email of the Student > ");
 		dataString[2] = input.next();
-	
-		if(database.checkDuplicateUser(dataString[2], "S") == false){
+
+		if (database.checkDuplicateUser(dataString[2], "S") == false) {
 			out.println(RED + "User already exists!" + WHITE);
 			return;
-			}
+		}
 		database.setStudent(dataString);
-		out.println(GREEN + "\nStudent: "+ dataString[0]+" "+ dataString[1] + " added!" + WHITE);
-		
-		
+		out.println(GREEN + "\nStudent: " + dataString[0] + " " + dataString[1] + " added!" + WHITE);
 	}
-	
-	private static void addTeacher(){
-		String[] dataString= new String[3];
+
+	private static void addTeacher() {
+		String[] dataString = new String[3];
 		input = new Scanner(System.in);
-		
+
 		out.print("\nInsert the name of the Teacher > ");
 		dataString[0] = input.nextLine();
-		out.print("\nInsert the lastname of the Teacher >");
+		out.print("\nInsert the lastname of the Teacher > ");
 		dataString[1] = input.nextLine();
-		out.print("\nInsert the email of the Teacher >");
+		out.print("\nInsert the email of the Teacher > ");
 		dataString[2] = input.next();
-		
-		
-		if(database.checkDuplicateUser(dataString[2], "T") == false){
+
+		if (database.checkDuplicateUser(dataString[2], "T") == false) {
 			out.println(RED + "User already exists!" + WHITE);
 			return;
 		}
 		database.setTeacher(dataString);
-		out.println(GREEN + "\nTeacher: "+ dataString[0]+" "+ dataString[1] + " added!" + WHITE);
-		
+		out.println(GREEN + "\nTeacher: " + dataString[0] + " " + dataString[1] + " added!" + WHITE);
+
 	}
 
-	private static void addRoom(){
+	private static void addRoom() {
 		Collection<BuildingNORM> buildings = new ArrayList<>();
+
 		out.print("\nDo you want to add a room in a existing building or add a new one?");
-		out.println("\n1 - Existing building" + 
-					"\n2 - Insert a building");
+		out.println("\n1 - Existing building" + "\n2 - Insert a building");
 		out.print("\nChoose an action > ");
 
-		String cmd=input.next();
-		String [] data = new String[6]; 
-		if(cmd.equals("1")){ 
+		String cmd = input.next();
+		String[] data = new String[6];
+		if (cmd.equals("1")) {
 			// Classroom
 			out.print("\nDo you want to add a Classroom or a Laboratory?\n");
-			out.println("\n1 - Classroom" + 
-					"\n2 - Laboratory\n");
+			out.println("\n1 - Classroom" + "\n2 - Laboratory");
 			out.print("\nChoose an action > ");
 			String typeRoom = input.next();
-			if(typeRoom.equals("1")){ 
+			if (typeRoom.equals("1")) {
 				Boolean exitBuilding = false;
-				
-				while(!exitBuilding) {
+
+				while (!exitBuilding) {
 					data[3] = "cla";
-					out.print("\nIn which building?"); 
-					
+					out.print("\nIn which building?\n");
+
 					buildings = database.getBuildings();
-					out.println(String.format("\n%-5s %-15s","ID", "Name"));
+					out.println(String.format("\n%-5s %-15s", "ID", "Name"));
 					out.println("===================");
-					for(BuildingNORM b: buildings){
+					for (BuildingNORM b : buildings) {
 						out.println(b.toString());
 					}
-	
+
 					out.print("\nChoose a building by ID > ");
-					data[0]=input.next();
+					data[0] = input.next();
 
 					exitBuilding = database.checkBuilding(data[0]);
-					if(!database.checkBuilding(data[0])){
+					if (!database.checkBuilding(data[0])) {
 						out.print(RED + "\nError. This ID doesn't exist. Choose an existing building\n" + WHITE);
-					} 
+					}
 				}
+				input = new Scanner(System.in);
 
-				out.print("Insert the name of the room >");
-				data[1]=input.nextLine();
-				
-				out.print("Insert capacity >");
+				out.print("\nInsert the name of the room > ");
+				data[1] = input.nextLine();
+
+				out.print("\nInsert capacity > ");
 				data[2] = input.next();
 
 				database.setRoom(data);
-				out.println(GREEN + "\nClassroom: "+ data[1]+" "+ "added!" + WHITE);
-			}
-			else{ 
+				out.println(GREEN + "\nClassroom: " + data[1] + " " + "added!" + WHITE);
+			} else {
 				// Laboratory
 				data[3] = "lab";
 				Boolean exitBuilding = false;
-				
-				while(!exitBuilding) {
+
+				while (!exitBuilding) {
 					data[3] = "cla";
-					out.print("\nIn which building?"); 
-					
+					out.print("\nIn which building?");
+
 					buildings = database.getBuildings();
-					out.println(String.format("\n%-5s %-15s","ID", "Name"));
+					out.println(String.format("\n%-5s %-15s", "ID", "Name"));
 					out.println("===================");
-					for(BuildingNORM b: buildings){
+					for (BuildingNORM b : buildings) {
 						out.println(b.toString());
 					}
-	
+
 					out.print("\nChoose a building by ID > ");
-					data[0]=input.next();
+					data[0] = input.next();
 
 					exitBuilding = database.checkBuilding(data[0]);
-					if(!database.checkBuilding(data[0])){
+					if (!database.checkBuilding(data[0])) {
 						out.print(RED + "\nError. This ID doesn't exist. Choose an existing building\n" + WHITE);
-					} 
+					}
 				}
-							
+
 				out.print("Insert the name of the Lab >");
-				data[1]=input.nextLine();
-				
+				data[1] = input.nextLine();
+
 				out.print("Insert capacity >");
 				data[2] = input.next();
 				database.setRoom(data);
-				out.println(GREEN + "\nSuccessful. Laboratory: "+ data[1]+" "+ "added!" + WHITE);
+				out.println(GREEN + "\nSuccessful. Laboratory: " + data[1] + " " + "added!" + WHITE);
 			}
-		}
-		else { 
+		} else {
 			// Adding new building
 			out.print("Insert the name of the new Building > ");
-			data[0]=input.nextLine();
-			out.print("Insert the address of the new Building: > " );
+			data[0] = input.nextLine();
+			out.print("Insert the address of the new Building: > ");
 			data[1] = input.next();
 			database.setBuilding(data);
-			out.println(GREEN + "\nBuilding: "+ data[0]+" "+ "added!" + WHITE);
+			out.println(GREEN + "\nBuilding: " + data[0] + " " + "added!" + WHITE);
 		}
 	}
 
@@ -445,7 +433,7 @@ public final class RoomBookingCLI {
 			database.start();
 			ident();
 
-			if(user.getRole().equals("T") || (user.getRole().equals("S"))){
+			if (user.getRole().equals("T") || (user.getRole().equals("S"))) {
 				database.initializeAvailable(user);
 				database.initializeBooked(user);
 			}
@@ -454,19 +442,19 @@ public final class RoomBookingCLI {
 			while (!terminate) {
 				command = getCommand();
 
-				if(command == null) {
+				if (command == null) {
 					out.println(RED + "\nInvalid command." + WHITE);
 					terminate = true;
 					break;
 				}
 
 				commandInt = Integer.parseInt(command);
-				if(user.getRole().equals("A")){ //admin commands has +10 to distinguish
-					commandInt +=10;
+				if (user.getRole().equals("A")) { 
+					// admin commands has +10 to distinguish
+					commandInt += 10;
 				}
 				switch (commandInt) {
-					
-						
+
 				case 1:
 					bookARoom();
 					break;
@@ -480,22 +468,21 @@ public final class RoomBookingCLI {
 					terminate = true;
 					out.println("\nSee you soon!");
 					break;
-				//admin commands
+
+				// admin commands
 				case 11:
 					addStudent();
 					break;
 				case 12:
 					addTeacher();
 					break;
-				case 13: 
+				case 13:
 					addRoom();
 					break;
 				case 14:
 					terminate = true;
 					out.println("\nSee you soon!");
-				break;
-			
-
+					break;
 				}
 			}
 		} finally {
