@@ -105,7 +105,7 @@ public final class RoomBookingCLI {
 		if (user.getRole().equals("T")) {
 			//Teacher
 			out.printf("%-5s %-15s %-15s", "ID", "Room", "Schedule");
-		} else {
+		} else { 
 			//Student
 			out.printf("%-5s %-15s", "ID", "Room");
 		}
@@ -318,8 +318,10 @@ public final class RoomBookingCLI {
 		
 		
 	}
+	
 	private static void addTeacher(){
 		String[] dataString= new String[3];
+		input = new Scanner(System.in);
 		
 		out.print("\nInsert the name of the Teacher > ");
 		dataString[0] = input.nextLine();
@@ -340,23 +342,21 @@ public final class RoomBookingCLI {
 
 	private static void addRoom(){
 		Collection<BuildingNORM> buildings = new ArrayList<>();
-		//ask if want add in a existing building or add a new one (ok?)
 		out.print("\nDo you want to add a room in a existing building or add a new one?");
 		out.println("\n1 - Existing building" + 
 					"\n2 - Insert a building");
 		out.print("\nChoose an action > ");
 
 		String cmd=input.next();
-		String [] data = new String[6]; //check the dim
-		if(cmd.equals("1")){ //existing build
-			//ask if want to add a class or a lab
+		String [] data = new String[6]; 
+		if(cmd.equals("1")){ 
+			// Classroom
 			out.print("\nDo you want to add a Classroom or a Laboratory?\n");
 			out.println("\n1 - Classroom" + 
 					"\n2 - Laboratory\n");
 			out.print("\nChoose an action > ");
 			String typeRoom = input.next();
-			if(typeRoom.equals("1")){ //classroom
-
+			if(typeRoom.equals("1")){ 
 				Boolean exitBuilding = false;
 				
 				while(!exitBuilding) {
@@ -388,7 +388,8 @@ public final class RoomBookingCLI {
 				database.setRoom(data);
 				out.println(GREEN + "\nClassroom: "+ data[1]+" "+ "added!" + WHITE);
 			}
-			else{ //lab
+			else{ 
+				// Laboratory
 				data[3] = "lab";
 				Boolean exitBuilding = false;
 				
@@ -421,15 +422,14 @@ public final class RoomBookingCLI {
 				out.println(GREEN + "\nSuccessful. Laboratory: "+ data[1]+" "+ "added!" + WHITE);
 			}
 		}
-			//create building in case
-		else { //add building
+		else { 
+			// Adding new building
 			out.print("Insert the name of the new Building > ");
 			data[0]=input.nextLine();
 			out.print("Insert the address of the new Building: > " );
 			data[1] = input.next();
 			database.setBuilding(data);
 			out.println(GREEN + "\nBuilding: "+ data[0]+" "+ "added!" + WHITE);
-
 		}
 	}
 
