@@ -3,9 +3,12 @@ package it.unipi.RoomBooking.Interface;
 import static java.lang.System.out;
 import java.util.*;
 
+import org.hibernate.Hibernate;
+
 import it.unipi.RoomBooking.Data.NORM.Available;
 import it.unipi.RoomBooking.Data.NORM.Booked;
 import it.unipi.RoomBooking.Data.NORM.User;
+import it.unipi.RoomBooking.Data.NORM.BuildingNORM;
 import it.unipi.RoomBooking.Database.*;
 import it.unipi.RoomBooking.Exceptions.UserNotExistException;
 
@@ -32,7 +35,7 @@ public final class RoomBookingCLI {
 		while (!isValid) {
 			try {
 				out.print("\nInsert your Email > ");
-				email = input.next();
+				email = input.nextLine();
 
 				user = database.authenticate(email.toString());
 				isValid = true;
@@ -50,7 +53,7 @@ public final class RoomBookingCLI {
 			out.println("\n1 - Insert a student." + 
 					"\n2 - Insert a teacher." + 
 					"\n3 - Insert a room or a building." +
-					"\n4 Close. ");
+					"\n4 - Close. ");
 				}
 		else{
 		out.println("\n1 - Book a Room." + 
@@ -294,12 +297,15 @@ public final class RoomBookingCLI {
 
 	//Admin methods
 	private static void addStudent(){
-		String[] dataString= new String[3];
-		
+		String[] dataString = new String[3];
+		input = new Scanner(System.in);
+
 		out.print("\nInsert the name of the student > ");
-		dataString[0] = input.next();
+		dataString[0] = input.nextLine();
+
 		out.print("\nInsert the lastname of the Student >");
-		dataString[1] = input.next();
+		dataString[1] = input.nextLine();
+
 		out.print("\nInsert the email of the Student >");
 		dataString[2] = input.next();
 	
@@ -316,9 +322,9 @@ public final class RoomBookingCLI {
 		String[] dataString= new String[3];
 		
 		out.print("\nInsert the name of the Teacher > ");
-		dataString[0] = input.next();
+		dataString[0] = input.nextLine();
 		out.print("\nInsert the lastname of the Teacher >");
-		dataString[1] = input.next();
+		dataString[1] = input.nextLine();
 		out.print("\nInsert the email of the Teacher >");
 		dataString[2] = input.next();
 		
@@ -333,32 +339,48 @@ public final class RoomBookingCLI {
 	}
 
 	private static void addRoom(){
-		
+		Collection<BuildingNORM> buildings = new ArrayList<>();
 		//ask if want add in a existing building or add a new one (ok?)
 		out.print("\nDo you want to add a room in a existing building or add a new one?");
 		out.println("\n1 - Existing building" + 
 					"\n2 - Insert a building");
+		out.print("\nChoose an action > ");
+
 		String cmd=input.next();
 		String [] data = new String[6]; //check the dim
 		if(cmd.equals("1")){ //existing build
 			//ask if want to add a class or a lab
-			out.print("\nDo you want to add a Classroom or a Laboratory?");
+			out.print("\nDo you want to add a Classroom or a Laboratory?\n");
 			out.println("\n1 - Classroom" + 
-					"\n2 - Laboratory");
+					"\n2 - Laboratory\n");
+			out.print("\nChoose an action > ");
 			String typeRoom = input.next();
 			if(typeRoom.equals("1")){ //classroom
-				data[3] = "cla";
-				out.print("\nIn which building? > "); 
+
+				Boolean exitBuilding = false;
 				
-				//maybe show the buildings?
-				data[0]=input.next();
-				if(!database.checkBuilding(data[0])){
-					System.out.println(RED + "Building not exists!" + WHITE);
-					return;
+				while(!exitBuilding) {
+					data[3] = "cla";
+					out.print("\nIn which building?"); 
+					
+					buildings = database.getBuildings();
+					out.println(String.format("\n%-5s %-15s","ID", "Name"));
+					out.println("===================");
+					for(BuildingNORM b: buildings){
+						out.println(b.toString());
+					}
+	
+					out.print("\nChoose a building by ID > ");
+					data[0]=input.next();
+
+					exitBuilding = database.checkBuilding(data[0]);
+					if(!database.checkBuilding(data[0])){
+						out.print(RED + "\nError. This ID doesn't exist. Choose an existing building\n" + WHITE);
+					} 
 				}
 
 				out.print("Insert the name of the room >");
-				data[1]=input.next();
+				data[1]=input.nextLine();
 				
 				out.print("Insert capacity >");
 				data[2] = input.next();
@@ -368,34 +390,47 @@ public final class RoomBookingCLI {
 			}
 			else{ //lab
 				data[3] = "lab";
-				out.print("\nIn which building? > "); //check if building is correct
-				//maybe show the buildings?
-				data[0]=input.next();
+				Boolean exitBuilding = false;
 				
+				while(!exitBuilding) {
+					data[3] = "cla";
+					out.print("\nIn which building?"); 
+					
+					buildings = database.getBuildings();
+					out.println(String.format("\n%-5s %-15s","ID", "Name"));
+					out.println("===================");
+					for(BuildingNORM b: buildings){
+						out.println(b.toString());
+					}
+	
+					out.print("\nChoose a building by ID > ");
+					data[0]=input.next();
+
+					exitBuilding = database.checkBuilding(data[0]);
+					if(!database.checkBuilding(data[0])){
+						out.print(RED + "\nError. This ID doesn't exist. Choose an existing building\n" + WHITE);
+					} 
+				}
+							
 				out.print("Insert the name of the Lab >");
-				data[1]=input.next();
+				data[1]=input.nextLine();
 				
 				out.print("Insert capacity >");
 				data[2] = input.next();
 				database.setRoom(data);
-				out.println(GREEN + "\nLaboratory: "+ data[1]+" "+ "added!" + WHITE);
+				out.println(GREEN + "\nSuccessful. Laboratory: "+ data[1]+" "+ "added!" + WHITE);
 			}
-			
-			
 		}
 			//create building in case
 		else { //add building
 			out.print("Insert the name of the new Building > ");
-			data[0]=input.next();
+			data[0]=input.nextLine();
 			out.print("Insert the address of the new Building: > " );
 			data[1] = input.next();
 			database.setBuilding(data);
 			out.println(GREEN + "\nBuilding: "+ data[0]+" "+ "added!" + WHITE);
 
 		}
-		
-		
-
 	}
 
 	public static void main(String[] args) {

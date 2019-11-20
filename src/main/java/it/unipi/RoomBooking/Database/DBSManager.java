@@ -5,9 +5,12 @@ import it.unipi.RoomBooking.Data.ORM.Building;
 import it.unipi.RoomBooking.Data.ORM.Classroom;
 import it.unipi.RoomBooking.Data.ORM.ClassroomBooking;
 import it.unipi.RoomBooking.Data.ORM.Laboratory;
+
 import it.unipi.RoomBooking.Exceptions.UserNotExistException;
 
+import it.unipi.RoomBooking.Data.NORM.BuildingNORM;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class DBSManager implements Manager {
@@ -236,6 +239,20 @@ public boolean checkDuplicateUser(String data, String role){
 
 public boolean checkBuilding(String build){
     return hibernate.checkBuilding(build);
+}
+public Collection<BuildingNORM> getBuildings(){
+  Collection<Building> b = hibernate.getBuildings();
+  Collection<BuildingNORM> coll = new ArrayList<>();
+  
+  for(Building i: b){
+    BuildingNORM build = new BuildingNORM();
+    build.setName(i.getName());
+    build.setAddress(i.getAddress());
+    build.setId(i.getId());
+    coll.add(build);
+  }
+  return coll;
+
 }
 
 }

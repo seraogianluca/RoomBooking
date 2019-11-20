@@ -1,5 +1,6 @@
 package it.unipi.RoomBooking.Database;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -12,6 +13,8 @@ import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+
+
 
 import it.unipi.RoomBooking.Data.Interface.Person;
 import it.unipi.RoomBooking.Data.ORM.*;
@@ -490,8 +493,8 @@ public class HibernateDriver {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Building> criteriaQuery = criteriaBuilder.createQuery(Building.class);
             Root<Building> root = criteriaQuery.from(Building.class);
-            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("buildingName"), build));
-            return (entityManager.createQuery(criteriaQuery).getResultList().size() > 0);
+            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("buildingId"), Long.parseLong(build)));
+            return (entityManager.createQuery(criteriaQuery).getResultList().size() == 1);
         }
         catch(Exception ex){
             ex.printStackTrace();
@@ -499,6 +502,27 @@ public class HibernateDriver {
             entityManager.close();
         }
         return false;
+    }
+
+    public Collection<Building> getBuildings(){
+        Collection<Building> buildings = new ArrayList<>();
+        try{
+            entityManager = factory.createEntityManager();
+
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Building> criteriaQuery = criteriaBuilder.createQuery(Building.class);
+            Root<Building> root = criteriaQuery.from(Building.class);
+            CriteriaQuery<Building> all = criteriaQuery.select(root);
+           buildings = entityManager.createQuery(all).getResultList();
+            
+            return buildings;
+        }
+        catch(Exception ex){
+            ex.printStackTrace();
+        }finally{
+            entityManager.close();
+        }
+        return null;
     }
 
 }
