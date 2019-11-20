@@ -369,6 +369,7 @@ public final class RoomBookingCLI {
 				}
 				input = new Scanner(System.in);
 
+				// Comment
 				out.print("\nInsert the name of the room > ");
 				data[1] = input.nextLine();
 
