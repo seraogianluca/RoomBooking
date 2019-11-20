@@ -8,6 +8,7 @@
 5. [Solution](#5-solution)
 6. [Implementation](#6-implementation)
 
+
 ## 1. Introduction
 This application can be a useful tool for teachers and students belonging to University. As shown in the use case diagram of the [Design Document](./Design.md) the system must perform a reading operation for each user action. Furthermore, these operations could be expensive, for example views on a relational database. Each time that a teacher wants to book a classroom in a specific schedule, the system must retreive in the database the informations about the available classrooms, their capacity and the building in which they are located. All these informations must be shown together to the teacher in order to let him choose the classroom that respects his needs. 
 For this reason we want to explore the possibility to improve the system performances exploiting different databases tecnologies.
