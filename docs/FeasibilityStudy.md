@@ -6,8 +6,6 @@
 3. [Possible solutions](#3-possible-solutions)
 4. [LevelDB](#4-levelDB)
 5. [Solution](#5-solution)
-6. [Implementation](#6-implementation)
-
 
 ## 1. Introduction
 This application can be a useful tool for teachers and students in a University context. As shown in the use case diagram of the [Design Document](./Design.md) the system must perform a reading operation for each user action. These operations need views on the relational database. Each time that a teacher wants to book a classroom in a specific schedule, the system must retreive in the database the informations about the available classrooms, their capacity and the building in which they are located. All these informations must be shown together to the teacher in order to let him choose the classroom that respects his needs. These operations could be expensive,for this reason we want to explore the possibility to improve the system performances exploiting different databases tecnologies.
@@ -36,55 +34,50 @@ LevelDB is a simple embedded database with fast in memory read/write operations.
 Since levelDB is implemented in C++ the [JNI interface](https://github.com/fusesource/leveldbjni) will be used.
 
 ## 5. Solution
-Since the relational database is implemented as core database of the system, the levelDB database will be used to speed up the operations that are often performed by the system. This means that levelDB will be used to store informations that are retrived as view in the relational database, such as the available rooms and the booked rooms both for teachers and students. Furthermore, given the need of retrieving more than one room at time the keys will be constructed to easily retrieve a range of values through iteration on keys. In levelDB, data will be stored in a way that queryes in the relation database are easier. All the data needed will be retrieved from mySQL and stored in levelDB at the beginning of the session as soon as the authentication is done and only once in a session. Concerning the write operations, the data consistency in both and between databases is always ensured.
-
-## 6. Implementation
-The LevelDB database will be composed by two buckets: available and bookings.
-Because of the fact that keyvalue are not made to retrieve multiple object at a time, to retrieve a block of information you have to iterate trought the complete bucket. Whit this solution the reading operation is fast.  [DA RIVEDERE]
-With different kinds of users the database will be filled with different kinds of data. If the user is a teacher the 'available' bucket will be filled with available classrooms informations, if the user is a student it will be filled with free laboratories informations. 
-The bookings of that specific user will be stored in the 'bookings' bucket. 
+Since the relational database is implemented as core database of the system, the levelDB database will be used to speed up the operations that are often performed by the system. This means that levelDB will be used to store informations that are retrived as view in the relational database, such as the available rooms and the booked rooms both for teachers and students. Furthermore, given the need of retrieving more than one room and booking at time the keys will be constructed to easily retrieve a range of values. For this aim the levelDB database will be composed by two buckets: available and bookings. Because of the fact that retrieving multiple object at a time in key-value databases is not possible, information often required together are putted in the same bucket for faster retrieval. The available bucket contains information about available rooms, that are classrooms in the case of teachers and laboratories in the case of students. The booking bucket contains the bookings made by the user. All the data needed will be retrieved from MySQL at the beginning of the user session and stored in levelDB. LevelDB will be emptied at the end of the session. Concerning the write operations, the data consistency in both and between databases is always ensured.
 
 ### 6.1 Keys schema
-
+````
 Keys for the 'available' bucket:
-````
-$roomtype:$roomId:roomname=""
-$roomtype:$roomId:buildingname=""
-$roomtype:$roomId:roomcapacity=""
-$roomtype:$roomId:available=""
-````
-In the classroom case the rows that are inserted in the bookings bucket are two for each booking because there is the need to store the schedule in which the classroom is booked. In the case of laboratories, only a seat for all the day can be booked, so the row that is inserted in the bookings bucket is one.
 
-Keys for the classrooms 'bookings' bucket:
+$roomtype:$roomId:roomname
+$roomtype:$roomId:buildingname
+$roomtype:$roomId:roomcapacity
+$roomtype:$roomId:available
 ````
-$roomtype:$userId:$roomId:roomname=""
-$roomtype:$userId:$roomId:schedule=""
+The available attribute contains the schedule in which the room are free in the case of classrooms and the number of available workstations in the case of laboratories.
+
+````
+Keys for the classrooms 'bookings' bucket:
+
+$roomtype:$userId:$roomId:roomname
+$roomtype:$userId:$roomId:schedule
+````
 ````
 Keys for the laboratories 'bookings' bucket:
-````
-$roomtype:$userId:$roomId:roomname=""
-````
 
+$roomtype:$userId:$roomId:roomname
+````
+In the case of teacher a booking is made by two rows for storing information about the schedule in which the classroom is booked.
 
 ### 6.2 Classrooms procedures
-In the available bucket you can only find the list of the available classrooms with the corresponding free schedule. Because of the fact that a classroom can be booked only for two different schedule, when the available value is different from "f" (free fullday) it means that the room can be booked for just once more.
+The available attribute in the case of classrooms can contains three values: "F", means all day available, "M", means available in morning, "A", means available in afternoon. When available attribute contains a value different from "F" the classroom can be booked only once more.
 
-#### 6.2.1 Case 1. Availability = "f".
-
-Database state before the booking:
-
-Available bucket:
+#### 6.2.1 Case 1 - All day availability
+Available bucket state before the booking:
 ````
-cla:1:roomname="a22"
-cla:1:buildingname="polo a"
-cla:1:roomcapacity="55"
-cla:1:available="f"	//available in both afternoon and morning
+Available bucket:
 
-//...other available rooms...//
+cla:1:roomname = "a22"
+cla:1:buildingname = "polo a"
+cla:1:roomcapacity = "55"
+cla:1:available = "f"	//available in both afternoon and morning
+
+//other available rooms
 ````
 Bookings bucket:
 ````
-//...other bookings...//
+//other bookings
 ````
 
 In this case, if a teacher (whit id=5) books the "a22" room for the afternoon, a new booking is inserted in the bookings bucket with the schedule equals to "a", and the availability value of the room will change to "m", because now the room will be only available in the morning.
