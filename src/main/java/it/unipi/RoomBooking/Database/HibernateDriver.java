@@ -387,7 +387,7 @@ public class HibernateDriver {
         }
     }
 
-    public void createClassroom(String[] data ,Building b){
+    public void createClassroom(String name, int capacity, Building b){
         try{
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
@@ -396,8 +396,8 @@ public class HibernateDriver {
 
             c.setAvailable(true);
             c.setBuilding(b);
-            c.setCapacity(Integer.parseInt(data[2]));
-            c.setName(data[1]);
+            c.setCapacity(capacity);
+            c.setName(name);
             entityManager.merge(c);
             
             entityManager.getTransaction().commit();
@@ -409,7 +409,7 @@ public class HibernateDriver {
         }
     }
 
-    public void createLaboratory(String[] data, Building b){
+    public void createLaboratory(String name, int capacity, Building b){
         try{
             entityManager = factory.createEntityManager();
             entityManager.getTransaction().begin();
@@ -418,8 +418,8 @@ public class HibernateDriver {
 
             l.setAvailable(true);
             l.setBuilding(b);
-            l.setCapacity(Integer.parseInt(data[2]));
-            l.setName(data[1]);
+            l.setCapacity(capacity);
+            l.setName(name);
             entityManager.merge(l);
             
             entityManager.getTransaction().commit();
@@ -431,7 +431,7 @@ public class HibernateDriver {
         }
     }
 
-    public Building getBuilding(String building){
+    public Building getBuilding(long buildingId){
 
         Building build=null;
         try{
@@ -440,9 +440,8 @@ public class HibernateDriver {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Building> criteriaQuery = criteriaBuilder.createQuery(Building.class);
             Root<Building> root = criteriaQuery.from(Building.class);
-            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("buildingName"), building));
+            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("buildingId"), buildingId));
             build = entityManager.createQuery(criteriaQuery).getSingleResult();
-
             
             return build;
         }   
@@ -513,7 +512,7 @@ public class HibernateDriver {
             CriteriaQuery<Building> criteriaQuery = criteriaBuilder.createQuery(Building.class);
             Root<Building> root = criteriaQuery.from(Building.class);
             CriteriaQuery<Building> all = criteriaQuery.select(root);
-           buildings = entityManager.createQuery(all).getResultList();
+            buildings = entityManager.createQuery(all).getResultList();
             
             return buildings;
         }
