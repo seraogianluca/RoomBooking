@@ -3,8 +3,6 @@ package it.unipi.RoomBooking.Interface;
 import static java.lang.System.out;
 import java.util.*;
 
-import org.hibernate.Hibernate;
-
 import it.unipi.RoomBooking.Data.NORM.Available;
 import it.unipi.RoomBooking.Data.NORM.Booked;
 import it.unipi.RoomBooking.Data.NORM.User;
@@ -290,7 +288,9 @@ public final class RoomBookingCLI {
 
 	// Admin methods
 	private static void addStudent() {
+
 		String[] dataString = new String[3];
+
 		input = new Scanner(System.in);
 
 		out.print("\nInsert the name of the student > ");
@@ -306,7 +306,10 @@ public final class RoomBookingCLI {
 			out.println(RED + "User already exists!" + WHITE);
 			return;
 		}
-		database.setStudent(dataString);
+
+		User student = new User(0, dataString[0], dataString[1], dataString[2], "S");
+
+		database.setStudent(student);
 		out.println(GREEN + "\nStudent: " + dataString[0] + " " + dataString[1] + " added!" + WHITE);
 	}
 
@@ -325,7 +328,10 @@ public final class RoomBookingCLI {
 			out.println(RED + "User already exists!" + WHITE);
 			return;
 		}
-		database.setTeacher(dataString);
+
+		User teacher = new User(0, dataString[0], dataString[1], dataString[2], "S");
+
+		database.setTeacher(teacher);
 		out.println(GREEN + "\nTeacher: " + dataString[0] + " " + dataString[1] + " added!" + WHITE);
 
 	}
@@ -333,7 +339,7 @@ public final class RoomBookingCLI {
 	private static void addRoom() {
 		Collection<BuildingNORM> buildings = new ArrayList<>();
 
-		out.print("\nDo you want to add a room in a existing building or add a new one?");
+		out.print("\nDo you want to add a room in a existing building or add a new one?\n");
 		out.println("\n1 - Existing building" + "\n2 - Insert a building");
 		out.print("\nChoose an action > ");
 
@@ -369,14 +375,24 @@ public final class RoomBookingCLI {
 				}
 				input = new Scanner(System.in);
 
-				// Comment
 				out.print("\nInsert the name of the room > ");
 				data[1] = input.nextLine();
 
-				out.print("\nInsert capacity > ");
-				data[2] = input.next();
+				boolean numberValid = true;
 
-				database.setRoom(data);
+				while (numberValid) {
+					try {
+						out.print("\nInsert capacity > ");
+						data[2] = input.next();
+						Integer.parseInt(data[2]);
+
+						numberValid = false;
+					} catch (NumberFormatException e) {
+						numberValid = true;
+						out.println(RED + "Invalid number. Please write a valid number." + WHITE);
+					}
+				}
+				database.setRoom(data[1], Integer.parseInt(data[2]), data[3], Long.parseLong(data[0]));
 				out.println(GREEN + "\nClassroom: " + data[1] + " " + "added!" + WHITE);
 			} else {
 				// Laboratory
@@ -403,18 +419,36 @@ public final class RoomBookingCLI {
 					}
 				}
 
-				out.print("Insert the name of the Lab >");
+				input = new Scanner(System.in);
+
+				out.print("\nInsert the name of the Lab >");
 				data[1] = input.nextLine();
 
-				out.print("Insert capacity >");
-				data[2] = input.next();
-				database.setRoom(data);
+				boolean numberValid = true;
+
+				while (numberValid) {
+					try {
+						out.print("\nInsert capacity >");
+						data[2] = input.next();
+						Integer.parseInt(data[2]);
+
+						numberValid = false;
+					} catch (NumberFormatException e) {
+						numberValid = true;
+						out.println(RED + "Invalid number. Please write a valid number." + WHITE);
+					}
+				}
+
+				database.setRoom(data[1], Integer.parseInt(data[2]), data[3], Long.parseLong(data[0]));
 				out.println(GREEN + "\nSuccessful. Laboratory: " + data[1] + " " + "added!" + WHITE);
 			}
 		} else {
+			input = new Scanner(System.in);
+
 			// Adding new building
 			out.print("Insert the name of the new Building > ");
 			data[0] = input.nextLine();
+
 			out.print("Insert the address of the new Building: > ");
 			data[1] = input.next();
 			database.setBuilding(data);
@@ -450,7 +484,7 @@ public final class RoomBookingCLI {
 				}
 
 				commandInt = Integer.parseInt(command);
-				if (user.getRole().equals("A")) { 
+				if (user.getRole().equals("A")) {
 					// admin commands has +10 to distinguish
 					commandInt += 10;
 				}
