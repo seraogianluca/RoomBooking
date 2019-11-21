@@ -17,9 +17,10 @@ The application has the following functional requirements:
 - A `teacher` shall be able to search for the available classrooms.
 - A `student` shall be able to search for the available laboratories.
 - A `teacher` shall be able to book a classroom in a specified schedule.
-- A `student`shall be able to book a laboratory for all the day.
-- `teachers` and `students` shall be able to modify or delete their booking.
-- An `administrator` shall be able to insert a new classroom or a new laboratory and the corresponding building into the system.
+- A `student`shall be able to book a laboratory workstation for all the day.
+- `teachers` and `students` shall be able to modify or delete their bookings.
+- An `administrator` shall be able to insert a new classroom or a new laboratory and eventually the corresponding building into the system.
+- An `administrator` shall be able to insert a new student or a new teacher into the system.
 - The system shall provide an interface for the user to read a list of available rooms and book one of them.
 - The system shall provide an interface for the user to read the rooms booked by him and may update or delete a booking.
 
@@ -30,11 +31,9 @@ The application has the following non-functional requirements:
 - The application must be run once at time.
 - The set, update and delete operations on the database must be atomic.
 - The classrooms and the laboratories can be booked only for the day after.
-- The classrooms can be booked only for two different schedules in the day: Morning, Afternoon.
-- The laboratories can be booked only for all the day.
+- The classroom can be booked only for two different schedules in the day: Morning, Afternoon.
 - The classroom in a specified schedule can be booked by only one teacher.
-- New classrooms, laboratories and buildings can only be inserted by the administrator.
-- The classrooms, laboratories and buildings in the system can't be deleted.
+- The classrooms, laboratories and buildings in the system can't be deleted from the system.
 - Users must be identified by email.
 - Teachers' emails must belong to the [at] university domain.
 - Students' emails must belong to the [at] studenti [dot] university domain.

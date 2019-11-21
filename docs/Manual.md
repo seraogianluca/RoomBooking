@@ -18,14 +18,8 @@ The application at the startup asks to specify if the user is a student or a tea
 |_|  \_\___/ \___/|_| |_| |_| |____/ \___/ \___/|_|\_\_|_| |_|\__, | 
                                                                __/ |                    
                                                               |___/                     
-
-Are you a teacher or a student?
-T - Teacher 
-S - Student 
->
 ```
-
-After choosing the user category the application ask for the user email:
+The application ask for the user email:
 
 ```
 Insert your Email > 
