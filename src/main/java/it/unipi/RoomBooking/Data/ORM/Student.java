@@ -75,9 +75,4 @@ public class Student implements Person {
         this.laboratories.remove(laboratory);
     }
 
-    public String toString() {
-        return "Student Information: " + 
-                "Name: " + studentName + " " +
-                "Lastname: " + studentLastname;
-    }
 }

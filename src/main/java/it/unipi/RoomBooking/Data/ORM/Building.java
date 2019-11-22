@@ -61,10 +61,4 @@ public class Building implements BuildingInterface {
         this.buildingClassrooms.add(classroom);
     }
 
-
-    public String toString() {
-        return "Building Information: " +  
-        "Name: " + buildingName + " " +
-        "Address: " + buildingAddress;
-    }
 }
