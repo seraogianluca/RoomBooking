@@ -247,12 +247,22 @@ public class DBSManager implements Manager {
 
     }
 
-    public void setBuilding(String[] data) {
+    public void setBuilding(String name, String address) {
         try {
-            hibernate.createBuilding(data[0], data[1]);
+            hibernate.createBuilding(name, address);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public long getBuildingId(String name) {
+        try {
+            return hibernate.getBuildingId(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 
     public boolean checkDuplicateUser(String data, String role) {
@@ -268,7 +278,7 @@ public class DBSManager implements Manager {
     public boolean checkBuilding(String build) {
         try {
             boolean flagCheck = true;
-            flagCheck = hibernate.checkBuilding(build);
+            flagCheck = hibernate.checkBuilding(Long.parseLong(build));
             return flagCheck;
         } catch (Exception e) {
             return false;
@@ -288,7 +298,6 @@ public class DBSManager implements Manager {
             coll.add(build);
         }
         return coll;
-
     }
 
 }

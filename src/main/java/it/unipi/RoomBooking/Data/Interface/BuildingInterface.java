@@ -8,7 +8,4 @@ public interface BuildingInterface {
     public long getId();
     public String getName();
     public String getAddress();
-    
-    public String toString();
-
 }

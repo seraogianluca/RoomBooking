@@ -115,15 +115,4 @@ public class Classroom implements Room {
         this.classroomBookings.remove(booking);
     }
 
-    public String toString() {
-        return String.format("%-5s %-15s %-25s %-10s", classroomId, classroomName, building.getName(), classroomCapacity);
-        
-    }
-
-    public String toStringBooked(){
-        for(ClassroomBooking i: classroomBookings){
-            System.out.println(i.toString());
-        }
-       return null;
-    }
 }
