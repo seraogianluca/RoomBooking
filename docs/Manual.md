@@ -1,13 +1,29 @@
 # Workgroup activity report - User Manual
 
 ## Table of contents
-1. [Startup and log in](#1-startup-and-log-in)
-2. [Book a room](#2-book-a-room)
-3. [Delete a booking](#3-delete-a-booking)
-4. [Update a booking](#4-update-a-booking) 
+1. [System Overview](#1-system-overview)
+2. [Startup and log in](#2-startup-and-log-in)
+3. [Administration Overview](#3-administration-overview)
+4. Student or Teacher Overview
 
-## 1. Startup and log in
-The application at the startup asks to specify if the user is a student or a teacher before logging in:
+## 1. System Overview
+The RoomBooking allows you to manage the laboratory and classrooms reservations. 
+
+The system allows: 
+
+**An Administrator to**
+* Insert a student
+* Insert a teacher
+* Insert a room
+* Insert a building
+
+**A Teacher and Student to**
+* Book a room
+* Delete a booking room
+* Update a booking room
+
+
+## 2. Startup and log in
 
 ```
  _____                         ____              _    _               
@@ -20,12 +36,123 @@ The application at the startup asks to specify if the user is a student or a tea
                                                               |___/                     
 ```
 The application ask for the user email:
-
 ```
 Insert your Email > 
 ```
 
-The main menu offer several actions that can be perfomed by the user:
+
+## 3. Administration Overview
+The administration interface has been designed to make inserting the main information that the system need for a quick and easy to implement. 
+
+
+**Administrator Case:** 
+
+```
+Insert your Email > demo@admin.unipi.it
+```
+
+The main menu offer to the administrator several actions that can be perfomed:
+
+```
+Welcome admin
+
+1 - Insert a student.
+2 - Insert a teacher.
+3 - Insert a room or a building.
+4 - Close.
+
+Choose an action > 
+```
+
+### 3.1. Insert a Student
+
+
+```
+Insert the name of the student > Antonio
+
+Insert the lastname of the Student > Bifecco
+
+Insert the email of the Student > antoniobifecco@studenti.unipi.it
+
+Student: Antonio Bifecco added!
+```
+### 3.2. Insert a Teacher
+
+
+
+```
+Choose an action >2
+
+Insert the name of the Teacher > Pietro
+
+Insert the lastname of the Teacher > Ducange
+
+Insert the email of the Teacher > pietro.ducange@unipi.it
+
+Teacher: Pietro Ducange added!
+
+```
+
+### 3.3. Insert a Room
+
+
+```
+Choose an action >3
+
+Do you want to add a room in a existing building or add a new one?
+
+1 - Existing building
+2 - Insert a building
+
+Choose an action > 1
+
+Do you want to add a Classroom or a Laboratory?
+
+1 - Classroom
+2 - Laboratory
+
+Choose an action > 1
+
+In which building?
+
+ID    Name
+===================
+1     Polo A
+2     Polo B
+3     Polo F
+
+Choose a building by ID > 1
+
+Insert the name of the room > ADII2
+
+Insert capacity > 150
+
+Classroom: ADII2 added!
+```
+
+### 3.4. Insert a Building
+
+```
+Choose an action > 3
+
+Do you want to add a room in a existing building or add a new one?
+
+1 - Existing building
+2 - Insert a building
+
+Choose an action > 2
+Insert the name of the new Building > Polo B
+Insert the address of the new Building: > via Giunta Pisano
+
+Building: Polo B added!
+```
+
+## 4. Student or Teacher Overview
+
+
+**Teacher or Student:** 
+
+The main menu offer to the users several actions:
 
 ```
 1 - Book a Room.
@@ -36,7 +163,8 @@ The main menu offer several actions that can be perfomed by the user:
 Choose an action > 
 ```
 
-## 2. Book a room
+
+### 4.1. Book a room
 
 In case the user is a teacher the application asks the schedule in which book the room, in case the user is a student the book a room procedure start directly from the next step:
 
@@ -64,7 +192,7 @@ If the user selects the correct room the procedure ends with success:
 Room succesfully booked.
 ```
 
-## 3. Delete a booking
+### 4.2. Delete a booking
 
 The application shows a list of the user's bookings and asks to choose one of them:
 
@@ -85,7 +213,7 @@ If the user selects the correct room the procedure ends with success:
 Booking succesfully deleted.
 ```
 
-## 4. Update a booking
+### 4.3. Update a booking
 
 The application shows a list of the user's bookings and asks to choose the one to be updated:
 ```
@@ -125,3 +253,5 @@ If the user selects the correct room the procedure ends with success:
 ```
 Booking succesfully updated.
 ```
+
+
