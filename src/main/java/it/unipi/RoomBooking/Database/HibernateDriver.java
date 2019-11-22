@@ -453,6 +453,25 @@ public class HibernateDriver {
         return null;
     }
 
+    public long getBuildingId(String name){
+        try{
+            entityManager = factory.createEntityManager();         
+            
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Building> criteriaQuery = criteriaBuilder.createQuery(Building.class);
+            Root<Building> root = criteriaQuery.from(Building.class);
+            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("buildingName"), name));
+            
+            return entityManager.createQuery(criteriaQuery).getSingleResult().getId();
+        }   
+        catch(Exception ex){
+            ex.printStackTrace();
+        }finally{
+            entityManager.close();
+        }
+        return 0;
+    }
+
     public boolean checkDuplicateUser(String data, String role){
        
         try{
@@ -485,14 +504,14 @@ public class HibernateDriver {
         return false;
     }
 
-    public boolean checkBuilding(String build){
+    public boolean checkBuilding(long build){
         try{
             entityManager = factory.createEntityManager();
             
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Building> criteriaQuery = criteriaBuilder.createQuery(Building.class);
             Root<Building> root = criteriaQuery.from(Building.class);
-            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("buildingId"), Long.parseLong(build)));
+            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("buildingId"), build));
             return (entityManager.createQuery(criteriaQuery).getResultList().size() == 1);
         }
         catch(Exception ex){

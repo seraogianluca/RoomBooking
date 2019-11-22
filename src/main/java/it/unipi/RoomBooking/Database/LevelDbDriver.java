@@ -168,7 +168,7 @@ public class LevelDbDriver {
 					String key = asString(iterator.peekNext().getKey());
 					String[] keySplit = key.split(":");
 					String roomName = asString(iterator.peekNext().getValue());
-					bookings.add(new Booked(Long.parseLong(keySplit[3]), roomName, null, "lab"));
+					bookings.add(new Booked(Long.parseLong(keySplit[2]), roomName, null, "lab"));
 				}
 			} else {
 				for (iterator.seek(bytes("cla:")); iterator.hasNext(); iterator.next()) {
@@ -178,8 +178,8 @@ public class LevelDbDriver {
 						String[] keySplit = key.split(":");
 						String roomName = asString(levelDb.get(bytes(key)));
 						String schedule = asString(
-								levelDb.get(bytes("cla:" + keySplit[2] + ":" + keySplit[3] + ":schedule")));
-						bookings.add(new Booked(Long.parseLong(keySplit[3]), roomName, schedule, "cla"));
+								levelDb.get(bytes("cla:" + keySplit[1] + ":" + keySplit[2] + ":schedule")));
+						bookings.add(new Booked(Long.parseLong(keySplit[2]), roomName, schedule, "cla"));
 					}
 				}
 			}
@@ -226,12 +226,12 @@ public class LevelDbDriver {
 
 					if (isAvailable) {
 						String[] keySplit = key.split(":");
-						String name = asString(levelDb.get(bytes(roomType + ":" + keySplit[2] + ":roomname")));
+						String name = asString(levelDb.get(bytes(roomType + ":" + keySplit[1] + ":roomname")));
 						String building = asString(
-								levelDb.get(bytes(roomType + ":" + keySplit[2] + ":buildingname")));
+								levelDb.get(bytes(roomType + ":" + keySplit[1] + ":buildingname")));
 						int capacity = Integer.parseInt(
-								asString(levelDb.get(bytes(roomType + ":" + keySplit[2] + ":roomcapacity"))));
-						availables.add(new Available(name, building, available, roomType, Long.parseLong(keySplit[2]),
+								asString(levelDb.get(bytes(roomType + ":" + keySplit[1] + ":roomcapacity"))));
+						availables.add(new Available(name, building, available, roomType, Long.parseLong(keySplit[1]),
 								capacity));
 					}
 				}
