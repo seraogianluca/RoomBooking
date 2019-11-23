@@ -1,5 +1,7 @@
 # Room Booking
 
+[![CodeFactor](https://www.codefactor.io/repository/github/seraogianluca/roombooking/badge)](https://www.codefactor.io/repository/github/seraogianluca/roombooking)
+
 A simple JAVA application for the workgroup tasks of the Large-Scale and Multi-Structured Databases course of the Artificial Intelligence and Data Engineering Master Degree at University of Pisa.
 
 ## Project documentation
