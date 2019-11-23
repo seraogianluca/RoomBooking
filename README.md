@@ -1,8 +1,6 @@
 # Room Booking
 
-[![CodeFactor](https://www.codefactor.io/repository/github/seraogianluca/roombooking/badge)](https://www.codefactor.io/repository/github/seraogianluca/roombooking)
-
-[![Build Status](https://travis-ci.com/seraogianluca/RoomBooking.svg?branch=develop_task1)](https://travis-ci.com/seraogianluca/RoomBooking)
+[![CodeFactor](https://www.codefactor.io/repository/github/seraogianluca/roombooking/badge)](https://www.codefactor.io/repository/github/seraogianluca/roombooking) [![Build Status](https://travis-ci.com/seraogianluca/RoomBooking.svg?branch=develop_task1)](https://travis-ci.com/seraogianluca/RoomBooking)
 
 A simple JAVA application for the workgroup tasks of the Large-Scale and Multi-Structured Databases course of the Artificial Intelligence and Data Engineering Master Degree at University of Pisa.
 
