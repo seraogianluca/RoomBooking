@@ -47,15 +47,17 @@ public final class RoomBookingCLI {
 	private static String getCommand() {
 		String command;
 		boolean isValid = false;
+
 		if (user.getRole().equals("A")) {
-			out.println("\n1 - Insert a student." + "\n2 - Insert a teacher." + "\n3 - Insert a room."
-					+ "\n4 - Close. ");
+			out.println(
+					"\n1 - Insert a student." + "\n2 - Insert a teacher." + "\n3 - Insert a room." + "\n4 - Close. ");
 		} else {
 			out.println("\n1 - Book a Room." + "\n2 - Delete a booking." + "\n3 - Update a booking." + "\n4 - Close.");
 		}
+
 		while (!isValid) {
 			out.print("\nChoose an action > ");
-			command = input.next();
+			command = input.nextLine();
 
 			if (!command.equals("4") && !command.equals("3") && !command.equals("2") && !command.equals("1")) {
 				out.println(YELLOW + "\nPlease insert a valid command." + WHITE);
@@ -90,6 +92,64 @@ public final class RoomBookingCLI {
 		return requestedSchedule;
 	}
 
+	private static long getLongId() {
+		long inputLong = 0;
+
+		try {
+			inputLong = input.nextLong();
+			if (inputLong == 0) {
+				out.println(YELLOW + "\nPlease insert a valid ID." + WHITE);
+			}
+		} catch (InputMismatchException im) {
+			out.println(YELLOW + "\nPlease insert a valid ID." + WHITE);
+			return 0;
+		}
+
+		return inputLong;
+	}
+
+	private static int getInt() {
+		int inputInt = 0;
+
+		try {
+			inputInt = input.nextInt();
+			if (inputInt == 0) {
+				out.println(YELLOW + "\nPlease insert a valid number." + WHITE);
+			}
+		} catch (InputMismatchException im) {
+			out.println(YELLOW + "\nPlease insert a valid number." + WHITE);
+			return 0;
+		}
+
+		return inputInt;
+	}
+
+	private static int getCommandAdmin() {
+		int typeRoom = 0;
+		boolean isValid = false;
+
+		while (!isValid) {
+			out.print("\nChoose an action > ");
+
+			try {
+				typeRoom = input.nextInt();
+				input.nextLine();
+
+				if (!(typeRoom == 2) && !(typeRoom == 1)) {
+					out.println(YELLOW + "\nPlease insert a valid command." + WHITE);
+				} else {
+					isValid = true;
+				}
+			} catch (InputMismatchException im) {
+				out.println(YELLOW + "\nPlease insert a valid command." + WHITE);
+				input.nextLine();
+			}
+
+		}
+
+		return typeRoom;
+	}
+
 	private static void showBooked(Collection<Booked> booked) {
 		out.println("\nList of your booked rooms:\n");
 
@@ -117,7 +177,6 @@ public final class RoomBookingCLI {
 
 	private static void bookARoom() {
 		String requestedSchedule = null;
-		String requestedRoom = null;
 		boolean isValid = false;
 		Available room = null;
 		Collection<Available> availableRooms;
@@ -134,11 +193,16 @@ public final class RoomBookingCLI {
 
 		showAvailable(availableRooms);
 		while (!isValid) {
-			out.print("\nChoose a room by ID > ");
-			requestedRoom = input.next();
+			long requestedRoom = 0;
+
+			while (requestedRoom == 0) {
+				out.print("\nChoose a room by ID > ");
+				requestedRoom = getLongId();
+				input.nextLine();
+			}
 
 			for (Available i : availableRooms) {
-				if (i.getId() == Long.parseLong(requestedRoom)) {
+				if (i.getId() == requestedRoom) {
 					isValid = true;
 					room = i;
 					break;
@@ -155,7 +219,6 @@ public final class RoomBookingCLI {
 	}
 
 	private static void deleteBooking() {
-		String requestedRoom = null;
 		boolean isValid = false;
 		Booked bookToDelete = null;
 		Collection<Booked> bookedRooms;
@@ -169,11 +232,16 @@ public final class RoomBookingCLI {
 
 		showBooked(bookedRooms);
 		while (!isValid) {
-			out.print("\nChoose the room you booked by ID > ");
-			requestedRoom = input.next();
+			long requestedRoom = 0;
+
+			while (requestedRoom == 0) {
+				out.print("\nChoose the room you booked by ID > ");
+				requestedRoom = getLongId();
+				input.nextLine();
+			}
 
 			for (Booked iteration : bookedRooms) {
-				if (Long.parseLong(requestedRoom) == iteration.getId()) {
+				if (requestedRoom == iteration.getId()) {
 					isValid = true;
 					bookToDelete = iteration;
 					break;
@@ -190,15 +258,12 @@ public final class RoomBookingCLI {
 	}
 
 	private static void updateBooking() {
-		String oldRoom = null;
 		String requestedSchedule = null;
-		String requestedRoom = null;
 		Collection<Available> availableRooms;
 		Collection<Booked> bookedRooms;
 		Booked room = null;
 		Available roomAvailable = null;
 		boolean isValid = false;
-		String oldbookingId = null;
 
 		bookedRooms = database.getBooked(user.getRole());
 
@@ -210,40 +275,25 @@ public final class RoomBookingCLI {
 		showBooked(bookedRooms);
 
 		while (!isValid) {
-			if (user.getRole().equals("T")) {
-				// Teacher
-				while (!isValid) {
+			while (!isValid) {
+				long oldbookingId = 0;
+
+				while (oldbookingId == 0) {
 					out.print("\nChoose the room you want to change by ID > ");
-					oldbookingId = input.next();
+					oldbookingId = getLongId();
+					input.nextLine();
+				}
 
-					for (Booked iteration : bookedRooms) {
-						if (Long.parseLong(oldbookingId) == iteration.getId()) {
-							room = iteration;
-							isValid = true;
-							break;
-						}
-					}
-
-					if (!isValid) {
-						out.println(YELLOW + "\nPlease insert a valid room." + WHITE);
+				for (Booked iteration : bookedRooms) {
+					if (oldbookingId == iteration.getId()) {
+						room = iteration;
+						isValid = true;
+						break;
 					}
 				}
-			} else {
-				// Student
-				while (!isValid) {
-					out.print("\nChoose the room you want to change by ID > ");
-					oldRoom = input.next();
-					for (Booked i : bookedRooms) {
-						if (i.getId() == Long.parseLong(oldRoom)) {
-							room = i;
-							isValid = true;
-							break;
-						}
-					}
 
-					if (!isValid) {
-						System.out.println(YELLOW + "\nPlease insert a valid room." + WHITE);
-					}
+				if (!isValid) {
+					out.println(YELLOW + "\nPlease insert a valid room." + WHITE);
 				}
 			}
 
@@ -263,12 +313,16 @@ public final class RoomBookingCLI {
 
 			showAvailable(availableRooms);
 			while (!isValid) {
+				long requestedRoom = 0;
 
-				out.print("\nChoose a room by ID > ");
-				requestedRoom = input.next();
+				while (requestedRoom == 0) {
+					out.print("\nChoose a room by ID > ");
+					requestedRoom = getLongId();
+					input.nextLine();
+				}
 
 				for (Available i : availableRooms) {
-					if (i.getId() == Long.parseLong(requestedRoom)) {
+					if (i.getId() == requestedRoom) {
 						roomAvailable = i;
 						isValid = true;
 						break;
@@ -295,10 +349,10 @@ public final class RoomBookingCLI {
 		out.print("\nInsert the lastname of the Student > ");
 		dataString[1] = input.nextLine();
 		out.print("\nInsert the email of the Student > ");
-		dataString[2] = input.next();
+		dataString[2] = input.nextLine();
 
 		if (database.checkDuplicateUser(dataString[2], "S") == false) {
-			out.println(RED + "User already exists!" + WHITE);
+			out.println(RED + "\nUser already exists!" + WHITE);
 			return;
 		}
 
@@ -314,10 +368,10 @@ public final class RoomBookingCLI {
 		out.print("\nInsert the lastname of the Teacher > ");
 		dataString[1] = input.nextLine();
 		out.print("\nInsert the email of the Teacher > ");
-		dataString[2] = input.next();
+		dataString[2] = input.nextLine();
 
 		if (database.checkDuplicateUser(dataString[2], "T") == false) {
-			out.println(RED + "User already exists!" + WHITE);
+			out.println(RED + "\nUser already exists!" + WHITE);
 			return;
 		}
 
@@ -329,51 +383,34 @@ public final class RoomBookingCLI {
 	private static void addRoom(long buildingId) {
 		String name;
 		int capacity = 0;
-
+		int typeRoom = 0;
 
 		out.print("\nDo you want to add a Classroom or a Laboratory?\n");
 		out.println("\n1 - Classroom" + "\n2 - Laboratory");
 
-		out.print("\nChoose an action > ");
-		String typeRoom = input.next();
-		input.nextLine();
+		typeRoom = getCommandAdmin();
 
-		if (typeRoom.equals("1")) {
-			boolean numberValid = true;
+		if (typeRoom == 1) {
 
 			out.print("\nInsert the name of the classroom > ");
 			name = input.nextLine();
 
-			while (numberValid) {
-				try {
-					out.print("\nInsert capacity > ");
-					capacity = Integer.parseInt(input.next());
-					input.nextLine();
-					numberValid = false;
-				} catch (NumberFormatException e) {
-					numberValid = true;
-					out.println(RED + "Invalid number. Please write a valid number." + WHITE);
-				}
+			while (capacity == 0) {
+				out.print("\nInsert capacity > ");
+				capacity = getInt();
+				input.nextLine();
 			}
 
 			database.setRoom(name, capacity, "cla", buildingId);
 			out.println(GREEN + "\nClassroom: " + name + " " + "added!" + WHITE);
 		} else {
-			// Laboratory
-			boolean numberValid = true;
 			out.print("\nInsert the name of the laboratory > ");
 			name = input.nextLine();
 
-			while (numberValid) {
-				try {
-					out.print("\nInsert capacity > ");
-					capacity = Integer.parseInt(input.next());
-					input.nextLine();
-					numberValid = false;
-				} catch (NumberFormatException e) {
-					numberValid = true;
-					out.println(RED + "Invalid number. Please write a valid number." + WHITE);
-				}
+			while (capacity == 0) {
+				out.print("\nInsert capacity > ");
+				capacity = getInt();
+				input.nextLine();
 			}
 
 			database.setRoom(name, capacity, "lab", buildingId);
@@ -383,36 +420,39 @@ public final class RoomBookingCLI {
 
 	private static void addBuilding() {
 		Collection<BuildingNORM> buildings = new ArrayList<>();
-		String buildingId = null;
+		int command = 0;
+		long buildingId = 0;
 		String name;
 		String address;
 
 		out.print("\nDo you want to add a room in a existing building or in a new one?\n");
 		out.println("\n1 - Existing building" + "\n2 - Insert a building");
 
-		out.print("\nChoose an action > ");
-		String cmd = input.next();
-		input.nextLine();
+		command = getCommandAdmin();
 
-		if (cmd.equals("1")) {
+		if (command == 1) {
 			Boolean exitBuilding = false;
+			buildings = database.getBuildings();
+			out.println(String.format("\n%-5s %-15s", "ID", "Name"));
+			out.println("===================");
+
+			for (BuildingNORM b : buildings) {
+				out.println(b.toString());
+			}
 
 			while (!exitBuilding) {
 
-				buildings = database.getBuildings();
-				out.println(String.format("\n%-5s %-15s", "ID", "Name"));
-				out.println("===================");
+				while (buildingId == 0) {
+					out.print("\nChoose a building by ID > ");
+					buildingId = getLongId();
+					input.nextLine();
 
-				for (BuildingNORM b : buildings) {
-					out.println(b.toString());
+
 				}
-
-				out.print("\nChoose a building by ID > ");
-				buildingId = input.next();
-				input.nextLine();
 
 				if (!database.checkBuilding(buildingId)) {
 					out.print(RED + "\nError. This ID doesn't exist. Choose an existing building\n" + WHITE);
+					buildingId = 0;
 				} else {
 					exitBuilding = true;
 				}
@@ -428,10 +468,10 @@ public final class RoomBookingCLI {
 			database.setBuilding(name, address);
 			out.println(GREEN + "\nBuilding: " + name + " " + "added!" + WHITE);
 
-			buildingId = Long.toString(database.getBuildingId(name));
+			buildingId = database.getBuildingId(name);
 		}
 
-		addRoom(Long.parseLong(buildingId));
+		addRoom(buildingId);
 	}
 
 	public static void main(String[] args) {

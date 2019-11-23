@@ -275,10 +275,10 @@ public class DBSManager implements Manager {
         }
     }
 
-    public boolean checkBuilding(String build) {
+    public boolean checkBuilding(long build) {
         try {
             boolean flagCheck = true;
-            flagCheck = hibernate.checkBuilding(Long.parseLong(build));
+            flagCheck = hibernate.checkBuilding(build);
             return flagCheck;
         } catch (Exception e) {
             return false;

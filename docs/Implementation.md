@@ -19,9 +19,7 @@ The relational database stores all the system informations like: users, bookings
 
 The read operations are made exclusively on LevelDB and the insert and update operations are made using both databases.
 
-The analysis classes diagram of the application including both databases is shown below:
-
-![Analysis Classes](/schemas/task1/ClassesUML.png)
+The key model of levelDB is explained in details in [Feasibility Study on the use of a Key-Value Data Storage](./FeasibilityStudy.md).
 
 The relational model is implemented as follow:
 

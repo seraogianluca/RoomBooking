@@ -46,7 +46,7 @@ The following use cases are identified:
 The `choose schedule` is specified as a `extend` because only the `teacher` users can choose the part of the day (Morning, Afternoon) in which they want to book the classroom.
 
 The following classes are idientified:
-![Classes](/schemas/task1/ClassesUMLFirst.png)
+![Classes](/schemas/task1/ClassesUML.png)
 
 ## 5. Software architecture
 
