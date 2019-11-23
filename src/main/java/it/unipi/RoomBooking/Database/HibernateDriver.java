@@ -508,11 +508,10 @@ public class HibernateDriver {
         try{
             entityManager = factory.createEntityManager();
             
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Building> criteriaQuery = criteriaBuilder.createQuery(Building.class);
-            Root<Building> root = criteriaQuery.from(Building.class);
-            criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("buildingId"), build));
-            return (entityManager.createQuery(criteriaQuery).getResultList().size() == 1);
+            Building building = null;
+            building = entityManager.find(Building.class, build);
+
+            return (building != null);
         }
         catch(Exception ex){
             ex.printStackTrace();

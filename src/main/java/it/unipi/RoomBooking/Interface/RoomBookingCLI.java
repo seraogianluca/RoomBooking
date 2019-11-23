@@ -446,8 +446,6 @@ public final class RoomBookingCLI {
 					out.print("\nChoose a building by ID > ");
 					buildingId = getLongId();
 					input.nextLine();
-
-
 				}
 
 				if (!database.checkBuilding(buildingId)) {
