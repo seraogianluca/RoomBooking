@@ -534,6 +534,9 @@ public final class RoomBookingCLI {
 					terminate = true;
 					out.println("\nSee you soon!");
 					break;
+                default:
+                    terminate = true;
+                    break;
 				}
 			}
 		} finally {
