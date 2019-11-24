@@ -100,8 +100,9 @@ public class LevelDbDriver {
 	public void setClassroomAvailability(long roomId) throws IOException {
 		try {
 			levelDb = factory.open(new File(availablePath), options);
-			String key = "cla" + roomId + ":available";
+			String key = "cla:" + roomId + ":available";
 			levelDb.put(bytes(key), bytes("f"));
+			System.out.println(key + " = f");
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		} finally {
@@ -115,8 +116,10 @@ public class LevelDbDriver {
 			levelDb.delete(bytes("cla:" + roomId + ":available"));
 			if (requestedSchedule.equals("m")) {
 				levelDb.put(bytes("cla:" + roomId + ":available"), bytes("a"));
+				System.out.println("cla:" + roomId + ":available = a");
 			} else {
 				levelDb.put(bytes("cla:" + roomId + ":available"), bytes("m"));
+				System.out.println("cla:" + roomId + ":available = m");
 			}
 		} catch (IOException ioe) {
 			ioe.printStackTrace();

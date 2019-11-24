@@ -88,6 +88,7 @@ public final class RoomBookingCLI {
 			out.print("\nChoose a schedule > ");
 
 			requestedSchedule = input.next();
+			input.nextLine();
 			requestedSchedule = requestedSchedule.toLowerCase(Locale.ENGLISH);
 
 			if (!requestedSchedule.equals("a") && !requestedSchedule.equals("m")) {
