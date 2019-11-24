@@ -4,7 +4,7 @@
 1. [System Overview](#1-system-overview)
 2. [Startup and log in](#2-startup-and-log-in)
 3. [Administration Overview](#3-administration-overview)
-4. Student or Teacher Overview
+4. [Student or Teacher Overview](#4-student-or-teacher-overview)
 
 ## 1. System Overview
 The RoomBooking allows you to manage the laboratory and classrooms reservations. 
@@ -40,9 +40,10 @@ The application ask for the user email:
 Insert your Email > 
 ```
 
-
 ## 3. Administration Overview
 The administration interface has been designed to make inserting the main information that the system need for a quick and easy to implement. 
+
+For user the administration session you have to login with an administrator user.
 
 
 **Administrator Case:** 
@@ -66,53 +67,65 @@ Choose an action >
 
 ### 3.1. Insert a Student
 
+For intert a student, you have to choose the **option 1** and fill the data with the student name, lastname and a valid email.
 
 ```
 Insert the name of the student > Antonio
-
 Insert the lastname of the Student > Bifecco
-
 Insert the email of the Student > antoniobifecco@studenti.unipi.it
+```
 
+The student was successfully crated:
+
+```
 Student: Antonio Bifecco added!
 ```
+
 ### 3.2. Insert a Teacher
 
-
+For insert a teacher, you have to choose the **option 2** and fill the data with the teacher name, lastname and valid email.
 
 ```
-Choose an action >2
-
 Insert the name of the Teacher > Pietro
-
 Insert the lastname of the Teacher > Ducange
-
 Insert the email of the Teacher > pietro.ducange@unipi.it
+```
 
+The teacher was successfully crated:
+
+```
 Teacher: Pietro Ducange added!
-
 ```
 
 ### 3.3. Insert a Room
 
+For insert a new Room, the system have the option to:
 
 ```
-Choose an action >3
-
-Do you want to add a room in a existing building or add a new one?
+Do you want to add a room in a existing building or add a new building?
 
 1 - Existing building
 2 - Insert a building
 
 Choose an action > 1
+```
 
+You have to choose the **option 1**.
+
+You can add a Room on a Classroom or on a Laboratory. For these example we add a new room on a Classroom, but the process is the same for the Laboratory.
+
+```
 Do you want to add a Classroom or a Laboratory?
 
 1 - Classroom
 2 - Laboratory
 
 Choose an action > 1
+```
 
+Later, you have to choose the building, insert the name and the capacity of the new Room.
+
+```
 In which building?
 
 ID    Name
@@ -122,32 +135,44 @@ ID    Name
 3     Polo F
 
 Choose a building by ID > 1
-
 Insert the name of the room > ADII2
-
 Insert capacity > 150
+```
 
+You Room was successfully crated:
+
+```
 Classroom: ADII2 added!
 ```
 
 ### 3.4. Insert a Building
 
-```
-Choose an action > 3
+For insert a new Building, the system have the option to:
 
-Do you want to add a room in a existing building or add a new one?
+```
+Do you want to add a room in a existing building or add a new building?
 
 1 - Existing building
 2 - Insert a building
 
 Choose an action > 2
-Insert the name of the new Building > Polo B
-Insert the address of the new Building: > via Giunta Pisano
+```
 
+You have to choose the **option 2**. Later, add the name and the address of the new Building.
+
+```
+Insert the name of the new Building > Polo B
+Insert the address of the new Building: > Via Giunta Pisano
+```
+
+You Building was successfully crated:
+
+```
 Building: Polo B added!
 ```
 
 ## 4. Student or Teacher Overview
+The student and teacher interface has been designed to make room bookings depend on the role, the students can make laboratory bookings and the teacher can make classroom bookings.
 
 
 **Teacher or Student:** 
