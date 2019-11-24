@@ -14,6 +14,10 @@ A simple JAVA application for the workgroup tasks of the Large-Scale and Multi-S
 7) [Description of the application implementation.](/docs/Implementation.md)
 8) [Short manual of usage of the application.](/docs/Manual.md)
 
+## Notes
+
+Please insert the MySQL username and password in the `persistence.xml` file before running.
+
 ## Credits
 
 Application designed and developed by Barigliano Lorenzo, Gómez Marsha, Mazzini Matilde, Serao Gianluca.
