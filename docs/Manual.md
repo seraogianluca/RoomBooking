@@ -7,7 +7,7 @@
 4. [Student or Teacher Overview](#4-student-or-teacher-overview)
 
 ## 1. System Overview
-The RoomBooking allows you to manage the laboratory and classrooms reservations. 
+The RoomBooking app allows you to manage the laboratories and classrooms reservations. 
 
 The system allows: 
 
@@ -19,8 +19,8 @@ The system allows:
 
 **A Teacher and Student to**
 * Book a room
-* Delete a booking room
-* Update a booking room
+* Delete a booking
+* Update a booking
 
 
 ## 2. Startup and log in
@@ -41,18 +41,15 @@ Insert your Email >
 ```
 
 ## 3. Administration Overview
-The administration interface has been designed to make inserting the main information that the system need for a quick and easy to implement. 
 
-For user the administration session you have to login with an administrator user.
+To login as administrator you have to insert an administrator email.
 
-
-**Administrator Case:** 
 
 ```
 Insert your Email > demo@admin.unipi.it
 ```
 
-The main menu offer to the administrator several actions that can be perfomed:
+The main menu offers to the administrator several actions:
 
 ```
 Welcome admin
@@ -67,39 +64,42 @@ Choose an action >
 
 ### 3.1. Insert a Student
 
-For intert a student, you have to choose the **option 1** and fill the data with the student name, lastname and a valid email.
+To insert a student choose the **option 1** from the menu and insert the information about the student.
 
 ```
-Insert the name of the student > Antonio
-Insert the lastname of the Student > Bifecco
-Insert the email of the Student > antoniobifecco@studenti.unipi.it
+Insert the name of the student > Name
+Insert the lastname of the Student > Lastname
+Insert the email of the Student > namelastname@studenti.unipi.it
 ```
+The email must belong to @studenti.unipi.it domain.
 
-The student was successfully crated:
+If the student is successfully created, the following message appears:
 
 ```
-Student: Antonio Bifecco added!
+Student: Name Lastname added!
 ```
 
 ### 3.2. Insert a Teacher
 
-For insert a teacher, you have to choose the **option 2** and fill the data with the teacher name, lastname and valid email.
+To insert a teacher choose the **option 1** from the menu and insert the information about the teacher.
+
 
 ```
-Insert the name of the Teacher > Pietro
-Insert the lastname of the Teacher > Ducange
-Insert the email of the Teacher > pietro.ducange@unipi.it
+Insert the name of the Teacher > Name
+Insert the lastname of the Teacher > Lastname
+Insert the email of the Teacher > namelastname@unipi.it
 ```
+The email must belong to @unipi.it domain.
 
-The teacher was successfully crated:
+If the teacher is successfully created, the following message appears:
 
 ```
-Teacher: Pietro Ducange added!
+Teacher: Name Lastname added!
 ```
 
 ### 3.3. Insert a Room
 
-For insert a new Room, the system have the option to:
+To insert a new Room, the system shows:
 
 ```
 Do you want to add a room in a existing building or add a new building?
@@ -109,22 +109,9 @@ Do you want to add a room in a existing building or add a new building?
 
 Choose an action > 1
 ```
+**Existing building**
 
-You have to choose the **option 1**.
-
-You can add a Room on a Classroom or on a Laboratory. For these example we add a new room on a Classroom, but the process is the same for the Laboratory.
-
-```
-Do you want to add a Classroom or a Laboratory?
-
-1 - Classroom
-2 - Laboratory
-
-Choose an action > 1
-```
-
-Later, you have to choose the building, insert the name and the capacity of the new Room.
-
+In the case of existing building the system shows a list of buildings:
 ```
 In which building?
 
@@ -135,44 +122,39 @@ ID    Name
 3     Polo F
 
 Choose a building by ID > 1
+```
+**Insert building**
+
+In the case of inserting a new building the system asks to insert the building information:
+```
+Insert the name of the new Building > Polo B
+Insert the address of the new Building: > Via Giunta Pisano
+```
+If the building is successfully created, the following message appears:
+```
+Building: Polo B added!
+```
+You can add a Classroom or a Laboratory. For this example we add a Classroom, but the process is the same for the Laboratory.
+
+```
+Do you want to add a Classroom or a Laboratory?
+
+1 - Classroom
+2 - Laboratory
+
+Choose an action > 1
 Insert the name of the room > ADII2
 Insert capacity > 150
 ```
-
-You Room was successfully crated:
+If the room is successfully created, the following message appears:
 
 ```
 Classroom: ADII2 added!
 ```
 
-### 3.4. Insert a Building
-
-For insert a new Building, the system have the option to:
-
-```
-Do you want to add a room in a existing building or add a new building?
-
-1 - Existing building
-2 - Insert a building
-
-Choose an action > 2
-```
-
-You have to choose the **option 2**. Later, add the name and the address of the new Building.
-
-```
-Insert the name of the new Building > Polo B
-Insert the address of the new Building: > Via Giunta Pisano
-```
-
-You Building was successfully crated:
-
-```
-Building: Polo B added!
-```
 
 ## 4. Student or Teacher Overview
-The student and teacher interface has been designed to make room bookings depend on the role, the students can make laboratory bookings and the teacher can make classroom bookings.
+The student and teacher interface has been designed to make room bookings depend on the role, the students can book a laboratory and the teacher can book a classroom.
 
 
 **Teacher or Student:** 
@@ -191,7 +173,7 @@ Choose an action >
 
 ### 4.1. Book a room
 
-In case the user is a teacher the application asks the schedule in which book the room, in case the user is a student the book a room procedure start directly from the next step:
+In case the user is a teacher the system claims for the schedule in which book the room, in case the user is a student the procedure starts directly from the next step:
 
 ```
 [M] - Morning.
@@ -199,7 +181,7 @@ In case the user is a teacher the application asks the schedule in which book th
 
 Choose a schedule > 
 ```
-The application shows a list of available rooms and asks to choose one of them:
+The system shows a list of available rooms and claims to choose one of them:
 
 ```
 List of the avaiable rooms:
@@ -219,7 +201,7 @@ Room succesfully booked.
 
 ### 4.2. Delete a booking
 
-The application shows a list of the user's bookings and asks to choose one of them:
+The system shows a list of the user's bookings and claims to choose one of them:
 
 ```
 List of your booked rooms:
@@ -232,7 +214,7 @@ ID    Room            Schedule
 
 Choose the room you booked by ID > 
 ```
-If the user selects the correct room the procedure ends with success:
+If the user selects the correct booking the procedure ends with success:
 
 ```
 Booking succesfully deleted.
@@ -240,7 +222,7 @@ Booking succesfully deleted.
 
 ### 4.3. Update a booking
 
-The application shows a list of the user's bookings and asks to choose the one to be updated:
+The system shows a list of the user's bookings and claims to choose the one to be updated:
 ```
 List of your booked rooms:
 
@@ -252,7 +234,7 @@ ID    Room            Schedule
 Choose the room you want to change by ID >
 
 ```
-In case the user is a teacher the application asks the new schedule in which book the room, in case the user is a student the update procedure skips this step:
+In case the user is a teacher the system claims the new schedule in which book the room, in case the user is a student the update procedure skips this step:
 
 ```
 Choose the new schedule: 
@@ -261,7 +243,7 @@ Choose the new schedule:
 
 Choose a schedule > 
 ```
-The application shows a list of available rooms and asks to choose one of them:
+The system shows a list of available rooms and claims to choose one of them:
 
 ```
 List of the avaiable rooms:
