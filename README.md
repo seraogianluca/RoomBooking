@@ -5,7 +5,7 @@
 A simple JAVA application for the workgroup tasks of the Large-Scale and Multi-Structured Databases course of the Artificial Intelligence and Data Engineering Master Degree at University of Pisa.
 
 ## Project documentation
-2) [Proposed application, description non experts in the field of computer engineering.](/docs/Design.md#introduction)
+2) [Proposed application, description non experts in the field of computer engineering.](/docs/Design.md#1-introduction)
 3) [Main actors of the application and definition of the main functional and nonfunctional requirements.](/docs/Design.md#functional-requirements)
 4) [UML diagram of the main Use Cases](/docs/Design.md#schemas)
 5) [UML diagram of the Analysis Classes](/docs/Design.md#schemas)
