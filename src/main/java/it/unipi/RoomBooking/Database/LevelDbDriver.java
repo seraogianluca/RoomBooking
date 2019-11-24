@@ -14,6 +14,10 @@ public class LevelDbDriver {
 	private static DB levelDb;
 	private static Options options;
 
+	/* Please check the correct configuration before running */
+	private static String availablePath = "./src/available"; 	//Windows Path: .\\src\\available 
+	private static String bookingsPath = "./src/bookings"; 		//Windows Path: .\\src\\bookings
+
 	public void start() {
 		options = new Options();
 		options.compressionType(CompressionType.NONE);
@@ -22,8 +26,8 @@ public class LevelDbDriver {
 
 	public void exit() {
 		try {
-			factory.destroy(new File(".\\src\\main\\resources\\DB\\available"), options);
-			factory.destroy(new File(".\\src\\main\\resources\\DB\\bookings"), options);
+			factory.destroy(new File(availablePath), options);
+			factory.destroy(new File(bookingsPath), options);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -32,7 +36,7 @@ public class LevelDbDriver {
 	public void putAvailable(String roomType, long roomId, String roomName, String buildingName, int capacity,
 			String available) throws IOException {
 		try {
-			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
+			levelDb = factory.open(new File(availablePath), options);
 			String keyName = roomType + ":" + roomId + ":roomname";
 			levelDb.put(bytes(keyName), bytes(roomName));
 			String keyBuilding = roomType + ":" + roomId + ":buildingname";
@@ -50,7 +54,7 @@ public class LevelDbDriver {
 
 	public void deleteFromAvailable(String roomType, long roomId) throws IOException {
 		try {
-			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
+			levelDb = factory.open(new File(availablePath), options);
 			String keyName = roomType + ":" + roomId + ":roomname";
 			levelDb.delete(bytes(keyName));
 			String keyBuilding = roomType + ":" + roomId + ":buildingname";
@@ -68,7 +72,7 @@ public class LevelDbDriver {
 
 	public void increaseLaboratoryAvailability(long roomId) throws IOException {
 		try {
-			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
+			levelDb = factory.open(new File(availablePath), options);
 			String key = "lab:" + roomId + ":available";
 			int seats = Integer.parseInt(asString(levelDb.get(bytes(key)))) + 1;
 			levelDb.put(bytes(key), bytes(Integer.toString(seats)));
@@ -82,7 +86,7 @@ public class LevelDbDriver {
 
 	public void decreaseLaboratoryAvailability(long roomId) throws IOException {
 		try {
-			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
+			levelDb = factory.open(new File(availablePath), options);
 			String key = "lab:" + roomId + ":available";
 			int seats = Integer.parseInt(asString(levelDb.get(bytes(key)))) - 1;
 			levelDb.put(bytes(key), bytes(Integer.toString(seats)));
@@ -95,7 +99,7 @@ public class LevelDbDriver {
 
 	public void setClassroomAvailability(long roomId) throws IOException {
 		try {
-			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
+			levelDb = factory.open(new File(availablePath), options);
 			String key = "cla" + roomId + ":available";
 			levelDb.put(bytes(key), bytes("f"));
 		} catch (IOException ioe) {
@@ -107,7 +111,7 @@ public class LevelDbDriver {
 
 	public void updateClassroomAvailability(long roomId, String requestedSchedule) throws IOException {
 		try {
-			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
+			levelDb = factory.open(new File(availablePath), options);
 			levelDb.delete(bytes("cla:" + roomId + ":available"));
 			if (requestedSchedule.equals("m")) {
 				levelDb.put(bytes("cla:" + roomId + ":available"), bytes("a"));
@@ -124,7 +128,7 @@ public class LevelDbDriver {
 	public void putBooked(long userId, String roomType, long roomId, String roomName, String schedule)
 			throws IOException {
 		try {
-			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\bookings"), options);
+			levelDb = factory.open(new File(bookingsPath), options);
 			String keyName = roomType + ":" + userId + ":" + roomId + ":roomname";
 			levelDb.put(bytes(keyName), bytes(roomName));
 
@@ -141,7 +145,7 @@ public class LevelDbDriver {
 
 	public void deleteBooked(String roomType, long roomId, long userId) throws IOException {
 		try {
-			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\bookings"), options);
+			levelDb = factory.open(new File(bookingsPath), options);
 			String keyName = roomType + ":" + userId + ":" + roomId + ":roomname";
 			levelDb.delete(bytes(keyName));
 
@@ -160,7 +164,7 @@ public class LevelDbDriver {
 		Collection<Booked> bookings = new ArrayList<Booked>();
 
 		try {
-			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\bookings"), options);
+			levelDb = factory.open(new File(bookingsPath), options);
 			DBIterator iterator = levelDb.iterator();
 
 			if (role.equals("S")) {
@@ -197,7 +201,7 @@ public class LevelDbDriver {
 		Collection<Available> availables = new ArrayList<Available>();
 
 		try {
-			levelDb = factory.open(new File(".\\src\\main\\resources\\DB\\available"), options);
+			levelDb = factory.open(new File(availablePath), options);
 			DBIterator iterator = levelDb.iterator();
 			String roomType;
 

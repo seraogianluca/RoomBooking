@@ -22,7 +22,21 @@ The system allows:
 * Delete a booking
 * Update a booking
 
+**LevelDb configuration**
 
+For a correct configuration of the system, before running please check the correct path depending on your operating system [here](/src/main/java/it/unipi/RoomBooking/Database/LevelDbDriver.java).
+
+```java
+    // Mac OS and Linux configuration
+	private static String availablePath = "./src/available";
+	private static String bookingsPath = "./src/bookings";
+```
+
+```java
+    // Windows configuration
+	private static String availablePath = ".\\src\\available"; 	 
+	private static String bookingsPath = ".\\src\\bookings";
+```
 ## 2. Startup and log in
 
 ```
