@@ -17,11 +17,32 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+
+        <!--leveldb-->
+        <dependency>
+            <groupId>org.fusesource.leveldbjni</groupId>
+            <artifactId>leveldbjni-all</artifactId>
+            <version>1.8</version>
+        </dependency> 
+
+        <dependency>
+            <groupId>org.iq80.leveldb</groupId>
+            <artifactId>leveldb-api</artifactId>
+            <version>0.9</version>
+	    </dependency>
+
+        <!--hibernate-->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.4.7.Final</version>
+        </dependency>
+
+        <!--mysql-->
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.17</version>
-            <!-- <version>5.1.38</version> !-->
         </dependency>
     </dependencies>
     <build>
@@ -42,6 +63,7 @@
                             <artifactId>checkstyle-rules</artifactId>
                             <version>1.1.0</version>
                         </dependency>
+                    
                     </dependencies>
                     <configuration>
                         <configLocation>com/github/ngeor/checkstyle.xml</configLocation>
