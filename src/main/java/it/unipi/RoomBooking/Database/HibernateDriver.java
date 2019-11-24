@@ -96,16 +96,6 @@ public class HibernateDriver {
             Root<Laboratory> root = criteriaQuery.from(Laboratory.class);
             criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("laboratoryAvailable"), true));
             Collection<Laboratory> available = entityManager.createQuery(criteriaQuery).getResultList();
-           
-            entityManager.getTransaction().begin();
-            Student student = entityManager.find(Student.class, studentId);
-            Collection<Laboratory> labs = student.getLaboratories();
-            for (Laboratory iteration : labs) {
-                if (available.contains(iteration)) {
-                    available.remove(iteration);
-                }
-            }
-            entityManager.getTransaction().commit();
             return available;
         } catch (Exception ex) {
             ex.printStackTrace();

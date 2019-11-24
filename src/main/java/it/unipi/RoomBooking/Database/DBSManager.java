@@ -12,6 +12,7 @@ import it.unipi.RoomBooking.Data.NORM.BuildingNORM;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class DBSManager implements Manager {
     private HibernateDriver hibernate;
@@ -94,7 +95,7 @@ public class DBSManager implements Manager {
             } else if (email.contains("@studenti.unipi.it")) {
                 user = new User(hibernate.authenticate(email, false));
                 user.setRole("S");
-            } else if (email.contains("@unipi.it")){
+            } else if (email.contains("@unipi.it")) {
                 user = new User(hibernate.authenticate(email, true));
                 user.setRole("T");
             }
@@ -112,10 +113,14 @@ public class DBSManager implements Manager {
             if (role.equals("S")) {
                 Collection<Booked> bookedLabs = getBooked(role);
 
-                for (Available a : available) {
-                    for (Booked b : bookedLabs) {
-                        if (b.getId() == a.getId()) {
-                            available.remove(a);
+                Iterator<Booked> bookedIterator = bookedLabs.iterator();
+
+                while (bookedIterator.hasNext()) {
+                    Booked bkd = bookedIterator.next();
+                    Iterator<Available> availableIterator = available.iterator();
+                    while (availableIterator.hasNext()) {
+                        if (availableIterator.next().getId() == bkd.getId()) {
+                            availableIterator.remove();
                         }
                     }
                 }

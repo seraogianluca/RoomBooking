@@ -176,6 +176,7 @@ public final class RoomBookingCLI {
 	}
 
 	private static void showAvailable(Collection<Available> available) {
+		out.println("\nList of available rooms:\n");
 		out.printf("%-5s %-15s %-25s %-10s", "ID", "Room", "Building", "Capacity");
 		out.println("\n===================================================================");
 		for (Available i : available) {
@@ -195,7 +196,7 @@ public final class RoomBookingCLI {
 
 		availableRooms = database.getAvailable(requestedSchedule, user.getRole());
 		if (availableRooms.size() == 0) {
-			out.println(RED + "No available rooms.\n" + WHITE);
+			out.println(RED + "\nNo available rooms." + WHITE);
 			return;
 		}
 
@@ -234,7 +235,7 @@ public final class RoomBookingCLI {
 		bookedRooms = database.getBooked(user.getRole());
 
 		if (bookedRooms.size() == 0) {
-			out.println(RED + "No bookings.\n" + WHITE);
+			out.println(RED + "\nNo bookings." + WHITE);
 			return;
 		}
 
@@ -276,7 +277,7 @@ public final class RoomBookingCLI {
 		bookedRooms = database.getBooked(user.getRole());
 
 		if (bookedRooms.size() == 0) {
-			out.println(RED + "No bookings.\n" + WHITE);
+			out.println(RED + "\nNo bookings." + WHITE);
 			return;
 		}
 
