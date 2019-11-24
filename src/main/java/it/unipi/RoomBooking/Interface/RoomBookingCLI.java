@@ -35,8 +35,16 @@ public final class RoomBookingCLI {
 				out.print("\nInsert your Email > ");
 				email = input.nextLine();
 
-				user = database.authenticate(email.toString());
-				isValid = true;
+				if(!email.contains("@studenti.unipi.it") && 
+					!email.contains("@admin.unipi.it") && 
+					!email.contains("@unipi.it")) {
+					
+					out.println(YELLOW + "\nPlease insert a valid email." + WHITE);
+					isValid = false;
+				} else {
+					user = database.authenticate(email.toString());
+					isValid = true;
+				}				
 			} catch (UserNotExistException uex) {
 				out.println(RED + uex.getMessage() + WHITE);
 				isValid = false;
@@ -348,9 +356,19 @@ public final class RoomBookingCLI {
 		dataString[0] = input.nextLine();
 		out.print("\nInsert the lastname of the Student > ");
 		dataString[1] = input.nextLine();
-		out.print("\nInsert the email of the Student > ");
-		dataString[2] = input.nextLine();
 
+		boolean correctEmail = false;
+		while(!correctEmail) {
+			out.print("\nInsert the email of the Student > ");
+			dataString[2] = input.nextLine();
+
+			if(dataString[2].contains("@studenti.unipi.it")) {
+				correctEmail = true;
+			} else {
+				out.println(YELLOW + "\nPlease insert a valid email." + WHITE);
+			}
+		}
+		
 		if (database.checkDuplicateUser(dataString[2], "S") == false) {
 			out.println(RED + "\nUser already exists!" + WHITE);
 			return;
@@ -367,8 +385,18 @@ public final class RoomBookingCLI {
 		dataString[0] = input.nextLine();
 		out.print("\nInsert the lastname of the Teacher > ");
 		dataString[1] = input.nextLine();
-		out.print("\nInsert the email of the Teacher > ");
-		dataString[2] = input.nextLine();
+
+		boolean correctEmail = false;
+		while(!correctEmail) {
+			out.print("\nInsert the email of the Teacher > ");
+			dataString[2] = input.nextLine();
+
+			if(dataString[2].contains("@unipi.it")) {
+				correctEmail = true;
+			} else {
+				out.println(YELLOW + "\nPlease insert a valid email." + WHITE);
+			}
+		}
 
 		if (database.checkDuplicateUser(dataString[2], "T") == false) {
 			out.println(RED + "\nUser already exists!" + WHITE);

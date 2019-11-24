@@ -89,17 +89,17 @@ public class DBSManager implements Manager {
         User user = null;
 
         try {
-            if (email.contains("admin")) {
+            if (email.contains("@admin.unipi.it")) {
                 user = new User(-1, "admin", "admin", email, "A");
-            } else if (email.contains("studenti")) {
+            } else if (email.contains("@studenti.unipi.it")) {
                 user = new User(hibernate.authenticate(email, false));
                 user.setRole("S");
-            } else {
+            } else if (email.contains("@unipi.it")){
                 user = new User(hibernate.authenticate(email, true));
                 user.setRole("T");
             }
         } catch (UserNotExistException une) {
-            throw new UserNotExistException("User not found.");
+            throw new UserNotExistException("\nUser not found.");
         }
 
         return user;
