@@ -17,6 +17,7 @@ A simple JAVA application for the workgroup tasks of the Large-Scale and Multi-S
 ## Notes
 
 Please insert the MySQL username and password in the `persistence.xml` file before running.
+
 Also check the path configuration based on your operating system in the [Short manual of usage of the application.](/docs/Manual.md)
 
 ## Credits
