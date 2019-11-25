@@ -6,11 +6,11 @@ A simple JAVA application for the workgroup tasks of the Large-Scale and Multi-S
 
 ## Project documentation
 1) [Proposed application description for non experts in the field of computer engineering.](/docs/Design.md#1-introduction)
-2) [Definition of the main functional and nonfunctional requirements and main actors of the application](/docs/Design.md#2-functional-requirements)
-3) [UML diagram of the main Use Cases](/docs/Design.md#5-schemas)
-4) [UML diagram of the Analysis Classes](/docs/Design.md#5-schemas)
+2) [Definition of the main functional and nonfunctional requirements and main actors of the application.](/docs/Design.md#2-functional-requirements)
+3) [UML diagram of the main Use Cases.](/docs/Design.md#5-schemas)
+4) [UML diagram of the Analysis Classes.](/docs/Design.md#5-schemas)
 5) [Feasibility Study on the use of a Key-Value Data Storage.](/docs/FeasibilityStudy.md)
-6) [Tutorial, usage of JPA report](/docs/Tutorial.md)
+6) [Tutorial, usage of JPA report.](/docs/Tutorial.md)
 7) [Description of the application implementation.](/docs/Implementation.md)
 8) [Short manual of usage of the application.](/docs/Manual.md)
 
