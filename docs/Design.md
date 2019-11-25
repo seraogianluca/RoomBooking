@@ -4,11 +4,13 @@
 1. [Introduction](#1-introduction)
 2. [Functional Requirements](#2-functional-requirements)
 3. [Non-functional requirements](#3-non-functional-requirements)
-4. [Schemas](#4-schemas) 
-5. [Software Architecture](#5-software-architecture)
+4. [Actors of the system](#4-actors-of-the-system)
+5. [Schemas](#5-schemas) 
+6. [Software Architecture](#6-software-architecture)
 
 ## 1. Introduction
 The Room Booking Application is a system that let users to book university classrooms and laboratories. This application is thought for teachers who need a classroom for seminaries or lectures and for the students who need workstations in the laboratories.
+
 
 ## 2. Functional requirements
 The application has the following functional requirements:
@@ -39,16 +41,24 @@ The application has the following non-functional requirements:
 - Students' emails must belong to the [at] studenti [dot] university domain.
 - Administrator's email must belong to the [at] admin [dot] university domain.
 
-## 4. Schemas
+## 4. Actors of the system
+The system actors are divided in tree kinds of users.
+- Administrator: the person that can add new rooms and buldings in the system.
+- Teacher: the person that can book classrooms.
+- Student: the person that can book laboratories.
+
+## 5. Schemas
+### 5.1 Use Cases
 The following use cases are identified:
 ![Use Cases](/schemas/task1/UseCases.png)
 
 The `choose schedule` is specified as a `extend` because only the `teacher` users can choose the part of the day (Morning, Afternoon) in which they want to book the classroom.
 
+### 5.1 Analysis Classes
 The following classes are idientified:
 ![Classes](/schemas/task1/ClassesUML.png)
 
-## 5. Software architecture
+## 6. Software architecture
 
 The application is standalone, mono-process and single-thread. The application is multi-layer. A data access layer carries out the comunication with the database layer and all the operations related to the data management: insert, read, update and delete. A user interaction layer carries out the interaction with the user and the comunication with the data access layer below.
 

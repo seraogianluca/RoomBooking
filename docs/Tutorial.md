@@ -1,4 +1,4 @@
-# Workgroup activity report - Making annotations and writing CRUD operations in JPA
+# Tutorial: Making annotations, writing CRUD operations,  handling one-to-many and many-to-many relationships in JPA
 
 ## Table of contents
 
