@@ -37,15 +37,15 @@ Below the use cases of the application are described by words.
 A user can log into the system through the accademic email. Once the email is inserted by the user, the role is checked. If the user is a teacher or a student the application menu let these kinds of user to book a new room (a classroom for teacher, a laboratory workstation for student), delete a previous booking, update a previous booking, close the application. If the user is an administrator the application menu let the user to insert a new students and teachers, insert a new room and eventually a new building, close the application.
 
 ### 3.2 Set booking
-A teacher can book a classroom choosing between two schedules: Morning or Afternoon. The procedure starts with the set booking command in the main menu. The system asks the teacher to choose in which schedule she wants to book the classroom (Morning, Afternoon), then the system shows a list of the available classrooms in the choosed schedule. Then the system asks the teacher to choose a classroom using the room ID. Once the teacher chooses the classroom, the system starts to operate on the databases. In details:
+A teacher can book a classroom choosing between two schedules: Morning or Afternoon. The procedure starts with the set booking command in the main menu. The system asks the teacher to choose in which schedule she wants to book the classroom (Morning, Afternoon), then the system shows a list of the available classrooms in the chosen schedule. Then the system asks the teacher to choose a classroom using the room ID. Once the teacher chooses the classroom, the system starts to operate on the databases. In details:
 - The information about the booking are put in levelDB and MySQL.
 - The classroom availability is checked.
 - If the classroom was free for all the day, the availability of the classroom is updated in levelDB.
-- If the classroom was free only for the choosen schedule, the availability is updated on MySQL (set the classroom unavailable) and the informations about the classroom from levelDB are deleted.
+- If the classroom was free only for the chosen schedule, the availability is updated on MySQL (set the classroom unavailable) and the informations about the classroom from levelDB are deleted.
 
  If the procedure on the databases ends with success, an acknowledgement is showed to the teacher.
 
-A student can book a workstation in the laboratory. The procedure starts with the set booking command in the main menu. THe system shows a list of the laboratories with available workstations. The system asks to the user to choose a laboratory using the room ID. Once the student chooses the classroom, the system starts to operate on the databases. In details:
+A student can book a workstation in the laboratory. The procedure starts with the set booking command in the main menu. The system shows a list of the laboratories with available workstations. The system asks to the user to choose a laboratory using the room ID. Once the student chooses the classroom, the system starts to operate on the databases. In details:
 - The informations about the booking are inserted in levelDB and MySQL.
 - The laboratory availability is checked.
 - If the laboratory has more than one workstation free, the availability of the laboratory is updated in levelDB.
@@ -54,7 +54,7 @@ A student can book a workstation in the laboratory. The procedure starts with th
 If the procedure on the databases ends with success an acknowledgement is showed to the student.
 
 ### 3.3 Delete booking
-A teacher can delete one of the booking she made. The procedure starts with the delete booking command in the main menu. The system shows the list of bookings made by the teacher. The system asks to the teacher to choose a booking using the booking ID. Once the teacher chooses the booking, the system starts to operate on the databases. In details:
+A teacher can delete one of the booking he made. The procedure starts with the delete booking command in the main menu. The system shows the list of bookings made by the teacher. The system asks to the teacher to choose a booking using the booking ID. Once the teacher chooses the booking, the system starts to operate on the databases. In details:
 - The availability of the classroom is checked.
 - The booking is deleted.
 - If the classroom was unavailable the availability is updated on MySQL and all the information about the classroom are putted in levelDB. The schedule in which the classroom was booked is put as schedule in which the classroom is available.
@@ -62,7 +62,7 @@ A teacher can delete one of the booking she made. The procedure starts with the 
 
 If the procedure on the databases ends with success an acknowledgement is showed to the teacher.
 
-A student can delete one of the booking she made. he procedure starts with the delete booking command in the main menu. The system ask to the student to choose a booking using the room ID. Once the student choose the booking, the system starts to operate on the databases. In details:
+A student can delete one of the booking he made. he procedure starts with the delete booking command in the main menu. The system ask to the student to choose a booking using the room ID. Once the student choose the booking, the system starts to operate on the databases. In details:
 - The availability of the laboratory is checked
 - The booking is deleted
 - If the laboratory was unavailable the availability is updated on MySQL and all the information about the laboratory are putted in levelDB. One is putted in the availability information about the laboratory, that means one workstation available.
