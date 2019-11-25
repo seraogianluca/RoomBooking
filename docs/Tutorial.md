@@ -10,7 +10,7 @@
 
 ## 1. Introduction
 
-In this tutorial we will explain how to manage `one-to-many`, `many-to-one` and `many-to-many` relationships with the Hibernate Framework that implements the specifications of **JPA** (Java Persistance API) for data persistence.
+In this tutorial we will explain how to manage `one-to-many`, `many-to-one` and `many-to-many` relationships with the Hibernate Framework that implements the specifications of **JPA** (Java Persistence API) for data persistence.
 
 Later, we will explain how to make simple **CRUD** operation on related entities in JPA.
 
@@ -20,9 +20,9 @@ You can read more about JPA on [Java EE 8 Official Documentation](https://javaee
 ### 1.1 Entities
 
 Entities in JPA are representations of the data that can be persisted to the database. In particular, an entity represents a table in the database and each instance of it represents a row. Entities are mapped on Java's classes through Annotations.
-To map an entity we need to specify the `@Entity` annotation. The table name and columns can be specified with the `@Table` and the `@Column` annotations respectively.
+To map an entity, we need to specify the `@Entity` annotation. The table name and columns can be specified with the `@Table` and the `@Column` annotations respectively.
 
-A simple enitity declaration is showed in the code below:
+A simple entity declaration is showed in the code below:
 
 ````java
 @Entity
@@ -49,7 +49,7 @@ JPA supports the same relations as the relational databases. The relations can b
 * Many-to-one
 * Many-to-many
 
-Each of these relations can be mapped as unidirectional and bidirectional association. This means that you can model them as an attribute on only one of the associated entities or both. The bidirectional association mapping is the most common way to model this relations with JPA and Hibernate. 
+Each of these relations can be mapped as unidirectional and bidirectional association. This means that you can model them as an attribute on only one of the associated entities or both. The bidirectional association mapping is the most common way to model these relations with JPA and Hibernate. 
 
 The annotations to map the different kind of relation are self explaining: `@OneToMany`, `@ManyToOne`, `@ManyToMany`.
 
@@ -67,7 +67,7 @@ In such case, **one teacher can have many classrooms reservations**, that is a `
 
 At the database level *TEACHER_ID* is a primary key in the *teacher* table and a foreign key in *classroom_booking* table.
 
-Every bidirectional association has parent and a child side. The parent side is the one in which the assciation is defined and the child is the one who refers to it. In this example, the teacher entity is the child side and the relation is mapped on the `teacher` field of the `classom booking` class.
+Every bidirectional association has parent and a child side. The parent side is the one in which the association is defined and the child is the one who refers to it. In this example, the teacher entity is the child side and the relation are mapped on the `teacher` field of the `classroom booking` class.
 
 The code below shows the mapping on the teacher side:
 
@@ -131,11 +131,11 @@ public class ClassroomBooking implements Booking {
 
 The `@JoinColumn` annotation tells Hibernate to map the relation on the column of the table instead of creating a join table between the entities. This means that the relation will be mapped using foreign keys.
 
-Mapping the both side make the relation bidirectional, so can be navigated from both sides. In the bidirectional relations it's a good practice to mark the *many-to-one* side as the **parent** side.
+Mapping the both sides make the relation bidirectional, so can be navigated from both sides. In the bidirectional relations it's a good practice to mark the *many-to-one* side as the **parent** side.
 
 ## 3. Bidirectional Many-to-many relation
 
-A Many to Many relation occurs when multiple records in a table are associated with multiple records in the related one. 
+A Many to Many relation occur when multiple records in a table are associated with multiple records in the related one. 
 
 Let’s consider the relation between `student` and `laboratory`: 
 
@@ -195,7 +195,7 @@ As the `one-to-many` case the parent side is specified through the `mappedBy` op
 
 ## 4. Simple CRUD operations
 
-In the following we will explain woth two short examples how to make **CRUD** operations on related entities.
+In the following we will explain with two short examples how to make **CRUD** operations on related entities.
 
 ![CRUD](/schemas/task1/CRUD.png)
 

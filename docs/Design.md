@@ -19,7 +19,7 @@ The application has the following functional requirements:
 - A `teacher` shall be able to search for the available classrooms.
 - A `student` shall be able to search for the available laboratories.
 - A `teacher` shall be able to book a classroom in a specified schedule.
-- A `student`shall be able to book a laboratory workstation for all the day.
+- A `student` shall be able to book a laboratory workstation for all the day.
 - `teachers` and `students` shall be able to modify or delete their bookings.
 - An `administrator` shall be able to insert a new classroom or a new laboratory and eventually the corresponding building into the system.
 - An `administrator` shall be able to insert a new student or a new teacher into the system.
@@ -43,7 +43,7 @@ The application has the following non-functional requirements:
 
 ## 4. Actors of the system
 The system actors are divided in tree kinds of users.
-- Administrator: the person that can add new rooms and buldings in the system.
+- Administrator: the person that can add new rooms and buildings in the system.
 - Teacher: the person that can book classrooms.
 - Student: the person that can book laboratories.
 
@@ -55,11 +55,11 @@ The following use cases are identified:
 The `choose schedule` is specified as a `extend` because only the `teacher` users can choose the part of the day (Morning, Afternoon) in which they want to book the classroom.
 
 ### 5.2 Analysis Classes
-The following classes are idientified:
+The following classes are identified:
 ![Classes](/schemas/task1/ClassesUML.png)
 
 ## 6. Software architecture
 
-The application is standalone, mono-process and single-thread. The application is multi-layer. A data access layer carries out the comunication with the database layer and all the operations related to the data management: insert, read, update and delete. A user interaction layer carries out the interaction with the user and the comunication with the data access layer below.
+The application is standalone, mono-process and single-thread. The application is multi-layer. A data access layer carries out the communication with the database layer and all the operations related to the data management: insert, read, update and delete. A user interaction layer carries out the interaction with the user and the communication with the data access layer below.
 
 ![Architecture](/schemas/task1/Architecture.png)

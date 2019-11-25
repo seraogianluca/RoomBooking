@@ -49,7 +49,7 @@ For a correct configuration of the system, before running please check the corre
                                                                __/ |                    
                                                               |___/                     
 ```
-The application ask for the user email:
+The application asks for the user email:
 ```
 Insert your Email > 
 ```
@@ -78,7 +78,7 @@ Choose an action >
 
 ### 3.1. Insert a Student
 
-To insert a student choose the **option 1** from the menu and insert the information about the student.
+To insert a student, choose the **option 1** from the menu and insert the information about the student.
 
 ```
 Insert the name of the student > Name
@@ -95,7 +95,7 @@ Student: Name Lastname added!
 
 ### 3.2. Insert a Teacher
 
-To insert a teacher choose the **option 1** from the menu and insert the information about the teacher.
+To insert a teacher, choose the **option 1** from the menu and insert the information about the teacher.
 
 
 ```
@@ -148,7 +148,7 @@ If the building is successfully created, the following message appears:
 ```
 Building: Polo B added!
 ```
-You can add a Classroom or a Laboratory. For this example we add a Classroom, but the process is the same for the Laboratory.
+You can add a Classroom or a Laboratory. For this example, we add a Classroom, but the process is the same for the Laboratory.
 
 ```
 Do you want to add a Classroom or a Laboratory?
@@ -168,12 +168,12 @@ Classroom: ADII2 added!
 
 
 ## 4. Student or Teacher Overview
-The student and teacher interface has been designed to make room bookings depend on the role, the students can book a laboratory and the teacher can book a classroom.
+The student and teacher interface have been designed to make room bookings depend on the role, the students can book a laboratory and the teacher can book a classroom.
 
 
 **Teacher or Student:** 
 
-The main menu offer to the users several actions:
+The main menu offers to the users several actions:
 
 ```
 1 - Book a Room.
@@ -198,7 +198,7 @@ Choose a schedule >
 The system shows a list of available rooms and claims to choose one of them:
 
 ```
-List of the avaiable rooms:
+List of the available rooms:
 
 ID    Room            Building                  Capacity  
 ===================================================================
@@ -210,7 +210,7 @@ Choose a room by ID >
 If the user selects the correct room the procedure ends with success:
 
 ```
-Room succesfully booked.
+Room successfully booked.
 ```
 
 ### 4.2. Delete a booking
@@ -231,7 +231,7 @@ Choose the room you booked by ID >
 If the user selects the correct booking the procedure ends with success:
 
 ```
-Booking succesfully deleted.
+Booking successfully deleted.
 ```
 
 ### 4.3. Update a booking
@@ -260,7 +260,7 @@ Choose a schedule >
 The system shows a list of available rooms and claims to choose one of them:
 
 ```
-List of the avaiable rooms:
+List of the available rooms:
 
 ID    Room            Building                  Capacity  
 ===================================================================
@@ -272,7 +272,7 @@ Choose a room by ID >
 If the user selects the correct room the procedure ends with success:
 
 ```
-Booking succesfully updated.
+Booking successfully updated.
 ```
 
 
