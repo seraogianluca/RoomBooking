@@ -85,7 +85,7 @@ Below a short description for the main classes of the application:
 - The ORM package contains all the classes that represents JPA entities. These classes are used for the Object Relational Mapping. The relations between entities are mapped as bidirectional relations. More details about JPA relation mapping are at the following link: [Making annotations and writing CRUD operations in JPA](./Tutorial.md). In details, this package contains:
     - Building: This entity maps the building table. Building contains the one-to-many relation mapping with Classroom and Laboratory.
     - Classroom: This entity maps the classroom table. Classroom contains the many-to-one relation mapping with Building and the one-to-many relation mapping with ClassroomBooking.
-    - ClassroomBooking: This entity maps the classroom booking table. ClassroomBooking contains the many-to-one relation mapping with Building and the one-to-many relation mapping with ClassroomBooking.
+    - ClassroomBooking: This entity maps the classroom booking table. ClassroomBooking contains the many-to-one relation mapping with Classroom and the one-to-many relation mapping with Teacher.
     - Laboratory: This entity maps the laboratory table. Laboratory contains the many-to-one relation mapping with Building and the many-to-many relation mapping with Student.
     - Student: This entity maps the student table. Student contains the many-to-many relation mapping with Laboratory, that represents the student booking informations.
     - Teacher: This entity maps the teacher table. Teacher contains the many-to-one relation mapping with ClassroomBooking.
